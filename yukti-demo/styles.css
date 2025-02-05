@@ -1148,6 +1148,39 @@ body {
     transform: translateX(5px);
 }
 
+/* Artist Info */
+.featured .news-content {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.news-details {
+    flex: 1;
+}
+
+.news-image {
+    flex: 0 0 300px;
+}
+
+.mystery-artist-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    filter: contrast(0.5) brightness(0.7);
+    transition: all 0.3s ease;
+}
+
+.news-card.featured:hover .mystery-artist-image {
+    filter: contrast(1) brightness(1);
+}
+
+#artist-countdown {
+    color: var(--neon-blue);
+    font-family: 'SBZero', sans-serif;
+    font-weight: bold;
+}
+
 /* Handling Media Queries */
 
 @media screen and (max-width: 768px) {
@@ -1390,3 +1423,4 @@ body {
         border-radius: 1rem;
     }
 }
+
