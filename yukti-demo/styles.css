@@ -636,6 +636,7 @@ body {
 }
 .sponsor-card-infra p {
     font-family: 'SBZero', fantasy;
+    text-align: center;
     font-size: .7rem;
 }
 
