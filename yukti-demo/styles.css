@@ -396,8 +396,9 @@ body {
     align-items: center;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--neon-blue);
+    /* border: 1px solid var(--neon-blue); */
     border-radius: 8px;
+    box-shadow: 5px 5px 5px black;
 }
 
 .countdown-value {
@@ -482,6 +483,127 @@ body {
 
 .card-link {
     color: var(--neon-blue);
+}
+
+.cyber-card {
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.9), rgba(0, 20, 40, 0.9));
+    border: 1px solid #00fff9;
+    box-shadow: 0 0 20px rgba(0, 255, 249, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00fff9, transparent);
+    animation: cyber-scan 2s linear infinite;
+}
+
+@keyframes cyber-scan {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.cyber-glitch {
+    position: relative;
+    color: #00fff9;
+    text-shadow: 0 0 5px #00fff9;
+    animation: cyber-flicker 2s infinite;
+}
+
+.cyber-glitch-2 {
+    color: #00fff9;
+    text-shadow: 0 0 10px #00fff9;
+    position: relative;
+}
+
+@keyframes cyber-flicker {
+    0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% {
+        opacity: 1;
+    }
+    20%, 21.999%, 63%, 63.999%, 65%, 69.999% {
+        opacity: 0.4;
+    }
+}
+
+.cyber-container {
+    background: rgba(0, 15, 30, 0.9);
+    border: 1px solid rgba(0, 255, 249, 0.3);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    position: relative;
+}
+
+.cyber-container h4 {
+    color: #00fff9;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 1rem;
+}
+
+.cyber-container h4 i {
+    margin-right: 0.5rem;
+}
+
+.event-subcategories ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 0;
+}
+
+.event-subcategories li {
+    background: rgba(0, 255, 249, 0.05);
+    border: 1px solid rgba(0, 255, 249, 0.2);
+    padding: 0.75rem 1rem;
+    list-style: none;
+    transition: all 0.3s ease;
+    font-family: 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
+}
+
+.event-subcategories li:hover {
+    background: rgba(0, 255, 249, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 255, 249, 0.3);
+}
+
+.cyber-bracket {
+    color: #00fff9;
+    opacity: 0.7;
+}
+
+.cyber-button {
+    background: linear-gradient(45deg, #000b2e, #003);
+    border: 1px solid #00fff9;
+    color: #00fff9;
+    padding: 0.75rem 2rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.cyber-button:hover {
+    background: rgba(0, 255, 249, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 249, 0.4);
+}
+
+.cyber-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00fff9, transparent);
+    margin: 1rem 0;
 }
 
 @font-face { font-family: Blanka; src: url('fonts/Blanka-Regular.otf'); }
@@ -633,10 +755,10 @@ body {
 .sponsor-card p {
     font-family: 'SBZero', fantasy;
     font-size: .7rem;
+    text-align: center;
 }
 .sponsor-card-infra p {
     font-family: 'SBZero', fantasy;
-    text-align: center;
     font-size: .7rem;
 }
 
@@ -1069,13 +1191,26 @@ body {
 
 .news-card {
     background: rgba(0, 0, 0, 0.5);
-    border: 1px solid var(--neon-blue);
-    border-radius: 8px;
     overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
+/* glowing effect added */
+    border: 2px solid var(--rebecca-prpl);
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ff0000;
+    animation: glow 1.5s infinite alternate ease-in-out;
 }
-
+@keyframes glow {
+    0% {
+        border-color: var(--neon-blue);
+        box-shadow: 0 0 30px var(--rebecca-prpl);
+    }
+    100% {
+        border-color:var(--neon-blue);
+        box-shadow: var(--neon-blue);
+    }
+}
+    /* till here glowing effect */
 .news-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 0 20px rgba(0, 255, 249, 0.2);
@@ -1162,34 +1297,81 @@ body {
 .news-image {
     flex: 0 0 300px;
 }
-
-.mystery-artist-image {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    filter: contrast(0.5) brightness(0.7);
-    transition: all 0.3s ease;
+.news-image-artist {
+    flex: 0 0 300px;
+    mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%);
+    -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 60%, rgba(0, 0, 0, 0) 100%); 
 }
 
+.news-image-artist img {
+    width: 100%;
+    height: auto;
+}
 .news-card.featured:hover .mystery-artist-image {
     filter: contrast(1) brightness(1);
 }
+.news-card{
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.news-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--neon-blue), var(--rebecca-prpl), var(--neon-blue));
+    background-size: 200% 200%;
+    z-index: -1;
+    border-radius: 9px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    animation: gradientBorder 3s ease infinite;
+}
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+.expand-icon {
+    color: var(--neon-pink);
+    font-size: 1.8rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
 
+.event-card.expanded .expand-icon {
+    transform: rotate(45deg);
+}
+
+.card-expanded {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+    background: rgba(0, 0, 0, 0.2);
+}
+.news-card.expanded .card-expanded {
+    max-height: 1000px;
+    transition: max-height 0.5s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.expanded-content {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0, 255, 249, 0.1);
+    border-radius: 5px;
+}
 #artist-countdown {
     color: var(--neon-blue);
     font-family: 'SBZero', sans-serif;
     font-weight: bold;
 }
-
 /* Handling Media Queries */
 
 @media screen and (max-width: 768px) {
-    .news-grid {
-        grid-template-columns: 1fr;
-    }
-    .news-card {
-        margin-bottom: 1rem;
-    }
     .announcement-banner {
         padding: 0.5rem 0;
     }
@@ -1423,4 +1605,3 @@ body {
         border-radius: 1rem;
     }
 }
-

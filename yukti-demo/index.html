@@ -1,343 +1,417 @@
 <!DOCTYPE html>
 <!--suppress HtmlUnknownTarget -->
 <html lang="en">
+
 <head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6XL0J32BVL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-6XL0J32BVL');
+    </script>
+
     <meta charset="UTF-8">
     <title>Yukti 2k25</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
-<div class="scroll-progress"></div>
-<!-- Loading Screen -->
-<div id="loading-screen">
-    <div class="glyph-container">
-        <div class="glyph-circle outer"></div>
-        <div class="glyph-circle middle"></div>
-        <div class="glyph-circle inner"></div>
-    </div>
-    <div class="loader-content">
-        <img src="assets/navisha-intro.png" class="loader-img" alt="Navisha">
-        <h1 class="loader-title">Yukti 2k25</h1>
-        <div class="loader-bar">
-            <div class="loader-progress"></div>
+    <div class="scroll-progress"></div>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="glyph-container">
+            <div class="glyph-circle outer"></div>
+            <div class="glyph-circle middle"></div>
+            <div class="glyph-circle inner"></div>
         </div>
-        <p class="loader-text">Reimagining tomorrow...</p>
+        <div class="loader-content">
+            <img src="assets/navisha-intro.png" class="loader-img" alt="Navisha">
+            <h1 class="loader-title">Yukti 2k25</h1>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+            <p class="loader-text">Reimagining tomorrow...</p>
+        </div>
     </div>
-</div>
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="image-div">
-        <a href="https://vtu.ac.in">
-            <img src="/assets/VTULogo.png" alt="VTU Logo" class="nav-logo">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="image-div">
+            <a href="https://vtu.ac.in">
+                <img src="/assets/VTULogo.png" alt="VTU Logo" class="nav-logo">
+            </a>
+        </div>
+        <a href="https://yukti.bastamasta.dev" class="nav-brand">Yukti 2k25</a>
+        <div class="nav-links">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#events" class="nav-link">Events</a>
+        </div>
+    </nav>
+
+    <!-- Announcement Banner -->
+    <div class="announcement-banner">
+        <div class="announcement-track">
+            <div class="announcement-content">
+                <span class="announcement-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    Registrations now live!
+                </span>
+                <span class="announcement-divider">◈</span>
+                <span class="announcement-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Concert Artist revealed! <a href="./register">Buy Concert Tickets now!</a>
+                </span>
+                <span class="announcement-divider">◈</span>
+                <span class="announcement-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Rulebooks/Brochures for all events updated!
+                </span>
+                <span class="announcement-divider">◈</span>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="announcement-content">
+                <span class="announcement-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    Registrations now live!
+                </span>
+                <span class="announcement-divider">◈</span>
+                <span class="announcement-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Concert Artist revealed! <a href="./register">Buy Concert Tickets now!</a>
+                </span>
+                <span class="announcement-divider">◈</span>
+                <span class="announcement-item">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Rulebooks/Brochures for all events updated!
+                </span>
+                <span class="announcement-divider">◈</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Glitching Background -->
+    <div id="home" class="hero neon-area">
+        <div class="grid-bg"></div>
+        <div class="glitch-container">
+            <h1 class="glitch">Yukti 2k25</h1>
+            <p class="subtitle">Reimagining tomorrow</p>
+        </div>
+
+        <!--    Event Countdown Timer    -->
+        <div class="countdown">
+            <div class="countdown-item">
+                <span class="countdown-label">Days</span>
+                <span class="countdown-value" id="days">00</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-label">Hours</span>
+                <span class="countdown-value" id="hours">00</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-label">Minutes</span>
+                <span class="countdown-value" id="minutes">00</span>
+            </div>
+            <div class="countdown-item">
+                <span class="countdown-label">Seconds</span>
+                <span class="countdown-value" id="seconds">00</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Content Body-->
+    <div id="about" class="content  adjust-scroll">
+        <h2>About the Festival</h2>
+        <p>
+            <span class="yuk">Yukti</span>, the brainchild of Vice-Chancellor Prof. Vidyashankar S., is a National-Level
+            Techno-Cultural Fest launched in 2024 to celebrate innovation, creativity, and cultural excellence.
+            Organized by
+            Visvesvaraya Technological University (VTU), Belagavi, Yukti brings together students from VTU and its
+            affiliated colleges, providing a dynamic platform to showcase talent, push technological boundaries, and
+            embrace artistic expression.
+        </p><br>
+        <p>
+            <span class="yuk">Yukti 2025</span>, with the theme <span class="rem-tom">Reimagining Tomorrow</span>, is
+            set to
+            take place on February 20th & 21st, 2025. This year, we invite participants to step into a future shaped by
+            innovation, creativity, and limitless possibilities. From cutting-edge technology and management challenges
+            to
+            electrifying cultural performances, Yukti fosters collaboration, competition, and creativity, shaping the
+            next
+            generation of thinkers and innovators.
+        </p><br>
+        <p>
+            Join us in <span class="rem-tom">Reimagining Tomorrow</span> — where technology meets tradition, and ideas
+            take flight!
+        </p><br>
+        <a href="./about" class="news-link">Read More</a>
+    </div>
+
+    <!--News Section-->
+    <div id="news" class="content adjust-scroll">
+        <h2>Event Announcements</h2>
+        <div class="news-grid">
+            <!-- Featured News Item -->
+            <div class="news-card featured">
+                <div class="news-content">
+                    <div class="news-details">
+                        <span class="news-tag">Concert Artist Announcement</span>
+                        <h3>Concert Artist Revealed</h3>
+                        <p class="news-date">February 9, 2025</p>
+                        <p class="news-excerpt">Experience the melodious symphonies of Rajesh Krishnan at Yukti 2k25!</p>
+                        <p class="news-excerpt">Concert Tickets now available! Buy now before they are sold out!</p>
+                        <a href="https://yukti.bastamasta.dev/register" class="news-link">Buy Now</a><br>
+                        <a href="https://www.instagram.com/yukti_vtu/" class="news-link">Stay notified<i class="fab fa-instagram"></i></a>
+                    </div>
+                    <div class="news-image-artist">
+                        <img src="assets/artist.jpeg" alt="Artist Image">
+                    </div>
+                </div>
+            </div><div class="news-card featured">
+                <div class="news-content">
+                    <div class="news-details">
+                        <span class="news-tag">Announcement</span>
+                        <h3>Registrations Now LIVE!</h3>
+                        <p class="news-date">February 6, 2025</p>
+                        <p class="news-excerpt">Hurry Up! Registrations are limited!</p>
+                        <a href="https://yukti.bastamasta.dev/register" class="news-link">Register Now</a>
+                    </div>
+                    <div class="news-image">
+                        <i class="fa fa-warning fa-solid" style="font-size: 10rem; color: #00fff9"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="news-card featured">
+                <div class="news-content">
+                    <div class="news-details">
+                        <span class="news-tag">Event Update</span>
+                        <div class="card-header">
+                            <h3>Resonance Reigns Rules Update</h3>
+                            <span class="expand-icon">+</span>
+                        </div>
+                        <p class="news-date">February 6, 2025</p>
+                        <div class="card-expanded">
+                            <div class="expanded-content">
+                                <p class="news-excerpt">Revised Rules for Resonance Reigns (Battle of Bands and DJs)
+                                    Will be updated shortly, please adhere to the same while registering.</p>
+                                <a href="#events" class="news-link">Events</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="events" class="content adjust-scroll">
+        <h2>Event Categories</h2>
+
+        <!--  Culturals  -->
+        <div class="event-card cyber-card" data-url="https://yukti.bastamasta.dev/events/culturals">
+            <div class="card-header">
+                <h3 class="cyber-glitch">Culturals</h3>
+                <div class="cyber-line"></div>
+            </div>
+            <p>Neon dreams ignite the stage: witness sonic battles, kinetic grace, and captured moments in the chrome-lit city.
+                From synth-soaked anthems to holo-projected plays, experience the future of performance art in the electric sprawl.</p>
+            <div class="event-subcategories cyber-container">
+                <h4><i class="fas fa-terminal"></i> sys.events.culturals</h4>
+                <ul>
+                    <li><span class="cyber-bracket">[</span>Neon Moves (Dance - Group/Solo)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>Echo of the Cosmos (Singing - Group/Solo)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>Circuit Tales (Nukkad Natak)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>Resonance Reign (Battle of Bands)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>DJ Resonance Reign (Battle of DJs)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>Pixel Chronicles (Photography/Reels/Short-Film)<span class="cyber-bracket">]</span></li>
+                    <li><span class="cyber-bracket">[</span>Futuristic Vogue (Ramp Walk / Fashion Show)<span class="cyber-bracket">]</span></li>
+                </ul>
+            </div>
+            <span class="card-link cyber-button">REGISTER.exe</span>
+        </div>
+
+
+        <!--  Open Mic  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/open-mic">
+            <h3>Open Mic</h3>
+            <p>Plug in, power up, and project your voice: from glitching stand-up circuits to data-driven sonnets, the
+                Open Mic is your digital soapbox.
+                Upload your wit, your verse, your very being: amplify the static with mime, mimicry, and unfiltered
+                expression in the neon-drenched network.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+
+        <!--  Tech Events  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/tech">
+            <h3>Tech Events</h3>
+            <p>Code the future, decode the challenge: from logic battles in the digital arena to relay races through the
+                matrix, Tech Events ignite the spark of innovation.
+                Hack the system, compile your knowledge: witness the clash of minds in paper presentations, debates, and
+                debugging sprints across the neon-lit network.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+
+        <!--  Management  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/management">
+            <h3>Management</h3>
+            <p>Navigate the corporate matrix, decode the market's code: from viral ad campaigns to financial forecasts,
+                Management events empower the leaders of tomorrow.
+                Cyberpunk boardrooms, data-driven deals: witness the clash of titans in Manager battles, HR simulations,
+                and the ultimate product launch showdown.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+
+        <!--  Mechanical  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/mechanical">
+            <h3>Mechanical</h3>
+            <p>Steel sharpens steel, circuits ignite the spark: from robotic gladiators to autonomous racers, Mechanical
+                events push the limits of engineering.
+                Forge the future, build the machine: witness the clash of titans in Robowars, the precision of Line
+                Followers, and the soaring dreams of Aero Model Making.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+
+        <!--  Gaming  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/gaming">
+            <h3>Gaming</h3>
+            <p>Level up, plug in, and prepare for pixelated pandemonium: from lightning-fast quizzes to immersive escape
+                rooms, Gaming events unleash your inner player.
+                Decode the icons, conquer the puzzles, dominate the digital domain: witness the clash of champions in
+                logo quizzes, escape room challenges, and epic video game battles.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+
+        <!--  Art  -->
+        <div class="event-card" data-url="https://yukti.bastamasta.dev/events/art">
+            <h3>Art</h3>
+            <p>Spray the canvas, sculpt the light: from vibrant face art to evolving logos, Art events paint the city
+                with creativity and innovation.
+                Pixelate the past, design the future: witness the transformation from raw concept to breathtaking
+                masterpiece in rangoli creations and design evolution showcases.</p>
+            <span class="card-link">Register Now</span>
+        </div>
+    </div>
+
+    <!-- Brochure Download Section -->
+    <div class="brochure-section">
+        <h2 class="brochure-title">Event Brochure</h2>
+        <p class="brochure-description">
+            Download our comprehensive event brochure to explore all the exciting events, schedules, and opportunities
+            waiting for you at Yukti 2k25.
+        </p>
+        <a href="assets/yukti-2k25-brochure.pdf" download class="download-button">
+            <i class="fas fa-file-download"></i>
+            Download Brochure (10.7 MB)
         </a>
     </div>
-    <a href="https://yukti.bastamasta.dev" class="nav-brand">Yukti 2k25</a>
-    <div class="nav-links">
-        <a href="#home" class="nav-link">Home</a>
-        <a href="#about" class="nav-link">About</a>
-        <a href="#events" class="nav-link">Events</a>
-    </div>
-</nav>
+    <!-- Partners Section-->
+    <div class="sponsors-section">
+        <h2 class="sponsor-title">Our Partners</h2>
+        <div class="sponsors-grid">
+            <div class="sponsor-card">
+                <img src="assets/partner/belagavika.png" alt="Sponsor 1" class="sponsor-logo">
+                <span class="sponsor-name">Belagavi KA</span>
+            </div>
+            <div class="sponsor-card">
+                <img src="assets/partner/bgmnews.png" alt="Sponsor 2" class="sponsor-logo">
+                <span class="sponsor-name">Belagavi News</span><br>
+                <p>(Belagavi Core Development Group)</p>
+            </div>
+            <div class="sponsor-card-infra">
+                <img src="assets/partner/bgminfra.png" alt="Sponsor 3" class="sponsor-logo-infra">
+                <span class="sponsor-name">Belagavi Infra</span><br>
+                <p>(Belagavi Core Development Group)</p>
+            </div>
 
-<!-- Announcement Banner -->
-<div class="announcement-banner">
-    <div class="announcement-track">
-        <div class="announcement-content">
-            <span class="announcement-item">
-                <i class="fas fa-calendar-alt"></i>
-                Registrations opening soon!
-            </span>
-            <span class="announcement-divider">◈</span>
-            <span class="announcement-item">
-                <i class="fas fa-exclamation-circle"></i>
-                Venues Updated for All Events! Check them out on the <a href="#events">event pages!</a>
-            </span>
-            <span class="announcement-divider">◈</span>
-            <span class="announcement-item">
-                <i class="fas fa-exclamation-circle"></i>
-                Concert Artist to be revealed soon!
-            </span>
-            <span class="announcement-divider">◈</span>
-        </div>
-        <!-- Duplicate for seamless loop -->
-        <div class="announcement-content">
-            <span class="announcement-item">
-                <i class="fas fa-calendar-alt"></i>
-                Registrations opening soon!
-            </span>
-            <span class="announcement-divider">◈</span>
-            <span class="announcement-item">
-                <i class="fas fa-exclamation-circle"></i>
-                Venues Updated for All Events! Check them out on the <a href="#events">event pages!</a>
-            </span>
-            <span class="announcement-divider">◈</span>
-            <span class="announcement-item">
-                <i class="fas fa-exclamation-circle"></i>
-                Concert Artist to be revealed soon!
-            </span>
-            <span class="announcement-divider">◈</span>
+            <!-- Add more sponsor cards as needed -->
         </div>
     </div>
-</div>
 
-<!-- Main Glitching Background -->
-<div id="home" class="hero neon-area">
-    <div class="grid-bg"></div>
-    <div class="glitch-container">
-        <h1 class="glitch">Yukti 2k25</h1>
-        <p class="subtitle">Reimagining tomorrow</p>
+    <!-- Sponsors Section -->
+    <div class="sponsors-section">
+        <h2 class="sponsor-title">Our Sponsors</h2>
+        <div class="sponsors-grid">
+            <!-- Platinum Sponsors -->
+            <div class="sponsor-card">
+                <!--            <img src="path/to/sponsor1-logo.png" alt="Sponsor 1" class="sponsor-logo">-->
+                <i class="fa-solid fa-handshake"></i>
+                <span class="sponsor-name">Sponsors To Be Announced</span>
+            </div>
+            <!--        <div class="sponsor-card">-->
+            <!--            <img src="path/to/sponsor1-logo.png" alt="Sponsor 2" class="sponsor-logo">-->
+            <!--            <span class="sponsor-name">Platinum Sponsor</span>-->
+            <!--        </div>-->
+
+            <!--        &lt;!&ndash; Gold Sponsors &ndash;&gt;-->
+            <!--        <div class="sponsor-card">-->
+            <!--            <img src="path/to/sponsor2-logo.png" alt="Sponsor 3" class="sponsor-logo">-->
+            <!--            <span class="sponsor-name">Gold Sponsor</span>-->
+            <!--        </div>-->
+            <!--        <div class="sponsor-card">-->
+            <!--            <img src="path/to/sponsor2-logo.png" alt="Sponsor 4" class="sponsor-logo">-->
+            <!--            <span class="sponsor-name">Gold Sponsor</span>-->
+            <!--        </div>-->
+
+            <!-- Add more sponsor cards as needed -->
+        </div>
     </div>
 
-<!--    Event Countdown Timer    -->
-    <div class="countdown">
-        <div class="countdown-item">
-            <span class="countdown-value" id="days">00</span>
-            <span class="countdown-label">Days</span>
-        </div>
-        <div class="countdown-item">
-            <span class="countdown-value" id="hours">00</span>
-            <span class="countdown-label">Hours</span>
-        </div>
-        <div class="countdown-item">
-            <span class="countdown-value" id="minutes">00</span>
-            <span class="countdown-label">Minutes</span>
-        </div>
-        <div class="countdown-item">
-            <span class="countdown-value" id="seconds">00</span>
-            <span class="countdown-label">Seconds</span>
-        </div>
-    </div>
-    
-</div>
-
-<!-- Main Content Body-->
-<div id="about" class="content  adjust-scroll">
-    <h2>About the Festival</h2>
-    <p>
-        <span class="yuk">Yukti</span>, the brainchild of Vice-Chancellor Prof. Vidyashankar S., is a National-Level Techno-Cultural Fest launched in 2024 to celebrate innovation, creativity, and cultural excellence. Organized by Visvesvaraya Technological University (VTU), Belagavi, Yukti brings together students from VTU and its affiliated colleges, providing a dynamic platform to showcase talent, push technological boundaries, and embrace artistic expression.
-        </p><br><p>
-    <span class="yuk">Yukti 2025</span>, with the theme <span class="rem-tom">Reimagining Tomorrow</span>, is set to take place on February 20th & 21st, 2025. This year, we invite participants to step into a future shaped by innovation, creativity, and limitless possibilities. From cutting-edge technology and management challenges to electrifying cultural performances, Yukti fosters collaboration, competition, and creativity, shaping the next generation of thinkers and innovators.
-        </p><br><p>
-    Join us in <span class="rem-tom">Reimagining Tomorrow</span> — where technology meets tradition, and ideas take flight!
-    </p>
-</div>
-
-<div id="news" class="content adjust-scroll">
-    <h2>Event Announcements</h2>
-    <div class="news-grid">
-        <!-- Featured News Item -->
-        <div class="news-card featured">
-            <div class="news-content">
-                <div class="news-details">
-                    <span class="news-tag">Coming Soon</span>
-                    <h3>Concert Artist Announcement</h3>
-                    <p class="news-date">Revealing in <span id="artist-countdown">24 Hours</span></p>
-                    <p class="news-excerpt">Get ready for an electrifying musical performance! Our Concert artist will be unveiled in the next 24 hours. Stay tuned for a revelation that will set the stage on fire!</p>
-                    <a href="https://www.instagram.com/yukti_vtu/" class="news-link">Stay Notified<i class="fab fa-instagram"></i></a>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-grid">
+                <!-- Quick Links Section -->
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="quick-links">
+                        <a href="#about" class="quick-link">About Yukti</a>
+                        <a href="#events" class="quick-link">Events</a>
+                        <a href="https://vtu.ac.in" class="quick-link">VTU Website</a>
+                        <a href="https://yukti.bastamasta.dev/register" class="quick-link">Registration</a>
+                        <a href="#contacts" class="quick-link">Contact Us</a>
+                    </div>
                 </div>
-                <div class="news-image">
-                    <img src="assets/1.png" alt="Mystery Artist" class="mystery-artist-image" />
-                </div>
-            </div>
-        </div>
 
-        <!-- Regular News Items -->
-        <div class="news-card">
-            <div class="news-content">
-                <span class="news-tag">Event Update</span>
-                <h3>New Events Added</h3>
-                <p class="news-date">January 28, 2025</p>
-                <p class="news-excerpt">Multiple New events, such as Stand-Up Comedy, Battle Of DJs and more have been added to the roster!</p>
-                <a href="#" class="news-link">Events</a>
-            </div>
-        </div>
-
-        <div class="news-card">
-            <div class="news-content">
-                <span class="news-tag">Announcement</span>
-                <h3>Registrations Opening Soon</h3>
-                <p class="news-date">January 25, 2025</p>
-                <p class="news-excerpt">Make sure to be on your toes, as the registrations are limited!</p>
-                <a href="https://www.instagram.com/yukti_vtu/" class="news-link">Stay Notified<i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="events" class="content adjust-scroll">
-    <h2>Event Categories</h2>
-
-    <!--  Culturals  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/culturals">
-        <h3>Culturals</h3>
-        <p>Neon dreams ignite the stage: witness sonic battles, kinetic grace, and captured moments in the chrome-lit city.
-            From synth-soaked anthems to holo-projected plays, experience the future of performance art in the electric sprawl.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Open Mic  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/open-mic">
-        <h3>Open Mic</h3>
-        <p>Plug in, power up, and project your voice:  from glitching stand-up circuits to data-driven sonnets, the Open Mic is your digital soapbox.
-            Upload your wit, your verse, your very being:  amplify the static with mime, mimicry, and unfiltered expression in the neon-drenched network.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Tech Events  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/tech">
-        <h3>Tech Events</h3>
-        <p>Code the future, decode the challenge: from logic battles in the digital arena to relay races through the matrix, Tech Events ignite the spark of innovation.
-            Hack the system, compile your knowledge:  witness the clash of minds in paper presentations, debates, and debugging sprints across the neon-lit network.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Management  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/management">
-        <h3>Management</h3>
-        <p>Navigate the corporate matrix, decode the market's code: from viral ad campaigns to financial forecasts, Management events empower the leaders of tomorrow.
-            Cyberpunk boardrooms, data-driven deals: witness the clash of titans in Manager battles, HR simulations, and the ultimate product launch showdown.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Mechanical  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/mechanical">
-        <h3>Mechanical</h3>
-        <p>Steel sharpens steel, circuits ignite the spark: from robotic gladiators to autonomous racers, Mechanical events push the limits of engineering.
-            Forge the future, build the machine: witness the clash of titans in Robowars, the precision of Line Followers, and the soaring dreams of Aero Model Making.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Gaming  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/gaming">
-        <h3>Gaming</h3>
-        <p>Level up, plug in, and prepare for pixelated pandemonium: from lightning-fast quizzes to immersive escape rooms, Gaming events unleash your inner player.
-            Decode the icons, conquer the puzzles, dominate the digital domain: witness the clash of champions in logo quizzes, escape room challenges, and epic video game battles.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-
-    <!--  Art  -->
-    <div class="event-card" data-url="https://yukti.bastamasta.dev/events/art">
-        <h3>Art</h3>
-        <p>Spray the canvas, sculpt the light: from vibrant face art to evolving logos, Art events paint the city with creativity and innovation.
-            Pixelate the past, design the future: witness the transformation from raw concept to breathtaking masterpiece in rangoli creations and design evolution showcases.</p>
-        <span class="card-link">Register Now</span>
-    </div>
-</div>
-
-<!-- Brochure Download Section -->
-<div class="brochure-section">
-    <h2 class="brochure-title">Event Brochure</h2>
-    <p class="brochure-description">
-        Download our comprehensive event brochure to explore all the exciting events, schedules, and opportunities waiting for you at Yukti 2k25.
-    </p>
-    <a href="assets/yukti-2k25-brochure.pdf" download class="download-button">
-        <i class="fas fa-file-download"></i>
-        Download Brochure
-    </a>
-</div>
-<!-- Partners Section-->
-<div class="sponsors-section">
-    <h2 class="sponsor-title">Our Partners</h2>
-    <div class="sponsors-grid">
-        <div class="sponsor-card">
-            <img src="assets/partner/belagavika.png" alt="Sponsor 1" class="sponsor-logo">
-            <span class="sponsor-name">Belagavi KA</span>
-        </div>
-        <div class="sponsor-card">
-            <img src="assets/partner/bgmnews.png" alt="Sponsor 2" class="sponsor-logo">
-            <span class="sponsor-name">Belagavi News</span><br>
-            <p>(Belagavi Core Development Group)</p>
-        </div>
-        <div class="sponsor-card-infra">
-            <img src="assets/partner/bgminfra.png" alt="Sponsor 3" class="sponsor-logo-infra">
-            <span class="sponsor-name">Belagavi Infra</span><br>
-            <p>(Belagavi Core Development Group)</p>
-        </div>
-
-        <!-- Add more sponsor cards as needed -->
-    </div>
-</div>
-
-<!-- Sponsors Section -->
-<div class="sponsors-section">
-    <h2 class="sponsor-title">Our Sponsors</h2>
-    <div class="sponsors-grid">
-        <!-- Platinum Sponsors -->
-        <div class="sponsor-card">
-<!--            <img src="path/to/sponsor1-logo.png" alt="Sponsor 1" class="sponsor-logo">-->
-            <i class="fa-solid fa-handshake"></i>
-            <span class="sponsor-name">Sponsors To Be Announced</span>
-        </div>
-<!--        <div class="sponsor-card">-->
-<!--            <img src="path/to/sponsor1-logo.png" alt="Sponsor 2" class="sponsor-logo">-->
-<!--            <span class="sponsor-name">Platinum Sponsor</span>-->
-<!--        </div>-->
-
-<!--        &lt;!&ndash; Gold Sponsors &ndash;&gt;-->
-<!--        <div class="sponsor-card">-->
-<!--            <img src="path/to/sponsor2-logo.png" alt="Sponsor 3" class="sponsor-logo">-->
-<!--            <span class="sponsor-name">Gold Sponsor</span>-->
-<!--        </div>-->
-<!--        <div class="sponsor-card">-->
-<!--            <img src="path/to/sponsor2-logo.png" alt="Sponsor 4" class="sponsor-logo">-->
-<!--            <span class="sponsor-name">Gold Sponsor</span>-->
-<!--        </div>-->
-
-        <!-- Add more sponsor cards as needed -->
-    </div>
-</div>
-
-<!-- Footer -->
-<footer class="footer">
-    <div class="footer-content">
-        <div class="footer-grid">
-            <!-- Quick Links Section -->
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <div class="quick-links">
-                    <a href="#about" class="quick-link">About Yukti</a>
-                    <a href="#events" class="quick-link">Events</a>
-                    <a href="https://vtu.ac.in" class="quick-link">VTU Website</a>
-                    <a href="https://yukti.bastamasta.dev/oops" class="quick-link">Registration</a>
-                    <a href="#contacts" class="quick-link">Contact Us</a>
-                </div>
-            </div>
-
-            <!-- Connect Section -->
-            <div class="footer-section">
-                <h3>Connect With Us</h3>
-                <div class="social-links">
+                <!-- Connect Section -->
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
                     <a href="https://www.instagram.com/yukti_vtu?igsh=MWJvend5a3BsOWYzdw==" class="social-link"><i class="fab fa-instagram"></i> Instagram</a>
                     <a href="https://x.com/VTU_OFFICIAL_PR?t=1664Z_kmwNIND15jmzubsQ&s=08" class="social-link"><i class="fab fa-twitter"></i> Twitter</a>
                     <a href="https://www.linkedin.com/company/vtu-official-belagavi-pr/" class="social-link"><i class="fab fa-linkedin"></i> LinkedIn</a>
                     <a href="https://youtube.com/@yukti_vtu-op?si=X0i0t95cgdiow2Iy" class="social-link"><i class="fab fa-youtube"></i> YouTube</a>
+                    </div>
+                </div>
+
+                <!-- Contact Section -->
+                <div class="footer-section" id="contacts">
+                    <h3>Contact Info</h3>
+                    <p>Visvesvaraya Technological University</p>
+                    <p>"Jnana Sangama", Belagavi</p>
+                    <p>Karnataka - 590018</p>
+                    <p>Email: vtu.yukti2k25@gmail.com</p>
+                    <p>Phone: +91 890 414 2106</p>
                 </div>
             </div>
 
-            <!-- Contact Section -->
-            <div class="footer-section" id="contacts">
-                <h3>Contact Info</h3>
-                <p>Visvesvaraya Technological University</p>
-                <p>"Jnana Sangama", Belagavi</p>
-                <p>Karnataka - 590018</p>
-                <p>Email: vtu.yukti2k25@gmail.com</p>
-                <p>Phone: +91 890 414 2106</p>
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p>© 2025 Yukti - VTU Techno-Cultural Fest. All rights reserved.</p>
+                <p>Made with 💙 by <a href="https://bastamasta.dev" target="_blank">Sameed Ahmed</a>, with help form
+                <a href="https://github.com/memanju2005">Manjunath K</a>.</p>
+                <p>Graphics and Theme by <a href="https://www.instagram.com/phoenixogd">Arpan S</a></p>
             </div>
         </div>
+    </footer>
 
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <p>© 2025 Yukti - VTU Techno-Cultural Fest. All rights reserved.</p>
-            <p>Made with 💙 by <a href="https://bastamasta.dev" target="_blank">Sameed Ahmed</a>, with help form
-                <a href="https://github.com/memanju2005">Manjunath K</a>.</p>
-            <p>Graphics and Theme by <a href="https://www.instagram.com/phoenixogd">Arpan S</a></p>
-        </div>
-    </div>
-</footer>
+    <button id="backToTop" class="back-to-top"><i class="fa-solid fa-arrow-up"></i></button>
 
-<button id="backToTop" class="back-to-top"><i class="fa-solid fa-arrow-up"></i></button>
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
+
 </html>
