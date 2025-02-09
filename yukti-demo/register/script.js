@@ -170,12 +170,35 @@ const EVENTS = {
     }
 };
 
-// Update events dropdown based on selected category
+const CONCERT_TIERS = {
+    "platinum": {
+        price: 1000,
+        maxTickets: 10,
+        description: "Starting 1st Row"
+    },
+    "gold": {
+        price: 600,
+        maxTickets: null,
+        description: "Middle Rows"
+    },
+    "silver": {
+        price: 250,
+        maxTickets: null, // unlimited
+        description: "Last Rows"
+    },
+    "bronze": {
+        price: 50,
+        maxTickets: null, // unlimited
+        description: "Standing Pit"
+    }
+};
+
+// Update events based on selected category
 function updateEvents(category) {
     const eventList = EVENTS[category] || { "individual": [], "group": [] };
     const eventCheckboxContainer = document.getElementById('eventCheckboxContainer');
 
-    // Combine individual and group events, tagging their type
+    // Combine individual and group events
     const allEvents = [
         ...eventList.individual.map(event => ({
             name: event,
@@ -189,7 +212,7 @@ function updateEvents(category) {
         }))
     ];
 
-    // Generate HTML for events with optional participant input for group events
+    // Generate HTML for events
     eventCheckboxContainer.innerHTML = allEvents.map(event => `
         <div class="checkbox-wrapper">
             <input type="checkbox" 
@@ -221,11 +244,39 @@ function updateEvents(category) {
         </div>
     `).join('');
 
-    // Reset total cost when category changes
-    document.getElementById('totalCost').innerHTML = 'Total Cost: ₹0';
+    calculateCost();
 }
 
-// Toggle participant input field for group events
+// Handle concert ticket selection
+function updateConcertInputs(tier) {
+    const inputsDiv = document.getElementById('concertTicketInputs');
+    const ticketCount = document.getElementById('ticketCount');
+    const noteDiv = document.getElementById('ticketNote');
+
+    if (!tier) {
+        inputsDiv.style.display = 'none';
+        ticketCount.value = '';
+        calculateCost();
+        return;
+    }
+
+    const tierDetails = CONCERT_TIERS[tier];
+    inputsDiv.style.display = 'block';
+
+    // Update max tickets and note
+    if (tierDetails.maxTickets) {
+        ticketCount.max = tierDetails.maxTickets;
+        noteDiv.textContent = `Maximum ${tierDetails.maxTickets} tickets allowed`;
+    } else {
+        ticketCount.removeAttribute('max');
+        noteDiv.textContent = '';
+    }
+
+    ticketCount.value = '';
+    calculateCost();
+}
+
+// Toggle participant input for group events
 function toggleParticipantInput(checkbox) {
     const eventName = checkbox.value;
     const participantInputDiv = document.getElementById(`participant-input-${eventName}`);
@@ -238,29 +289,29 @@ function toggleParticipantInput(checkbox) {
         if (participantInputDiv) {
             participantInputDiv.style.display = 'none';
             participantInput.required = false;
-            participantInput.value = ''; // Reset participant count
+            participantInput.value = '';
         }
     }
 
     calculateCost();
 }
 
-// Calculate total cost for selected events
-// Only showing the modified calculateCost function since other parts remain the same
+// Calculate total cost
 function calculateCost() {
     const selectedEvents = document.querySelectorAll('input[name="events[]"]:checked');
     let totalCost = 0;
     let costDetails = [];
 
-    // Individual event pricing
+    // Calculate individual event costs
     const individualEvents = Array.from(selectedEvents)
         .filter(event => event.getAttribute('data-type') === 'individual');
 
     if (individualEvents.length > 0) {
         totalCost = individualEvents.length * 200 - Math.floor(individualEvents.length / 4) * 200;
+        costDetails.push(`Individual Events: ₹${totalCost} (${individualEvents.length} events)`);
     }
 
-    // Group event pricing
+    // Calculate group event costs
     const groupEvents = Array.from(selectedEvents)
         .filter(event => event.getAttribute('data-type') === 'group');
 
@@ -268,7 +319,6 @@ function calculateCost() {
         const participantInput = document.getElementById(`participants-${event.value}`);
         const participantCount = parseInt(participantInput.value) || 0;
 
-        // Find the event details from EVENTS
         const eventDetails = Object.values(EVENTS)
             .flatMap(category => category.group)
             .find(e => e.name === event.value);
@@ -277,24 +327,24 @@ function calculateCost() {
             let eventCost = 0;
             let priceExplanation = '';
 
-            // Fixed price robotics events with flexible team size
+            // Fixed price robotics events
             if (eventDetails.fixedTeamCost && eventDetails.flexibleTeamSize) {
                 if (participantCount <= eventDetails.maxParticipants) {
                     eventCost = eventDetails.fixedTeamCost;
                     priceExplanation = "Fixed team price";
                 }
             }
-            // Quiz event - fixed team size and price
+            // Quiz event
             else if (event.value === "CyberConquest (Quiz - Logo Quiz, Puzzle)" && participantCount === 2) {
                 eventCost = 300;
                 priceExplanation = "Fixed price for quiz team";
             }
-            // Treasure Hunt event - fixed team size and price
+            // Treasure Hunt event
             else if (event.value === "Quest Beyond Limits (Treasure Hunt)" && participantCount === 4) {
                 eventCost = 400;
                 priceExplanation = "Fixed price for treasure hunt team";
             }
-            // Standard pricing for other group events
+            // Standard group pricing
             else {
                 if (participantCount <= 4) {
                     eventCost = participantCount * 200;
@@ -321,23 +371,45 @@ function calculateCost() {
         }
     });
 
-    // Display total cost with breakdown
+    // Calculate concert ticket costs
+    const selectedTier = document.getElementById('concertTickets').value;
+    if (selectedTier) {
+        const ticketCount = parseInt(document.getElementById('ticketCount').value) || 0;
+        const tierDetails = CONCERT_TIERS[selectedTier];
+
+        if (ticketCount > 0) {
+            const ticketCost = ticketCount * tierDetails.price;
+            costDetails.push(`Concert (${selectedTier}): ₹${ticketCost} (${ticketCount} tickets @ ₹${tierDetails.price})`);
+            totalCost += ticketCost;
+        }
+    }
+
+    // Update total cost display
     const totalCostElement = document.getElementById('totalCost');
     let costHtml = `Total Cost: ₹${totalCost}`;
-
     if (costDetails.length > 0) {
         costHtml += '<br><span style="font-size: 0.9em; color: #666;">Breakdown:<br>' +
             costDetails.join('<br>') + '</span>';
     }
-
     totalCostElement.innerHTML = costHtml;
 }
 
 // Form validation before submission
+// Form validation
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     form.addEventListener('submit', function(event) {
         const selectedEvents = document.querySelectorAll('input[name="events[]"]:checked');
+        const selectedConcertTier = document.getElementById('concertTickets').value;
+        const ticketCount = document.getElementById('ticketCount').value;
+
+        // Check if either events or concert tickets are selected
+        if (selectedEvents.length === 0 && !selectedConcertTier) {
+            event.preventDefault();
+            alert('Please select at least one event or concert tickets before submitting.');
+            document.getElementById('eventCategory').scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
 
         // Validate group event participant counts
         for (let checkbox of selectedEvents) {
@@ -347,6 +419,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 const minParticipants = parseInt(checkbox.getAttribute('data-min-participants'));
                 const maxParticipants = parseInt(checkbox.getAttribute('data-max-participants'));
                 const exactParticipants = checkbox.getAttribute('data-exact-participants');
+
+                // Check if participant count is missing
+                if (!participantCount) {
+                    event.preventDefault();
+                    alert(`Please enter the number of participants for "${checkbox.value}".`);
+                    participantInput.focus();
+                    return;
+                }
 
                 // Validation for events with exact participant requirements
                 if (exactParticipants) {
@@ -358,9 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
                 // Validation for other group events
-                else if (isNaN(participantCount) ||
-                    participantCount < minParticipants ||
-                    participantCount > maxParticipants) {
+                else if (participantCount < minParticipants || participantCount > maxParticipants) {
                     event.preventDefault();
                     alert(`For "${checkbox.value}", please enter a number of participants between ${minParticipants} and ${maxParticipants}.`);
                     participantInput.focus();
@@ -369,12 +447,54 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Ensure at least one event is selected
-        if (selectedEvents.length === 0) {
-            event.preventDefault();
-            alert('Please select at least one event before submitting.');
-            document.getElementById('eventCategory').scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('eventCategory').focus();
+        // Concert ticket validation
+        if (selectedConcertTier) {
+            // Check if ticket count is missing
+            if (!ticketCount || ticketCount < 1) {
+                event.preventDefault();
+                alert('Please specify the number of concert tickets.');
+                document.getElementById('ticketCount').focus();
+                return;
+            }
+
+            const tierDetails = CONCERT_TIERS[selectedConcertTier];
+            const ticketCountNum = parseInt(ticketCount);
+
+            // Validate maximum ticket limits
+            if (tierDetails.maxTickets && ticketCountNum > tierDetails.maxTickets) {
+                event.preventDefault();
+                alert(`Maximum ${tierDetails.maxTickets} tickets allowed for ${selectedConcertTier} tier.`);
+                document.getElementById('ticketCount').focus();
+                return;
+            }
+
+            // Validate minimum ticket count
+            if (ticketCountNum < 1) {
+                event.preventDefault();
+                alert('Please enter a valid number of tickets (minimum 1).');
+                document.getElementById('ticketCount').focus();
+                return;
+            }
         }
+
+        // If all validations pass, calculate final cost
+        calculateCost();
     });
+
+    // Add popup event listener
+    const popupOverlay = document.getElementById('popup-overlay');
+    const popupClose = document.querySelector('.popup-close');
+    const popupAccept = document.querySelector('.popup-accept');
+
+    if (popupClose) {
+        popupClose.addEventListener('click', function() {
+            popupOverlay.style.display = 'none';
+        });
+    }
+
+    if (popupAccept) {
+        popupAccept.addEventListener('click', function() {
+            popupOverlay.style.display = 'none';
+        });
+    }
 });

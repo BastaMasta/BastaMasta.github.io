@@ -33,7 +33,7 @@
             </ul>
         </div>
     </div>
-    <form action="https://formspree.io/f/mrbekadv" method="POST">
+    <form>
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" id="name" name="name" required>
@@ -71,6 +71,24 @@
 
         <div id="eventCheckboxContainer" class="form-group">
             <!-- Event checkboxes will appear here -->
+        </div>
+
+        <!-- Add this after the eventCheckboxContainer div -->
+        <div class="form-group">
+            <label for="concertTickets">Concert Tickets</label>
+            <select id="concertTickets" name="concertTickets" onchange="updateConcertInputs(this.value)">
+                <option value="">--Select Tier--</option>
+                <option value="platinum">Platinum (First Row)</option>
+                <option value="gold">Gold (Middle Rows)</option>
+                <option value="silver">Silver (Last Rows)</option>
+                <option value="bronze">Bronze (Standing)</option>
+            </select>
+        </div>
+
+        <div id="concertTicketInputs" class="form-group" style="display:none;">
+            <label for="ticketCount">Number of Tickets</label>
+            <input type="number" id="ticketCount" name="ticketCount" min="1" onchange="calculateCost()">
+            <div class="note" id="ticketNote"></div>
         </div>
 
         <div class="form-group">
