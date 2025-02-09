@@ -1401,10 +1401,9 @@ body {
     transform: translateY(-50%);
     z-index: 1000;
     width: auto;
-    min-width: 120px;
-    max-width: 160px;
+    min-width: 8vw;
+    max-width: 12vw;
 }
-
 .floating-download-button {
     display: flex;
     flex-direction: column;
