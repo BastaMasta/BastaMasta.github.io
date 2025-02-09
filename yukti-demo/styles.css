@@ -555,7 +555,7 @@ body {
 
 .event-subcategories ul {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10.5vw, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(clamp(1vw, 10.5vw, 50vw), 1fr));
     gap: 1rem;
     padding: 0;
 }
