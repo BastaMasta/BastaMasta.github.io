@@ -571,6 +571,12 @@ body {
     overflow: hidden;
 }
 
+@media (max-width: 400px) {
+    .event-subcategories li {
+        display: block;
+    }
+}
+
 .event-subcategories li:hover {
     background: rgba(0, 255, 249, 0.1);
     transform: translateY(-2px);
