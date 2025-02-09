@@ -569,6 +569,7 @@ body {
     font-family: 'Courier New', monospace;
     position: relative;
     overflow: hidden;
+    font-size: 1rem;
 }
 
 @media (max-width: 400px) {
