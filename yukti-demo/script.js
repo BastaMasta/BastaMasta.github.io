@@ -187,92 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// manju, if you're seeing this, i have restricted the fireball to the hero section, i.e. the section with the glitchy yukti
-// and the countdown. it just looks better that way.
+window.onload = function () {
+    document.getElementById("disclaimer-popup").style.display = "flex";
+};
 
-//  fireball effect on hero section
-document.addEventListener("DOMContentLoaded", function () {
-    const neonArea = document.querySelector(".neon-area");
-
-    // Create fireball cursor
-    const fireball = document.createElement("div");
-    fireball.classList.add("neon-fireball");
-    document.body.appendChild(fireball);
-
-    let currentColor = "cyan"; // Default starting color
-
-    // Function to update fireball color periodically
-    function updateFireballColor() {
-        const colors = [
-            "linear-gradient(135deg, rgba(229, 24, 48, 0.95), rgba(247, 237, 255, 0.95))",
-            "linear-gradient(135deg, rgba(117, 4, 151, 0.95), rgba(247, 237, 255, 0.95))",
-        ];
-
-        let index = 0;
-
-        setInterval(() => {
-            currentColor = colors[index]; // Update current color
-            fireball.style.background = currentColor;
-            index = (index + 1) % colors.length;
-        }, 4000); // Change color every 4 seconds
-    }
-
-    updateFireballColor(); // Start changing colors
-
-    // Function to create neon light trail
-    function createTrail(x, y) {
-        const trail = document.createElement("div");
-        trail.classList.add("trail");
-        document.body.appendChild(trail);
-
-        // Assign the same color as the fireball
-        trail.style.background = currentColor;
-
-        // Improved trail positioning - use clientX/Y to prevent scroll offset issues
-        trail.style.left = `${x}px`;
-        trail.style.top = `${y}px`;
-
-        setTimeout(() => {
-            trail.style.opacity = "0";
-            setTimeout(() => trail.remove(), 500);
-        }, 200);
-    }
-
-    const trailThrottle = (function() {
-        let lastTrail = 0;
-        return function(x, y) {
-            const now = Date.now();
-            if (now - lastTrail > 50) { // Only create trail every 50ms
-                createTrail(x, y);
-                lastTrail = now;
-            }
-        };
-    })();
-
-    // Track whether mouse is over the neon area
-    let isOverNeonArea = false;
-
-    neonArea.addEventListener("mouseenter", () => {
-        isOverNeonArea = true;
-        fireball.style.opacity = "1"; // Show fireball
-        document.body.style.cursor = "none"; // Hide default cursor
-    });
-
-    neonArea.addEventListener("mouseleave", () => {
-        isOverNeonArea = false;
-        fireball.style.opacity = "0"; // Hide fireball when leaving
-        document.body.style.cursor = "default"; // Restore default cursor
-    });
-
-    document.addEventListener("mousemove", (e) => {
-        if (isOverNeonArea) {
-            fireball.style.left = `${e.clientX}px`;
-            fireball.style.top = `${e.clientY}px`;
-            trailThrottle(e.clientX, e.clientY);
-        }
-    });
-});
-
+function closeDisclaimer() {
+    document.getElementById("disclaimer-popup").style.display = "none";
+}
 
 
 // Lazy Loading for images. no images yet to lazy load. all essential to website
