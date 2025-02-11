@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+
+<url>
+  <loc>https://yukti.bastamasta.dev/</loc>
+  <lastmod>2025-02-11T11:12:42+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://yukti.bastamasta.dev/register/</loc>
+  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://yukti.bastamasta.dev/about/</loc>
+  <lastmod>2025-02-11T11:12:42+00:00</lastmod>
+  <changefreq>never</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://yukti.bastamasta.dev/anouncements/</loc>
+  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
+  <changefreq>daily</changefreq>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://yukti.bastamasta.dev/assets/yukti-2k25-brochure.pdf</loc>
+  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
+  <changefreq>weekly</changefreq>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
