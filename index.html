@@ -1,187 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Sameed's Weird Site</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <title>Sameed Ahmed | Cyberpunk Portfolio</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <script src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
-    <style>
-        body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
-        .w3-row-padding img {margin-bottom: 12px}
-        /* Set the width of the sidebar to 120px */
-        /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-        #main {margin-left: 120px}
-        /* Remove margins from "page content" on small screens */
-        @media only screen and (max-width: 600px) {#main {margin-left: 0}}
-        .lol {font-size: 80%}
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap">
 </head>
-<body class="w3-black">
+<body>
+<!-- Glitch overlay effect -->
+<div class="glitch-overlay"></div>
 
-<!-- This is the section for the icon sidebqar on mobile phones and other smaller screens-->
-<!-- Icon Bar (Sidebar - hidden on small screens) -->
-<!--<nav class="w3-bar-block w3-tinsmall w3-hide-small w3-center">-->
-<!--    &lt;!&ndash; Avatar image in top left corner &ndash;&gt;-->
-<!--    <img src="/images/Blazing%20Golem.jpg" style="width:100%" alt="BastaMasta Profile">-->
-<!--    <a href="#" class="w3-bar-item w3-button w3-padding-large w3-black">-->
-<!--        <i class="fa fa-home w3-large"></i>-->
-<!--        <p>HOME</p>-->
-<!--    </a>-->
-<!--    <a href="#about" class="w3-bar-item w3-button w3-padding-large w3-hover-black">-->
-<!--        <i class="fa fa-user w3-large"></i>-->
-<!--        <p>ABOUT</p>-->
-<!--    </a>-->
-<!--    <a href="#projects" class="w3-bar-item w3-button w3-padding-large w3-hover-black">-->
-<!--        <i class="fa fa-eye w3-large"></i>-->
-<!--        <p>PROJECTS</p>-->
-<!--    </a>-->
-<!--    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hover-black">-->
-<!--        <i class="fa fa-envelope w3-xxlarge"></i>-->
-<!--        <p>CONTACT</p>-->
-<!--    </a>-->
-<!--</nav>-->
-
-<!-- Navbar on small screens (Hidden on medium and large screens) -->
-<div class="w3-top" id="myNavbar">
-    <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center">
-        <a href="#" class="w3-bar-item w3-button" style="width:25% !important"><i class="fa fa-home w3-large"></i><br>HOME
-            </a>
-        <a href="#about" class="w3-bar-item w3-button" style="width:25% !important"><i class="fa fa-user w3-large"></i><br>ABOUT</a>
-        <a href="#projects" class="w3-bar-item w3-button" style="width:25% !important"><i class="fa fa-eye w3-large"></i><br>PROJECTS</a>
-        <a href="#contact" class="w3-bar-item w3-button" style="width:25% !important"><i class="fa fa-envelope w3-large"></i><br>CONTACT</a>
-    </div>
+<!-- Background video container -->
+<div class="background-container">
+    <div class="scanline"></div>
+    <div class="grid-overlay"></div>
 </div>
 
-<!-- Page Content -->
-<div class="w3-padding-large" id="main" style="margin-left: 0">
-    <!-- Header/Home -->
-    <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-        <h1 class="w3-jumbo"><span class="w3-hide-small">I'm</span> Sameed Ahmed.</h1>
-        <p>Student Developer and Freelancer.</p>
-        <img src="/images/Grayscale_auto_x2.jpg" alt="Sameed Ahmed" class="w3-image" width="1200" height="1108">
-    </header>
+<!-- Navigation -->
+<nav id="cybernav">
+    <div class="nav-logo">S_A/</div>
+    <div class="nav-items">
+        <a href="#home" class="nav-link">HOME<span class="nav-indicator"></span></a>
+        <a href="#about" class="nav-link">ABOUT<span class="nav-indicator"></span></a>
+        <a href="#projects" class="nav-link">PROJECTS<span class="nav-indicator"></span></a>
+        <a href="#company" class="nav-link">COMPANY<span class="nav-indicator"></span></a>
+        <a href="#contact" class="nav-link">CONTACT<span class="nav-indicator"></span></a>
+    </div>
+    <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="glitch" data-text="I'M SAMEED AHMED">I'M SAMEED AHMED</h1>
+                <div class="cyber-box">
+                    <p class="typing-text"></p>
+                </div>
+                <div class="hero-buttons">
+                    <a href="#about" class="cyber-button">
+                        <span class="cyber-button-text">DISCOVER</span>
+                        <span class="cyber-button-glitch"></span>
+                    </a>
+                    <a href="#contact" class="cyber-button primary">
+                        <span class="cyber-button-text">CONTACT ME</span>
+                        <span class="cyber-button-glitch"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="cyber-frame">
+                    <img src="/images/Grayscale_auto_x2.jpg" alt="Sameed Ahmed" class="profile-img">
+                    <div class="cyber-frame-corner top-left"></div>
+                    <div class="cyber-frame-corner top-right"></div>
+                    <div class="cyber-frame-corner bottom-left"></div>
+                    <div class="cyber-frame-corner bottom-right"></div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <div class="arrows">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </section>
 
     <!-- About Section -->
-    <div class="w3-content w3-justify w3-text-light-grey w3-padding-64" id="about">
-        <h2 class="w3-text-light-grey">Sameed Ahmed</h2>
-        <hr style="width:200px" class="w3-opacity">
-        <p>Innovative Programmer and a Professional Retard, striving to make the world a more unified and connected
-            place (for my own convenience, of course). A Creative thinker, adept in systems software development and
-            working with various data structures and APIs. A commitment to do everything possible to make every task
-            easier for myself (and maybe everyone else while I'm at it).
-        </p>
-        <p>I have worked on many small projects, just to keep myself busy, and also make something productive while I
-            was at it (all the while trying to learn new stuff to satisfy my curiosity).</p>
-        <h3 class="w3-padding-16 w3-text-light-grey">My Skills</h3>
-        <p class="w3-wide">Rust</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:80%"></div>
+    <section id="about" class="section">
+        <div class="section-header">
+            <h2 class="glitch" data-text="ABOUT_ME">ABOUT_ME</h2>
+            <span class="section-line"></span>
         </div>
-        <p class="w3-wide">Python</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:80%"></div>
+        <div class="about-content">
+            <div class="about-text">
+                <div class="cyber-terminal">
+                    <div class="terminal-header">
+                        <span class="terminal-button"></span>
+                        <span class="terminal-button"></span>
+                        <span class="terminal-button"></span>
+                        <span class="terminal-title">sameed_profile.exe</span>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-line">$ cat profile.txt</div>
+                        <p>Innovative Programmer and a Professional Retard, striving to make the world a more unified and connected place (for my own convenience, of course).</p>
+                        <p>A Creative thinker, adept in systems software development and working with various data structures and APIs. A commitment to do everything possible to make every task easier for myself (and maybe everyone else while I'm at it).</p>
+                        <p>I have worked on many small projects, just to keep myself busy, and also make something productive while I was at it (all the while trying to learn new stuff to satisfy my curiosity).</p>
+                        <div class="terminal-prompt">$_</div>
+                    </div>
+                </div>
+            </div>
+            <div class="skills-container">
+                <h3 class="cyber-heading">MY_SKILLS</h3>
+                <div class="skill-grid">
+                    <div class="skill-item">
+                        <div class="skill-name">Rust</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:80%"></div>
+                            <span class="skill-percentage">80%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Python</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:80%"></div>
+                            <span class="skill-percentage">80%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Assembly [8086]</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:85%"></div>
+                            <span class="skill-percentage">85%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">C</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:90%"></div>
+                            <span class="skill-percentage">90%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">C++</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:60%"></div>
+                            <span class="skill-percentage">60%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Flutter/Android</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:55%"></div>
+                            <span class="skill-percentage">55%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Game Dev</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:40%"></div>
+                            <span class="skill-percentage">40%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Embedded Systems/IoT</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:50%"></div>
+                            <span class="skill-percentage">50%</span>
+                        </div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name">WebDev</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:30%"></div>
+                            <span class="skill-percentage">30%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-number">5+</div>
+                    <div class="stat-text">Projects Done</div>
+                    <div class="stat-note">[Few projects are not public due to privacy concerns]</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">2+</div>
+                    <div class="stat-text">Happy Clients (Fiverr)</div>
+                </div>
+            </div>
         </div>
-        <p class="w3-wide">Assembly [8086]</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:85%"></div>
-        </div>
-        <p class="w3-wide">C</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:90%"></div>
-        </div>
-        <p class="w3-wide">C++</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:60%"></div>
-        </div>
-        <p class="w3-wide">Flutter/Android Dev.</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:55%"></div>
-        </div>
-        <p class="w3-wide">Game Dev.</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:40%"></div>
-        </div>
-        <p class="w3-wide">Embedded Systems and IoT</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:50%"></div>
-        </div>
-        <p class="w3-wide">WebDev</p>
-        <div class="w3-white">
-            <div class="w3-dark-grey" style="height:28px;width:30%"></div>
-        </div><br>
+    </section>
 
-        <div class="w3-row w3-center w3-padding-16 w3-section w3-light-grey">
-            <div class="w3-half w3-section">
-                <span class="w3-xlarge">5+</span><br>
-                Projects Done (To Pass Time)
-                <br><div class="lol">
-                [Few projects are not public due to privacy concerns]
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="section-header">
+            <h2 class="glitch" data-text="PROJECTS">PROJECTS</h2>
+            <span class="section-line"></span>
+        </div>
+        <div class="projects-container">
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">boxy-cli [Rust Crate]</div>
+                    <div class="project-status">Work in Progress</div>
+                    <a href="https://github.com/BastaMasta/boxy-cli" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
             </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">Meme SoundPad</div>
+                    <div class="project-status">Work in Progress</div>
+                    <a href="https://github.com/BastaMasta/MemeSoundPad" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
             </div>
-            <div class="w3-half w3-section">
-                <span class="w3-xlarge">2+</span><br>
-                Happy Clients (Fiverr)
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">Brainfuck Interpreter (Rust)</div>
+                    <a href="https://bastamasta.dev/projects/brainfuck/index.html" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">Google Forms to Discord Integration Bots (Python)</div>
+                    <div class="project-status">Broken</div>
+                    <a href="https://bastamasta.dev/oops" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">BinaryKeeb 1.0 [Hardware Binary keyboard]</div>
+                    <a href="https://github.com/BastaMasta/BinaryKeeb" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">Image Processor [CLI Tool] (Rust)</div>
+                    <a href="https://github.com/BastaMasta/Personal-Projects/" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">Action RPG [Name not decided yet]</div>
+                    <div class="project-status">Work in Progress</div>
+                    <a href="https://github.com/BastaMasta/ARPG_Build/" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-title">TARS Replica [Interstellar]</div>
+                    <div class="project-status">Work in Progress</div>
+                    <a href="https://bastamasta.dev/oops" class="cyber-button small">
+                        <span class="cyber-button-text">VIEW PROJECT</span>
+                    </a>
+                </div>
             </div>
         </div>
-        <h3 class="w3-padding-16 w3-text-light-grey" id = "projects">My Projects (So far)</h3>
-        <p style = "padding-bottom:20px">[Links to the projects and their webpages are not yet ready]</p>
-        <div class="w3-row-padding w3-center" style="margin:0 -16px">
-            <div class="w3-center w3-margin-bottom">
-                <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://github.com/BastaMasta/boxy-cli" style="width:100%;height:100%">boxy-cli [Rust Crate] [WIP]</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://github.com/BastaMasta/MemeSoundPad" style="width:100%;height:100%">Meme SoundPad [WIP]</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://bastamasta.dev/projects/brainfuck/index.html" style="width:100%;height:100%">Brainfuck Interpreter (Rust)</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://bastamasta.dev/oops" style="width:100%;height:100%">Google Forms to Discord Integration Bots (Python)<br> [Broken] </a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://github.com/BastaMasta/BinaryKeeb" style="width:100%;height:100%">BinaryKeeb 1.0 [A Hardware Binary keyboard]</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://github.com/BastaMasta/Personal-Projects/" style="width:100%;height:100%">Image Processor [CLI Tool] (Rust)</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://github.com/BastaMasta/ARPG_Build/" style="width:100%;height:100%">Action RPG [Name not decided yet] [WIP]</a></li>
-                    <li class="w3-padding-16"><a class = "w3-btn" href="https://bastamasta.dev/oops" style="width:100%;height:100%">TARS Replica [Interstellar] [WIP]</a></li>
+    </section>
 
-                </ul>
+    <!-- Company Section (New) -->
+    <section id="company" class="section">
+        <div class="section-header">
+            <h2 class="glitch" data-text="MY_COMPANY">MY_COMPANY</h2>
+            <span class="section-line"></span>
+        </div>
+        <div class="company-container">
+            <div class="company-logo">
+                <img class="cyber-logo" alt="ZapBurrito Studios Logo" src="images/zapburrito.svg">
+            </div>
+            <div class="company-info">
+                <h3 class="cyber-heading">ZapBurrito Studios</h3>
+                <div class="coming-soon">COMING SOON</div>
+                <p class="company-description">An Indie Game Studio dedicated to delivering beautiful, pixel-style games</p>
+                <div class="company-stats">
+                    <div class="company-stat">
+                        <div class="stat-label">LAUNCH DATE</div>
+                        <div class="stat-value">Q4 2026</div>
+                    </div>
+                    <div class="company-stat">
+                        <div class="stat-label">FOCUS AREAS</div>
+                        <div class="stat-value">INDIE GAMES • SOFTWARE SOLUTIONS</div>
+                    </div>
+                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Testimonials -->
-        <h3 class="w3-padding-24 w3-text-light-grey">Client Reviews</h3>
-        <img src="/images/profile.webp" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:80px">
-        <p><span class="w3-large w3-margin-right">phantompeppers</span> Fiverr Customer [For a Discord Bot]</p>
-        <p>This guy is the man he went above and Beyond. Everything was professional and done within a few days. I’d highly recommend to anyone trying to make a discord bot he knows what he’s doing</p><br>
-        <!-- End About Section -->
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section">
+        <div class="section-header">
+            <h2 class="glitch" data-text="CLIENT_REVIEWS">CLIENT_REVIEWS</h2>
+            <span class="section-line"></span>
+        </div>
+        <div class="testimonial-container">
+            <div class="testimonial-card">
+                <div class="testimonial-header">
+                    <div class="testimonial-avatar">
+                        <img src="/images/profile.webp" alt="Client Avatar">
+                    </div>
+                    <div class="testimonial-info">
+                        <div class="testimonial-name">phantompeppers</div>
+                        <div class="testimonial-role">Fiverr Customer [For a Discord Bot]</div>
+                    </div>
+                </div>
+                <div class="testimonial-content">
+                    <p>This guy is the man he went above and Beyond. Everything was professional and done within a few days. I'd highly recommend to anyone trying to make a discord bot he knows what he's doing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (New Form) -->
+    <section id="contact" class="section">
+        <div class="section-header">
+            <h2 class="glitch" data-text="CONTACT_ME">CONTACT_ME</h2>
+            <span class="section-line"></span>
+        </div>
+        <div class="contact-container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <div class="contact-label">LOCATION</div>
+                        <div class="contact-value">Belagavi, India</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-text">
+                        <div class="contact-label">PHONE</div>
+                        <div class="contact-value">+91 9353891420</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-text">
+                        <div class="contact-label">EMAIL</div>
+                        <div class="contact-value">sameedahmed@bastamasta.dev</div>
+                    </div>
+                </div>
+                <div class="contact-resume">
+                    <a href="/docs/Resume.pdf" class="cyber-button" target="_blank">
+                        <span class="cyber-button-text">VIEW RESUME</span>
+                        <span class="cyber-button-glitch"></span>
+                    </a>
+                </div>
+            </div>
+            <div class="contact-form-container">
+                <form id="contactForm" class="contact-form" action="https://formspree.io/f/meoeplwk" method="POST">
+                    <div class="cyber-input-container">
+                        <input type="text" id="name" name="name" required class="cyber-input">
+                        <label for="name" class="cyber-label">NAME</label>
+                        <div class="cyber-input-border"></div>
+                    </div>
+                    <div class="cyber-input-container">
+                        <input type="email" id="email" name="email" required class="cyber-input">
+                        <label for="email" class="cyber-label">EMAIL</label>
+                        <div class="cyber-input-border"></div>
+                    </div>
+                    <div class="cyber-input-container">
+                        <input type="text" id="subject" name="subject" required class="cyber-input">
+                        <label for="subject" class="cyber-label">SUBJECT</label>
+                        <div class="cyber-input-border"></div>
+                    </div>
+                    <div class="cyber-input-container">
+                        <textarea id="message" name="message" required class="cyber-textarea"></textarea>
+                        <label for="message" class="cyber-label">MESSAGE</label>
+                        <div class="cyber-input-border"></div>
+                    </div>
+                    <button type="submit" class="cyber-button primary full-width">
+                        <span class="cyber-button-text">SEND MESSAGE</span>
+                        <span class="cyber-button-glitch"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="cyber-footer">
+    <div class="footer-content">
+        <div class="footer-social">
+            <a href="https://www.instagram.com/sameed_ahmed_3150/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="https://discordapp.com/users/690079385436684302" target="_blank" class="social-icon"><i class="fab fa-discord"></i></a>
+            <a href="https://github.com/BastaMasta" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+            <a href="https://x.com/BastaMasta3150" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="https://bsky.app/profile/sameedahmed.bsky.social" target="_blank" class="social-icon"><i class="fa-brands fa-bluesky"></i></a>
+            <a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <div class="footer-separator"></div>
+        <div class="footer-copyright">
+            <p>&copy; 2025 Sameed Ahmed | ZapBurrito Studios</p>
+        </div>
     </div>
+</footer>
 
-    <!-- Contact Section -->
-    <div class="w3-padding-32 w3-content w3-text-grey" id="contact">
-        <h2 class="w3-text-light-grey">Contact Me</h2>
-        <hr style="width:200px" class="w3-opacity">
-
-        <div class="w3-section">
-            <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Belagavi, India</p>
-            <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Phone: +91 9353891420</p>
-            <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: sameedahmed@bastamasta.dev</p>
-            <div class="w3-padding-32 w3-center">
-                <a href="/docs/Resume.pdf" class="w3-btn w3-gray w3-hover-white" target="_blank">View Resume</a>
-            </div>
-        </div>
-        <!-- End Contact Section -->
-    </div>
-
-    <!-- Footer -->
-    <footer class="w3-content w3-padding64  w3-text-grey w3-xlarge w3-center">
-        <i class="w3-xxlarge"><a class = "fa fa-instagram w3-hover-opacity w3-btn" href = "https://www.instagram.com/sameed_ahmed_3150/" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-discord w3-hover-opacity w3-btn" href = "https://discordapp.com/users/690079385436684302" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-github w3-hover-opacity w3-btn" href = "https://github.com/BastaMasta" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-x-twitter w3-hover-opacity w3-btn" href = "https://x.com/BastaMasta3150?s=09" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa fa-linkedin w3-hover-opacity w3-btn" href = "https://www.linkedin.com/in/sameed-ahmed-354a7b258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank"></a></i>
-        <!-- End footer -->
-    </footer>
-    <div class="w3-padding-32"></div>
-
-
-    <!-- END PAGE CONTENT -->
-</div>
-
+<!-- Scripts -->
+<script src="script.js"></script>
 </body>
 </html>
