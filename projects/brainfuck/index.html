@@ -1,103 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Sameed's Weird Site</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <title>NeuroPunk BF Interpreter</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="bf_styles.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
-    <style>
-        body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
-        .w3-row-padding img {margin-bottom: 12px}
-        /* Set the width of the sidebar to 120px */
-        .w3-sidebar {width: 120px;background: #222;}
-        /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-        #main {margin-left: 120px}
-        /* Remove margins from "page content" on small screens */
-        @media only screen and (max-width: 600px) {#main {margin-left: 0}}
-
-    </style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap">
 </head>
-<body class="w3-black">
-
-<!-- Navbar-->
-<div class="w3-top" id="myNavbar">
-    <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-left-align">
-        <a href="https://bastamasta.dev" class="w3-bar-item w3-button" style="width:10% !important; margin-left: 1%"><i class="fa fa-home w3-large"></i><br>HOME
-        </a>
-    </div>
+<body>
+<!-- Cyberpunk Background Effects -->
+<div class="glitch-overlay"></div>
+<div class="background-container">
+    <div class="scanline"></div>
+    <div class="grid-overlay"></div>
 </div>
 
-<!-- Page Content -->
-<div class="w3-padding-large" id="main" style="margin-left: 0%">
-    <!-- Header/Home -->
-    <div class="w3-center w3-black w3-padding-16" ><br></div>
-    <div class="w3-center w3-black" id="home">
-        <div class="wavebg">
-            <h2 class="w3-xxxlarge"><span class="w3-hide-small"></span>BrainFuck<br>Interpreter</h2>
-            <p class="w3-xlarge">By Sameed Ahmed.</p>
+<!-- Navigation -->
+<nav id="cybernav">
+    <div class="nav-logo">NEURO<span>PUNK</span></div>
+    <div class="nav-items">
+        <a href="#home" class="nav-link">HOME<span class="nav-indicator"></span></a>
+        <a href="#about" class="nav-link">ABOUT<span class="nav-indicator"></span></a>
+        <a href="#interpreter" class="nav-link">INTERPRETER<span class="nav-indicator"></span></a>
+        <a href="#contact" class="nav-link">CONTACT<span class="nav-indicator"></span></a>
+    </div>
+    <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-content">
+            <h1 class="glitch" data-text="BRAINFUCK INTERPRETER">BRAINFUCK INTERPRETER</h1>
+            <p class="subheading">A Neural Interface for the Minimalist Esoteric Language</p>
         </div>
-    </div>
+    </section>
 
-    <!-- About Section -->
-    <div class="w3-container w3-padding-small">
-    <div class="w3-container w3-justify w3-text-light-grey w3-padding-small" id="about">
-        <h3 class="w3-text-light-grey">BrainFuck Interpreter (In Rust)</h3>
-        <hr style="width:100%" class="w3-opacity">
-        <p> Brainfuck is a turing complete programming language, built with only 8 commands, that is almost never used
-            for any sort of programming. BF is Known for its extreme minimalism and challenging syntax, Brainfuck is
-            designed to be a playful and educational exercise rather than a practical language for real-world
-            applications.
-        </p>
-        <p>This is one of my few big projects, a program written in rust, that is fully capable of interpreting Brainfuck code, all on its own.</p>
-    </div>
-    </div>
-    <div class="" style="margin-left: 30% ; width: 40%; height: 10%">
-        <p class="w3-padding-16 ">Here is a brainfuck Program to print "Hello World" : </p>
-        <script src="https://gist.github.com/BastaMasta/336c0f057811d6038bccb9b660086bdf.js"></script>
-    </div>
-    <div class="w3-center w3-padding-64">
-        <a href="/projects/brainfuck/assets/brainfuck_interpreter.exe" style="float:left; display:inline">
-            <i class="fa fa-download w3-xxxlarge"></i><p>Download CLI Executable</p>
-        </a><a href="https://github.com/BastaMasta/Personal-Projects/tree/main/brainfuck_interpreter" style="float:right; display:inline" target="_blank">
-        <i class="fa-solid fa-code w3-xxxlarge"></i><p>View Code</p>
-    </a>
-    </div>
-    <div class="w3-center w3-black w3-padding-16" style="height: 120px"><br></div>
-
-    <!-- Contact Section -->
-    <div class="w3-padding-32 w3-text-grey" id="contact" style="margin-left: 10%">
-        <h2 class="w3-text-light-grey">Contact Me</h2>
-        <hr style="width:200px" class="w3-opacity">
-
-        <div class="w3-section">
-            <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Belagavi, India</p>
-            <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Phone: +91 9353891420</p>
-            <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: sameedahmed@bastamasta.dev</p>
-            <div class="w3-padding-32 w3-center" style="margin-left: -10%">
-                <a href="/docs/Resume.pdf" class="w3-btn w3-gray w3-hover-white" target="_blank">View Resume</a>
-            </div>
+    <!-- Interpreter Section -->
+    <section class="cyber-terminal" id="interpreter">
+        <div class="section-header">
+            <h2 class="glitch" data-text="NEURO-INTERPRETER">NEURO-INTERPRETER</h2>
+            <span class="section-line"></span>
         </div>
-        <!-- End Contact Section -->
+        <p class="terminal-line">Enter your Brainfuck code below and execute in real-time.</p>
+
+        <div class="input-container">
+            <label for="bf-code">CODE INPUT:</label>
+            <textarea id="bf-code" placeholder="Enter your Brainfuck code here..."></textarea>
+        </div>
+
+        <div class="input-container">
+            <label for="bf-input">INPUT (optional):</label>
+            <input type="text" id="bf-input" placeholder="Input for the ',' command">
+        </div>
+
+        <div class="btn-container">
+            <button class="cyber-button primary" id="run-btn">EXECUTE</button>
+        </div>
+
+        <div class="input-container">
+            <label for="bf-output">OUTPUT:</label>
+            <div class="output-container cyber-terminal-output" id="bf-output">Waiting for Execution...</div>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="cyber-footer">
+    <div class="footer-content">
+        <p class="footer-text">© 2025 NeuroPunk | All rights reserved.</p>
     </div>
+</footer>
 
-    <!-- Footer -->
-    <footer class="w3-content w3-padding64  w3-text-grey w3-xlarge w3-center">
-        <i class="w3-xxlarge"><a class = "fa fa-instagram w3-hover-opacity w3-btn" href = "https://www.instagram.com/sameed_ahmed_3150/" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-discord w3-hover-opacity w3-btn" href = "https://discordapp.com/users/690079385436684302" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-github w3-hover-opacity w3-btn" href = "https://github.com/BastaMasta" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-x-twitter w3-hover-opacity w3-btn" href = "https://x.com/BastaMasta3150?s=09" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa fa-linkedin w3-hover-opacity w3-btn" href = "https://www.linkedin.com/in/sameed-ahmed-354a7b258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank"></a></i>
-        <!-- End footer -->
-    </footer>
-    <div class="w3-padding-32"></div>
-
-
-<!-- END PAGE CONTENT -->
-</div>
-
+<script src="script.js"></script>
 </body>
 </html>
