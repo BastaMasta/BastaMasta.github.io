@@ -744,13 +744,14 @@ img {
 
 .project-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
 }
 
 .project-logo {
     width: 40px;
     height: 40px;
+    min-width: 40px; /* Add this to prevent shrinking */
     border: 1px solid var(--primary);
     display: flex;
     justify-content: center;
@@ -768,6 +769,7 @@ img {
     font-weight: 700;
     color: var(--text-bright);
     font-family: var(--font-mono);
+    word-wrap: break-word; /* Add this to handle long titles */
 }
 
 .project-description {
