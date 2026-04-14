@@ -30,42 +30,6 @@
   <changefreq>monthly</changefreq>
   <priority>0.80</priority>
 </url>
-<url>
-  <loc>https://memesp.bastamasta.dev/</loc>
-  <lastmod>2025-02-11T16:14:08+00:00</lastmod>
-  <changefreq>yearly</changefreq>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://yukti.bastamasta.dev/</loc>
-  <lastmod>2025-02-11T11:12:42+00:00</lastmod>
-  <changefreq>daily</changefreq>
-  <priority>1.00</priority>
-</url>
-<url>
-  <loc>https://yukti.bastamasta.dev/register/</loc>
-  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://yukti.bastamasta.dev/about/</loc>
-  <lastmod>2025-02-11T11:12:42+00:00</lastmod>
-  <changefreq>never</changefreq>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://yukti.bastamasta.dev/anouncements/</loc>
-  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
-  <changefreq>daily</changefreq>
-  <priority>0.80</priority>
-</url>
-<url>
-  <loc>https://yukti.bastamasta.dev/assets/yukti-2k25-brochure.pdf</loc>
-  <lastmod>2025-02-11T11:12:41+00:00</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.80</priority>
-</url>
 
 
 </urlset>
