@@ -1,27 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sameed Ahmed | Portfolio</title>
+    <meta name="description" content="Portfolio of Sameed Ahmed (BastaMasta) — Rust & systems developer building CLI tools, emulators, a hobby OS, hardware projects, and a self-hosted home lab.">
+    <meta name="theme-color" content="#0a0a14">
+    <link rel="canonical" href="https://bastamasta.dev">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bastamasta.dev">
+    <meta property="og:title" content="Sameed Ahmed | Portfolio">
+    <meta property="og:description" content="Rust & systems developer — CLI tools, emulators, OS dev, hardware, and a self-hosted home lab.">
+    <meta property="og:image" content="https://bastamasta.dev/images/profile-hero.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@BastaMasta3150">
+
+    <!-- Fonts & icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap">
+    <script defer src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
+
+    <!-- Analytics -->
     <script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
-    
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETD1YNN5NE"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
       gtag('config', 'G-ETD1YNN5NE');
     </script>
-        
-    <title>Sameed Ahmed | Portfolio</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <link rel="canonical" href="https://bastamasta.dev">
-    <script src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Sameed Ahmed",
+      "alternateName": "BastaMasta",
+      "url": "https://bastamasta.dev",
+      "jobTitle": "Systems Developer",
+      "sameAs": [
+        "https://github.com/BastaMasta",
+        "https://gitea.bastamasta.dev",
+        "https://x.com/BastaMasta3150",
+        "https://bsky.app/profile/sameedahmed.bsky.social",
+        "https://www.linkedin.com/in/sameed-ahmed-354a7b258"
+      ]
+    }
+    </script>
 </head>
 <body>
 <!-- Glitch overlay effect -->
@@ -73,7 +103,7 @@
             </div>
             <div class="hero-image">
                 <div class="cyber-frame">
-                    <img src="/images/Grayscale.jpg" alt="Sameed Ahmed" class="profile-img">
+                    <img src="/images/profile-hero.jpg" alt="Sameed Ahmed" class="profile-img" width="800" height="657" fetchpriority="high" decoding="async">
                     <div class="cyber-frame-corner top-left"></div>
                     <div class="cyber-frame-corner top-right"></div>
                     <div class="cyber-frame-corner bottom-left"></div>
@@ -96,6 +126,7 @@
     <!-- About Section -->
     <section id="about" class="section">
         <div class="section-header">
+            <span class="section-tag">// 01</span>
             <h2 class="glitch" data-text="ABOUT_ME">ABOUT_ME</h2>
             <span class="section-line"></span>
         </div>
@@ -109,11 +140,15 @@
                         <span class="terminal-title">sameed_profile.exe</span>
                     </div>
                     <div class="terminal-content">
-                        <div class="terminal-line">$ cat profile.txt</div>
-                        <p>Innovative Programmer, striving to make the world a more unified and connected place (for my own convenience, of course).</p>
-                        <p>A Creative thinker, adept in systems software development and working with various data structures and APIs. A commitment to do everything possible to make every task easier for myself (and maybe everyone else while I'm at it).</p>
-                        <p>I have worked on many small projects, just to keep myself busy, and also make something productive while I was at it (all the while trying to learn new stuff to satisfy my curiosity).</p>
-                         <div class="terminal-prompt">$_</div>
+                        <div class="terminal-line">$ whoami</div>
+                        <p>Sameed Ahmed — aka BastaMasta. Systems programmer from India, striving to make the world a more unified and connected place (for my own convenience, of course).</p>
+                        <div class="terminal-line">$ cat current_work.txt</div>
+                        <p>Mostly living in Rust these days — building a toy OS from scratch, a CHIP-8 emulator, and CLI tools like boxy-cli (live on crates.io). When software needs a body, I design PCBs in KiCad and build oddball hardware like an 8-bit binary keyboard.</p>
+                        <div class="terminal-line">$ systemctl status homelab</div>
+                        <p>● active (running) — a Debian home server hosting my own Git forge, analytics, media and automation. If it can be self-hosted, it probably already is.</p>
+                        <div class="terminal-line">$ cat next.txt</div>
+                        <p>Building ZapBurrito Studios, an indie game studio for beautiful retro-style games — and forever poking one layer deeper down the stack.</p>
+                        <div class="terminal-prompt">$_</div>
                     </div>
                 </div>
             </div>
@@ -183,12 +218,19 @@
                             <span class="skill-percentage">30%</span>
                         </div>
                     </div>
+                    <div class="skill-item">
+                        <div class="skill-name">Linux/Self-hosting</div>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width:75%"></div>
+                            <span class="skill-percentage">75%</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="stats-container">
                 <div class="stat-box">
-                    <div class="stat-number">5+</div>
-                    <div class="stat-text">Projects Done</div>
+                    <div class="stat-number">15+</div>
+                    <div class="stat-text">Projects & Counting</div>
                     <div class="stat-note">[Certain projects are not made public due to privacy concerns]</div>
                 </div>
                 <div class="stat-box">
@@ -202,155 +244,351 @@
     <!-- Projects Section -->
     <section id="projects" class="section">
         <div class="section-header">
+            <span class="section-tag">// 02</span>
             <h2 class="glitch" data-text="PROJECTS">PROJECTS</h2>
             <span class="section-line"></span>
         </div>
         <div class="projects-container">
-            <div class="project-card">
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-box"></i>
+                            <i class="fas fa-server" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">boxy-cli [Rust Crate]</div>
+                        <h3 class="project-title">Home Lab // Debian Server</h3>
                     </div>
-                    <div class="project-description">A Rust command-line tool for creating beautiful ASCII boxes and borders with customizable styles.</div>
-                    <div class="project-status">Now Live!</div>
-                    <a href="https://crates.io/crates/boxy-cli" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">My Debian home server, running a buttload of self-hosted services — git, analytics, media, automation, monitoring and more — all behind Cloudflare.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Debian</span>
+                        <span class="project-tag">Docker</span>
+                        <span class="project-tag">Self-hosted</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status live">LIVE</span>
+                        <a href="https://server.bastamasta.dev" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VISIT SERVER</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="project-card">
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-calendar-alt"></i>
+                            <i class="fa-brands fa-git-alt" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Yukti 2k25 Event Website</div>
+                        <h3 class="project-title">Self-hosted Gitea</h3>
                     </div>
-                    <div class="project-description">The event website for Yukti 2k25, A National Level Tehcno-Cultural Fest, organized by VTU, Belagavi, India</div>
-                    <a href="https://yukti.bastamasta.dev" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">My own Git forge running on the home server — home to projects that haven't made it to GitHub (yet).</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Gitea</span>
+                        <span class="project-tag">Self-hosted</span>
+                        <span class="project-tag">DevOps</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status live">LIVE</span>
+                        <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VISIT GITEA</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="project-card">
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-volume-up"></i>
+                            <i class="fas fa-terminal" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Meme SoundPad</div>
+                        <h3 class="project-title">ShellDeck</h3>
                     </div>
-                    <div class="project-description">A customizable soundboard application for quick access to meme sounds and effects.</div>
-                    <div class="project-status">Work in Progress</div>
-                    <a href="https://github.com/BastaMasta/MemeSoundPad" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">A terminal-centric power tool, currently in active development on my self-hosted Gitea.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">CLI</span>
+                        <span class="project-tag">Terminal</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WIP</span>
+                        <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">ON GITEA</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-brain"></i>
+                            <i class="fas fa-microchip" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Brainfuck Interpreter (Rust)</div>
+                        <h3 class="project-title">Toy OS (Rust)</h3>
                     </div>
-                    <div class="project-description">An interpreter for the Brainfuck programming language, written in Rust.</div>
-                    <a href="./projects/brainfuck/index.html" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">A hobby operating system written from scratch in Rust — exploring bare-metal programming, bootloaders and kernel development.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Rust</span>
+                        <span class="project-tag">OSDev</span>
+                        <span class="project-tag">Bare-metal</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WORK IN PROGRESS</span>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-plug-circle-exclamation"></i>
+                            <i class="fas fa-ghost" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Google Forms to Discord Integration Bots (Python)</div>
+                        <h3 class="project-title">CHIP-8 Emulator (Rust)</h3>
                     </div>
-                    <div class="project-description">Bots to integrate Google Forms with Discord for automated responses and notifications.</div>
-                    <div class="project-status">Broken</div>
-                    <a href="./oops" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">An emulator for the classic CHIP-8 virtual machine, written in Rust — running retro ROMs the way they were meant to flicker.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Rust</span>
+                        <span class="project-tag">Emulation</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WORK IN PROGRESS</span>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-keyboard"></i>
+                            <i class="fas fa-box" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">BinaryKeeb 1.0 [Hardware Binary keyboard]</div>
+                        <h3 class="project-title">boxy-cli [Rust Crate]</h3>
                     </div>
-                    <div class="project-description">A hardware project for a binary keyboard, allowing for 8-bit binary inputs.</div>
-                    <a href="https://github.com/BastaMasta/BinaryKeeb" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">A Rust command-line tool for creating beautiful ASCII boxes and borders with customizable styles.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Rust</span>
+                        <span class="project-tag">CLI</span>
+                        <span class="project-tag">Crate</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status live">LIVE</span>
+                        <a href="https://crates.io/crates/boxy-cli" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-image"></i>
+                            <i class="fas fa-calendar-alt" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Image Processor [CLI Tool] (Rust)</div>
+                        <h3 class="project-title">Yukti 2k25 Event Website</h3>
                     </div>
-                    <div class="project-description">A simple command-line tool for processing and manipulating images, built with Rust.</div>
-                    <a href="https://github.com/BastaMasta/Personal-Projects/" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">The event website for Yukti 2k25, a National Level Techno-Cultural Fest organized by VTU, Belagavi, India.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">WebDev</span>
+                        <span class="project-tag">Event</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status live">LIVE</span>
+                        <a href="https://yukti.bastamasta.dev" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-gamepad"></i>
+                            <i class="fas fa-brain" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">Action RPG [Name not decided yet]</div>
+                        <h3 class="project-title">Brainfuck Interpreter (Rust)</h3>
                     </div>
-                    <div class="project-description">An action RPG game project, currently in development.</div>
-                    <div class="project-status">Work in Progress</div>
-                    <a href="https://github.com/BastaMasta/ARPG_Build/" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">An interpreter for the Brainfuck programming language, written in Rust. Try it right here in the browser.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Rust</span>
+                        <span class="project-tag">Interpreter</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status live">LIVE</span>
+                        <a href="./projects/brainfuck/" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="project-card">
+            </article>
+
+            <article class="project-card">
                 <div class="project-card-inner">
                     <div class="project-header">
                         <div class="project-logo">
-                            <i class="fas fa-robot"></i>
+                            <i class="fas fa-volume-up" aria-hidden="true"></i>
                         </div>
-                        <div class="project-title">TARS Replica [Interstellar]</div>
+                        <h3 class="project-title">Meme SoundPad</h3>
                     </div>
-                    <div class="project-description">A replica of the TARS robot from Interstellar, featuring similar functionalities.</div>
-                    <div class="project-status">Work in Progress</div>
-                    <a href="./oops" class="cyber-button small">
-                        <span class="cyber-button-text">VIEW PROJECT</span>
-                    </a>
+                    <p class="project-description">A customizable soundboard application for quick access to meme sounds and effects.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Flutter</span>
+                        <span class="project-tag">App</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WIP</span>
+                        <a href="https://github.com/BastaMasta/MemeSoundPad" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
                 </div>
-            </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-keyboard" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">BinaryKeeb 1.0 [Hardware Binary Keyboard]</h3>
+                    </div>
+                    <p class="project-description">A hardware project for a binary keyboard, allowing for 8-bit binary inputs.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Hardware</span>
+                        <span class="project-tag">Python</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status done">COMPLETED</span>
+                        <a href="https://github.com/BastaMasta/BinaryKeeb" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">Lumio V2</h3>
+                    </div>
+                    <p class="project-description">A custom PCB project designed in KiCad — the second revision of the Lumio board.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">KiCad</span>
+                        <span class="project-tag">Hardware</span>
+                        <span class="project-tag">PCB</span>
+                    </div>
+                    <div class="project-footer">
+                        <a href="https://github.com/BastaMasta/LumioV2" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-image" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">Image Processor [CLI Tool] (Rust)</h3>
+                    </div>
+                    <p class="project-description">A simple command-line tool for processing and manipulating images, built with Rust.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Rust</span>
+                        <span class="project-tag">CLI</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status done">COMPLETED</span>
+                        <a href="https://github.com/BastaMasta/Personal-Projects/" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-gamepad" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">Action RPG [Name not decided yet]</h3>
+                    </div>
+                    <p class="project-description">An action RPG game project, currently in development.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">GameMaker</span>
+                        <span class="project-tag">GameDev</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WIP</span>
+                        <a href="https://github.com/BastaMasta/ARPG_Build/" target="_blank" rel="noopener" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-robot" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">TARS Replica [Interstellar]</h3>
+                    </div>
+                    <p class="project-description">A replica of the TARS robot from Interstellar, featuring similar functionalities.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Embedded</span>
+                        <span class="project-tag">Robotics</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status wip">WIP</span>
+                        <a href="./oops" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="project-card">
+                <div class="project-card-inner">
+                    <div class="project-header">
+                        <div class="project-logo">
+                            <i class="fas fa-plug-circle-exclamation" aria-hidden="true"></i>
+                        </div>
+                        <h3 class="project-title">Google Forms to Discord Integration Bots (Python)</h3>
+                    </div>
+                    <p class="project-description">Bots to integrate Google Forms with Discord for automated responses and notifications.</p>
+                    <div class="project-tags">
+                        <span class="project-tag">Python</span>
+                        <span class="project-tag">Discord</span>
+                    </div>
+                    <div class="project-footer">
+                        <span class="project-status broken">BROKEN</span>
+                        <a href="./oops" class="cyber-button small">
+                            <span class="cyber-button-text">VIEW PROJECT</span>
+                        </a>
+                    </div>
+                </div>
+            </article>
         </div>
     </section>
 
     <!-- Company Section (New) -->
     <section id="company" class="section">
         <div class="section-header">
+            <span class="section-tag">// 03</span>
             <h2 class="glitch" data-text="MY_COMPANY">MY_COMPANY</h2>
             <span class="section-line"></span>
         </div>
         <div class="company-container">
             <div class="company-logo">
-                <img class="cyber-logo" alt="ZapBurrito Studios Logo" src="images/zapburrito.svg">
+                <img class="cyber-logo" alt="ZapBurrito Studios Logo" src="images/zapburrito.png" width="300" height="300" loading="lazy" decoding="async">
             </div>
             <div class="company-info">
                 <h3 class="cyber-heading">ZapBurrito Studios</h3>
@@ -373,6 +611,7 @@
     <!-- Testimonials Section -->
     <section id="testimonials" class="section">
         <div class="section-header">
+            <span class="section-tag">// 04</span>
             <h2 class="glitch" data-text="CLIENT_REVIEWS">CLIENT_REVIEWS</h2>
             <span class="section-line"></span>
         </div>
@@ -380,7 +619,7 @@
             <div class="testimonial-card">
                 <div class="testimonial-header">
                     <div class="testimonial-avatar">
-                        <img src="/images/profile.webp" alt="Client Avatar">
+                        <img src="/images/profile.webp" alt="Client Avatar" width="60" height="60" loading="lazy" decoding="async">
                     </div>
                     <div class="testimonial-info">
                         <div class="testimonial-name">phantompeppers</div>
@@ -397,6 +636,7 @@
     <!-- Contact Section (New Form) -->
     <section id="contact" class="section">
         <div class="section-header">
+            <span class="section-tag">// 05</span>
             <h2 class="glitch" data-text="CONTACT_ME">CONTACT_ME</h2>
             <span class="section-line"></span>
         </div>
@@ -472,16 +712,18 @@
 <footer class="cyber-footer">
     <div class="footer-content">
         <div class="footer-social">
-            <a href="https://www.instagram.com/sameed_ahmed_3150/" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
-            <a href="https://discordapp.com/users/690079385436684302" target="_blank" class="social-icon"><i class="fab fa-discord"></i></a>
-            <a href="https://github.com/BastaMasta" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
-            <a href="https://x.com/BastaMasta3150" target="_blank" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="https://bsky.app/profile/sameedahmed.bsky.social" target="_blank" class="social-icon"><i class="fa-brands fa-bluesky"></i></a>
-            <a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.instagram.com/sameed_ahmed_3150/" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            <a href="https://discordapp.com/users/690079385436684302" target="_blank" rel="noopener" class="social-icon" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a>
+            <a href="https://github.com/BastaMasta" target="_blank" rel="noopener" class="social-icon" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
+            <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" class="social-icon" aria-label="Gitea"><i class="fa-brands fa-git-alt" aria-hidden="true"></i></a>
+            <a href="https://x.com/BastaMasta3150" target="_blank" rel="noopener" class="social-icon" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
+            <a href="https://bsky.app/profile/sameedahmed.bsky.social" target="_blank" rel="noopener" class="social-icon" aria-label="Bluesky"><i class="fa-brands fa-bluesky" aria-hidden="true"></i></a>
+            <a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" target="_blank" rel="noopener" class="social-icon" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
         </div>
         <div class="footer-separator"></div>
         <div class="footer-copyright">
-            <p>&copy; 2025 Sameed Ahmed | ZapBurrito Studios</p>
+            <p>&copy; 2026 Sameed Ahmed | ZapBurrito Studios</p>
+            <p class="footer-tagline">self-hosted analytics &bull; served with neon</p>
         </div>
     </div>
 </footer>

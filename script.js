@@ -1,5 +1,8 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Flag that JS is running so CSS can enable scroll-reveal states
+    document.body.classList.add('js-enabled');
+
     // Navigation functionality
     setupNavigation();
 
@@ -50,8 +53,18 @@ function setupNavigation() {
         });
     });
 
-    // Highlight active nav link on scroll
-    window.addEventListener('scroll', highlightActiveNavLink);
+    // Highlight active nav link on scroll (throttled to animation frames)
+    let navScrollTicking = false;
+    window.addEventListener('scroll', function() {
+        if (!navScrollTicking) {
+            navScrollTicking = true;
+            requestAnimationFrame(function() {
+                highlightActiveNavLink();
+                navScrollTicking = false;
+            });
+        }
+    }, { passive: true });
+    highlightActiveNavLink();
 }
 
 // Highlight the active section in navigation
@@ -82,7 +95,7 @@ function highlightActiveNavLink() {
 // Typing text effect in the hero section
 function setupTypingEffect() {
     const textElement = document.querySelector('.typing-text');
-    const texts = ["RUST DEVELOPER", "SYSTEMS PROGRAMMER", "EMBEDDED SYSTEMS ENGINEER", "GAME DEVELOPER"];
+    const texts = ["RUST DEVELOPER", "SYSTEMS PROGRAMMER", "EMBEDDED SYSTEMS ENGINEER", "GAME DEVELOPER", "SELF-HOSTING ENTHUSIAST"];
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -124,36 +137,23 @@ function setupTypingEffect() {
 
 // Scroll animations
 function setupScrollAnimations() {
-    // Reveal elements on scroll
     const revealElements = document.querySelectorAll('.section-header, .project-card, .skill-item, .stat-box, .contact-item');
 
-    function revealOnScroll() {
-        const windowHeight = window.innerHeight;
-
-        revealElements.forEach(element => {
-            const elementTop = element.getBoundingClientRect().top;
-
-            if (elementTop < windowHeight - 50) {
-                element.classList.add('revealed');
-            }
-        });
+    if (!('IntersectionObserver' in window)) {
+        revealElements.forEach(el => el.classList.add('revealed'));
+        return;
     }
 
-    // Initial check
-    revealOnScroll();
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.05 });
 
-    // Check on scroll
-    window.addEventListener('scroll', revealOnScroll);
-
-    // Parallax effect for background
-    window.addEventListener('scroll', function() {
-        const scrollPosition = window.scrollY;
-        const gridOverlay = document.querySelector('.grid-overlay');
-
-        if (gridOverlay) {
-            gridOverlay.style.transform = `translateY(${scrollPosition * 0.1}px)`;
-        }
-    });
+    revealElements.forEach(el => observer.observe(el));
 }
 
 // Contact form submission
@@ -316,6 +316,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Add some particles to the background
 function setupParticles() {
+    // Skip entirely for users who prefer reduced motion
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     const backgroundContainer = document.querySelector('.background-container');
 
     if (backgroundContainer) {
@@ -335,9 +340,9 @@ function setupParticles() {
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Particle properties
+        // Particle properties (fewer on small screens)
         const particles = [];
-        const particleCount = 50;
+        const particleCount = window.innerWidth < 768 ? 25 : 50;
 
         // Create particles
         for (let i = 0; i < particleCount; i++) {
@@ -351,7 +356,20 @@ function setupParticles() {
             });
         }
 
-        // Animation loop
+        // Animation loop (paused while the tab is hidden)
+        let animationId = null;
+
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                if (animationId !== null) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+            } else if (animationId === null) {
+                animationId = requestAnimationFrame(animateParticles);
+            }
+        });
+
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -373,10 +391,10 @@ function setupParticles() {
                 ctx.fill();
             });
 
-            requestAnimationFrame(animateParticles);
+            animationId = requestAnimationFrame(animateParticles);
         }
 
-        animateParticles();
+        animationId = requestAnimationFrame(animateParticles);
     }
 }
 

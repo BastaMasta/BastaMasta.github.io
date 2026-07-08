@@ -43,6 +43,30 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-dark) var(--bg-darker);
+}
+
+::selection {
+    background-color: var(--primary);
+    color: var(--bg-darker);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-dark);
+    border: 2px solid var(--bg-darker);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
 }
 
 body {
@@ -111,6 +135,20 @@ img {
     transform: perspective(500px) rotateX(60deg);
     transform-origin: top;
     animation: grid-movement 15s linear infinite;
+}
+
+/* Fine CRT scanlines + vignette over the whole background */
+.background-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.12) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, transparent 55%, rgba(5, 5, 16, 0.6) 100%);
+    pointer-events: none;
 }
 
 .glitch-overlay {
@@ -207,8 +245,13 @@ img {
     transition: width var(--fast) ease;
 }
 
-.nav-link:hover .nav-indicator {
+.nav-link:hover .nav-indicator,
+.nav-link.active .nav-indicator {
     width: 100%;
+}
+
+.nav-link.active {
+    color: var(--primary);
 }
 
 .nav-toggle {
@@ -245,6 +288,7 @@ img {
     padding: 6rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    scroll-margin-top: 70px; /* anchor jumps clear the fixed nav */
 }
 
 .section-header {
@@ -253,12 +297,23 @@ img {
     position: relative;
 }
 
+.section-tag {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    letter-spacing: 4px;
+    color: var(--secondary);
+    opacity: 0.75;
+    margin-bottom: 0.6rem;
+}
+
 .section-header h2 {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-bright);
     margin-bottom: 1rem;
     letter-spacing: 2px;
+    text-shadow: 0 0 24px rgba(0, 255, 213, 0.3);
 }
 
 .section-line {
@@ -271,13 +326,15 @@ img {
 
 /* ===== HERO SECTION ===== */
 .hero-section {
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100svh; /* mobile browsers: ignore collapsing URL bar */
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
-    padding: 0 2rem;
+    padding: 6rem 2rem 5rem; /* top clears the fixed nav; bottom clears the scroll indicator */
     overflow: hidden;
 }
 
@@ -300,6 +357,7 @@ img {
     margin-bottom: 1.5rem;
     color: var(--text-bright);
     line-height: 1.2;
+    text-shadow: 0 0 30px rgba(0, 255, 213, 0.25);
 }
 
 .cyber-box {
@@ -463,6 +521,8 @@ img {
     cursor: pointer;
     transition: all var(--fast) ease;
     z-index: 1;
+    /* chamfered cyberpunk corners */
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
 }
 
 .cyber-button::before {
@@ -536,7 +596,7 @@ img {
 
 .cyber-terminal {
     background-color: var(--bg-darker);
-    border: 1px solid var(--primary);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     border-radius: 5px;
     overflow: hidden;
     width: 100%;
@@ -585,6 +645,10 @@ img {
 .terminal-line {
     color: var(--primary);
     margin-bottom: 10px;
+}
+
+.terminal-line:not(:first-child) {
+    margin-top: 20px;
 }
 
 .terminal-content p {
@@ -647,11 +711,17 @@ img {
 
 .skill-progress {
     height: 100%;
-    background-color: var(--primary);
+    background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+    box-shadow: 0 0 8px rgba(0, 255, 213, 0.5);
     position: absolute;
     top: 0;
     left: 0;
     transition: width 1s ease-in-out;
+}
+
+/* Bars fill in when scrolled into view (JS adds .revealed) */
+body.js-enabled .skill-item:not(.revealed) .skill-progress {
+    width: 0 !important;
 }
 
 .skill-percentage {
@@ -673,7 +743,7 @@ img {
 
 .stat-box {
     background-color: var(--bg-light);
-    border: 1px solid var(--primary);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     padding: 1.5rem;
     flex: 1;
     min-width: 200px;
@@ -715,23 +785,42 @@ img {
 /* ===== PROJECTS SECTION ===== */
 .projects-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 1.5rem;
 }
 
 .project-card {
-    background-color: var(--bg-light);
-    border: 1px solid var(--primary);
-    height: auto;
-    min-height: 250px;
+    background: linear-gradient(160deg, var(--bg-light) 0%, rgba(10, 10, 20, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     position: relative;
     overflow: hidden;
-    transition: transform var(--medium) ease, box-shadow var(--medium) ease;
+    transition: transform var(--fast) ease, box-shadow var(--fast) ease, border-color var(--fast) ease;
 }
 
-.project-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 5px 15px rgba(0, 255, 213, 0.3);
+/* Clipped corner accent, top-right */
+.project-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    background: var(--primary);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
+    opacity: 0.6;
+    transition: opacity var(--fast) ease;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+    transform: translateY(-6px);
+    border-color: var(--primary);
+    box-shadow: 0 8px 25px rgba(0, 255, 213, 0.25);
+}
+
+.project-card:hover::after,
+.project-card:focus-within::after {
+    opacity: 1;
 }
 
 .project-card-inner {
@@ -744,47 +833,106 @@ img {
 
 .project-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 1rem;
 }
 
 .project-logo {
-    width: 40px;
-    height: 40px;
-    min-width: 40px; /* Add this to prevent shrinking */
+    width: 44px;
+    height: 44px;
+    min-width: 44px; /* prevent shrinking next to long titles */
     border: 1px solid var(--primary);
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 255, 213, 0.1);
+    transition: background-color var(--fast) ease;
 }
 
 .project-logo i {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--primary);
+    transition: color var(--fast) ease;
 }
 
 .project-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--text-bright);
     font-family: var(--font-mono);
-    word-wrap: break-word; /* Add this to handle long titles */
+    line-height: 1.35;
+    overflow-wrap: anywhere; /* long titles wrap instead of overflowing */
 }
 
 .project-description {
     font-size: 0.9rem;
     color: var(--text-secondary);
-    margin: 0.5rem 0;
+    font-family: var(--font-mono);
+    line-height: 1.55;
     flex-grow: 1;
+}
+
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.project-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+    color: var(--primary);
+    background-color: rgba(0, 255, 213, 0.08);
+    border: 1px solid rgba(0, 255, 213, 0.35);
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+.project-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px dashed rgba(0, 255, 213, 0.25);
+}
+
+.project-footer .cyber-button {
+    margin-left: auto; /* button hugs the right even without a status badge */
 }
 
 .project-status {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 3px 10px;
+    border: 1px solid currentColor;
+    white-space: nowrap;
+}
+
+.project-status.live {
+    color: #27c93f;
+    background-color: rgba(39, 201, 63, 0.08);
+    text-shadow: 0 0 8px rgba(39, 201, 63, 0.6);
+}
+
+.project-status.wip {
     color: var(--accent);
-    margin-top: auto;
-    padding: 0.3rem 0;
+    background-color: rgba(243, 255, 0, 0.06);
+}
+
+.project-status.done {
+    color: var(--primary);
+    background-color: rgba(0, 255, 213, 0.08);
+}
+
+.project-status.broken {
+    color: #ff5f56;
+    background-color: rgba(255, 95, 86, 0.08);
 }
 
 .project-card:hover .project-logo {
@@ -805,6 +953,7 @@ img {
     background: linear-gradient(45deg, transparent, rgba(0, 255, 213, 0.05), transparent);
     transform: translateX(-100%);
     animation: cyber-box-shine 5s infinite;
+    pointer-events: none;
 }
 
 /* ===== COMPANY SECTION ===== */
@@ -812,8 +961,8 @@ img {
     display: flex;
     align-items: center;
     gap: 3rem;
-    background-color: var(--bg-light);
-    border: 1px solid var(--primary);
+    background: linear-gradient(160deg, var(--bg-light) 0%, rgba(10, 10, 20, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     padding: 3rem;
     position: relative;
     overflow: hidden;
@@ -925,8 +1074,8 @@ img {
 }
 
 .testimonial-card {
-    background-color: var(--bg-light);
-    border: 1px solid var(--primary);
+    background: linear-gradient(160deg, var(--bg-light) 0%, rgba(10, 10, 20, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     padding: 2rem;
     position: relative;
     overflow: hidden;
@@ -1053,8 +1202,8 @@ img {
 }
 
 .contact-form {
-    background-color: var(--bg-light);
-    border: 1px solid var(--primary);
+    background: linear-gradient(160deg, var(--bg-light) 0%, rgba(10, 10, 20, 0.95) 100%);
+    border: 1px solid rgba(0, 255, 213, 0.4);
     padding: 2rem;
     position: relative;
     overflow: hidden;
@@ -1184,6 +1333,13 @@ img {
     font-size: 0.9rem;
     color: var(--text-secondary);
     text-align: center;
+}
+
+.footer-tagline {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
 }
 
 /* ===== ANIMATIONS ===== */
@@ -1398,6 +1554,102 @@ img {
     }
 }
 
+/* ===== GLITCH HEADINGS ===== */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.glitch::before {
+    color: var(--glitch-1);
+    animation: glitch-layer-1 6s infinite steps(1);
+}
+
+.glitch::after {
+    color: var(--glitch-2);
+    animation: glitch-layer-2 6s infinite steps(1);
+}
+
+@keyframes glitch-layer-1 {
+    0%, 93% { opacity: 0; transform: none; clip-path: none; }
+    94% { opacity: 0.8; transform: translate(-3px, 2px); clip-path: inset(20% 0 60% 0); }
+    96% { opacity: 0.8; transform: translate(3px, -1px); clip-path: inset(60% 0 10% 0); }
+    98%, 100% { opacity: 0; transform: none; }
+}
+
+@keyframes glitch-layer-2 {
+    0%, 94% { opacity: 0; transform: none; clip-path: none; }
+    95% { opacity: 0.8; transform: translate(3px, -2px); clip-path: inset(50% 0 30% 0); }
+    97% { opacity: 0.8; transform: translate(-2px, 1px); clip-path: inset(10% 0 70% 0); }
+    99%, 100% { opacity: 0; transform: none; }
+}
+
+/* ===== FORM MESSAGES ===== */
+.form-message {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid currentColor;
+}
+
+.form-message.success {
+    color: #27c93f;
+    background-color: rgba(39, 201, 63, 0.08);
+}
+
+.form-message.error {
+    color: #ff5f56;
+    background-color: rgba(255, 95, 86, 0.08);
+}
+
+.form-message.info {
+    color: var(--primary);
+    background-color: rgba(0, 255, 213, 0.08);
+}
+
+/* ===== SCROLL REVEAL (only when JS is running) ===== */
+body.js-enabled .section-header,
+body.js-enabled .project-card,
+body.js-enabled .skill-item,
+body.js-enabled .stat-box,
+body.js-enabled .contact-item {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+body.js-enabled .revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* keep the hover lift after the reveal transform lands */
+body.js-enabled .project-card.revealed:hover,
+body.js-enabled .project-card.revealed:focus-within {
+    transform: translateY(-6px);
+}
+
+/* ===== FOCUS VISIBILITY ===== */
+a:focus-visible,
+button:focus-visible,
+.cyber-input:focus-visible,
+.cyber-textarea:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
 /* Media Queries for responsive design */
 @media (max-width: 992px) {
     .hero-content {
@@ -1468,7 +1720,7 @@ img {
 
 @media (max-width: 480px) {
     html {
-        font-size: 12px;
+        font-size: 13px;
     }
 
     .hero-text h1 {
@@ -1477,6 +1729,7 @@ img {
 
     .section-header h2 {
         font-size: 2rem;
+        overflow-wrap: anywhere;
     }
 
     .skill-grid {
@@ -1485,5 +1738,61 @@ img {
 
     .cyber-frame {
         max-width: 280px;
+    }
+
+    .section {
+        padding: 3.5rem 1rem;
+    }
+
+    .projects-container {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .company-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-buttons .cyber-button {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
+    }
+}
+
+/* Touch devices: no hover lift, keep cards flat and readable */
+@media (hover: none) {
+    .project-card:hover {
+        transform: none;
+    }
+}
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    body.js-enabled .section-header,
+    body.js-enabled .project-card,
+    body.js-enabled .skill-item,
+    body.js-enabled .stat-box,
+    body.js-enabled .contact-item {
+        opacity: 1;
+        transform: none;
     }
 }
