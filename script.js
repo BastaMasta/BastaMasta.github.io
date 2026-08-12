@@ -1,150 +1,131 @@
-// Wait for the DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Flag that JS is running so CSS can enable scroll-reveal states
+document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.add('js-enabled');
 
-    // Navigation functionality
     setupNavigation();
-
-    // Typing text effect in hero section
     setupTypingEffect();
-
-    // Add scroll animations
-    setupScrollAnimations();
-
-    // Setup contact form
+    setupScrollReveal();
+    setupProjectFilter();
     setupContactForm();
-
-    // Add glitch effects on hover
-    setupGlitchEffects();
 });
 
-// Navigation functionality
 function setupNavigation() {
+    const nav = document.getElementById('sitenav');
     const navToggle = document.getElementById('navToggle');
     const navItems = document.querySelector('.nav-items');
 
-    // Mobile menu toggle
-    navToggle.addEventListener('click', function() {
-        navToggle.classList.toggle('active');
-        navItems.classList.toggle('active');
-    });
+    if (navToggle && navItems) {
+        navToggle.addEventListener('click', function () {
+            navToggle.classList.toggle('active');
+            navItems.classList.toggle('active');
+        });
+    }
 
-    // Smooth scrolling for nav links
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            // Close mobile menu when a link is clicked
-            navToggle.classList.remove('active');
-            navItems.classList.remove('active');
-
-            // Smooth scroll to section
+        link.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
+            if (!targetId || targetId.charAt(0) !== '#') return;
             const targetSection = document.querySelector(targetId);
+            if (!targetSection) return;
 
-            if (targetSection) {
-                window.scrollTo({
-                    top: targetSection.offsetTop - 70, // Offset for fixed header
-                    behavior: 'smooth'
-                });
-            }
+            e.preventDefault();
+            if (navToggle) navToggle.classList.remove('active');
+            if (navItems) navItems.classList.remove('active');
+
+            window.scrollTo({
+                top: targetSection.offsetTop - 70,
+                behavior: 'smooth'
+            });
         });
     });
 
-    // Highlight active nav link on scroll (throttled to animation frames)
-    let navScrollTicking = false;
-    window.addEventListener('scroll', function() {
-        if (!navScrollTicking) {
-            navScrollTicking = true;
-            requestAnimationFrame(function() {
+    let ticking = false;
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(function () {
+                if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
                 highlightActiveNavLink();
-                navScrollTicking = false;
+                ticking = false;
             });
         }
     }, { passive: true });
+
+    if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
     highlightActiveNavLink();
 }
 
-// Highlight the active section in navigation
 function highlightActiveNavLink() {
-    const sections = document.querySelectorAll('section');
+    const sections = document.querySelectorAll('main section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-
     let current = '';
-    const scrollPosition = window.scrollY + 100; // Add offset for better UX
+    const scrollPosition = window.scrollY + 100;
 
     sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-
-        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        const top = section.offsetTop;
+        const height = section.clientHeight;
+        if (scrollPosition >= top && scrollPosition < top + height) {
             current = section.getAttribute('id');
         }
     });
 
     navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
+        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
     });
 }
 
-// Typing text effect in the hero section
 function setupTypingEffect() {
     const textElement = document.querySelector('.typing-text');
-    const texts = ["RUST DEVELOPER", "SYSTEMS PROGRAMMER", "EMBEDDED SYSTEMS ENGINEER", "GAME DEVELOPER", "SELF-HOSTING ENTHUSIAST"];
+    if (!textElement) return;
+
+    const texts = ['RUST DEVELOPER', 'SYSTEMS PROGRAMMER', 'EMBEDDED SYSTEMS ENGINEER', 'GAME DEVELOPER', 'SELF-HOSTING ENTHUSIAST'];
     let textIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
-    let typingSpeed = 100;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        textElement.textContent = texts[0];
+        return;
+    }
 
     function type() {
         const currentText = texts[textIndex];
+        let speed = 100;
 
         if (isDeleting) {
-            // Deleting text
             textElement.textContent = currentText.substring(0, charIndex - 1);
             charIndex--;
-            typingSpeed = 50; // Faster when deleting
+            speed = 40;
         } else {
-            // Typing text
             textElement.textContent = currentText.substring(0, charIndex + 1);
             charIndex++;
-            typingSpeed = 100; // Normal typing speed
+            speed = 90;
         }
 
-        // Handle text completion or deletion
         if (!isDeleting && charIndex === currentText.length) {
-            // Text completed, pause before deleting
             isDeleting = true;
-            typingSpeed = 1500; // Pause at the end
+            speed = 1500;
         } else if (isDeleting && charIndex === 0) {
-            // Text deleted, move to next text
             isDeleting = false;
             textIndex = (textIndex + 1) % texts.length;
-            typingSpeed = 500; // Pause before starting new text
+            speed = 400;
         }
 
-        setTimeout(type, typingSpeed);
+        setTimeout(type, speed);
     }
 
-    // Start the typing effect
-    setTimeout(type, 1000);
+    setTimeout(type, 900);
 }
 
-// Scroll animations
-function setupScrollAnimations() {
-    const revealElements = document.querySelectorAll('.section-header, .project-card, .skill-item, .stat-box, .contact-item');
+function setupScrollReveal() {
+    const revealElements = document.querySelectorAll('.reveal');
 
-    if (!('IntersectionObserver' in window)) {
+    if (!('IntersectionObserver' in window) || !revealElements.length) {
         revealElements.forEach(el => el.classList.add('revealed'));
         return;
     }
 
-    const observer = new IntersectionObserver(function(entries) {
+    const observer = new IntersectionObserver(function (entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('revealed');
@@ -156,270 +137,75 @@ function setupScrollAnimations() {
     revealElements.forEach(el => observer.observe(el));
 }
 
-// Contact form submission
-function setupContactForm() {
-    const contactForm = document.getElementById('contactForm');
+function setupProjectFilter() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.project-card');
+    if (!filterButtons.length || !cards.length) return;
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            filterButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
 
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-
-            // Form validation (simple)
-            if (!name || !email || !subject || !message) {
-                showFormMessage('Please fill all fields', 'error');
-                return;
-            }
-
-            // Show sending message
-            showFormMessage('Sending message...', 'info');
-
-            // Create FormData object
-            const formData = new FormData(contactForm);
-
-            // Submit the form data to Formspree
-            fetch('https://formspree.io/f/meoeplwk', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // Show success message
-                        showFormMessage('Message sent successfully!', 'success');
-                        // Reset form
-                        contactForm.reset();
-                        // Clear success message after a few seconds
-                        setTimeout(function() {
-                            clearFormMessage();
-                        }, 3000);
-                    } else {
-                        // Show error message
-                        showFormMessage('Failed to send message. Please try again.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showFormMessage('An error occurred. Please try again.', 'error');
-                });
+            const filter = this.getAttribute('data-filter');
+            cards.forEach(card => {
+                const match = filter === 'all' || card.getAttribute('data-status') === filter;
+                card.classList.toggle('is-hidden', !match);
+            });
         });
-    }
+    });
 }
 
-// Show form messages
-function showFormMessage(message, type) {
-    // Remove any existing message
-    clearFormMessage();
+function setupContactForm() {
+    const contactForm = document.getElementById('contactForm');
+    if (!contactForm) return;
 
-    // Create message element
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const subject = document.getElementById('subject').value;
+        const message = document.getElementById('message').value;
+
+        if (!name || !email || !subject || !message) {
+            showFormMessage('Please fill all fields', 'error');
+            return;
+        }
+
+        showFormMessage('Sending message...', 'info');
+
+        const formData = new FormData(contactForm);
+
+        fetch(contactForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: { Accept: 'application/json' }
+        })
+            .then(response => {
+                if (response.ok) {
+                    showFormMessage('Message sent successfully!', 'success');
+                    contactForm.reset();
+                    setTimeout(clearFormMessage, 3000);
+                } else {
+                    showFormMessage('Failed to send message. Please try again.', 'error');
+                }
+            })
+            .catch(() => {
+                showFormMessage('An error occurred. Please try again.', 'error');
+            });
+    });
+}
+
+function showFormMessage(message, type) {
+    clearFormMessage();
     const messageElement = document.createElement('div');
     messageElement.className = `form-message ${type}`;
     messageElement.textContent = message;
-
-    // Add to form
-    const form = document.getElementById('contactForm');
-    form.appendChild(messageElement);
+    document.getElementById('contactForm').appendChild(messageElement);
 }
 
-// Clear form messages
 function clearFormMessage() {
-    const existingMessage = document.querySelector('.form-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
+    const existing = document.querySelector('.form-message');
+    if (existing) existing.remove();
 }
-
-// Glitch effects on hover for elements
-function setupGlitchEffects() {
-    // Glitch effect for section titles on hover
-    const sectionTitles = document.querySelectorAll('.glitch');
-
-    sectionTitles.forEach(title => {
-        title.addEventListener('mouseenter', function() {
-            this.classList.add('glitching');
-        });
-
-        title.addEventListener('mouseleave', function() {
-            this.classList.remove('glitching');
-        });
-    });
-
-    // Random glitch effect on the overlay
-    const glitchOverlay = document.querySelector('.glitch-overlay');
-
-    if (glitchOverlay) {
-        setInterval(function() {
-            if (Math.random() > 0.95) { // Occasionally glitch
-                glitchOverlay.classList.add('active');
-
-                setTimeout(function() {
-                    glitchOverlay.classList.remove('active');
-                }, 200 + Math.random() * 400); // Random duration
-            }
-        }, 2000);
-    }
-
-    // Cyber button effects
-    const cyberButtons = document.querySelectorAll('.cyber-button');
-
-    cyberButtons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.querySelector('.cyber-button-glitch')?.classList.add('active');
-        });
-
-        button.addEventListener('mouseleave', function() {
-            this.querySelector('.cyber-button-glitch')?.classList.remove('active');
-        });
-    });
-}
-
-// Add active class to inputs when they have content or focus
-document.addEventListener('DOMContentLoaded', function() {
-    const inputs = document.querySelectorAll('.cyber-input, .cyber-textarea');
-
-    inputs.forEach(input => {
-        // Check initial state
-        if (input.value) {
-            input.classList.add('has-content');
-        }
-
-        // Add events
-        input.addEventListener('focus', function() {
-            this.parentNode.classList.add('focused');
-        });
-
-        input.addEventListener('blur', function() {
-            this.parentNode.classList.remove('focused');
-            if (this.value) {
-                this.classList.add('has-content');
-            } else {
-                this.classList.remove('has-content');
-            }
-        });
-
-        input.addEventListener('input', function() {
-            if (this.value) {
-                this.classList.add('has-content');
-            } else {
-                this.classList.remove('has-content');
-            }
-        });
-    });
-});
-
-// Add some particles to the background
-function setupParticles() {
-    // Skip entirely for users who prefer reduced motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        return;
-    }
-
-    const backgroundContainer = document.querySelector('.background-container');
-
-    if (backgroundContainer) {
-        // Create canvas for particles
-        const canvas = document.createElement('canvas');
-        canvas.className = 'particles-canvas';
-        backgroundContainer.appendChild(canvas);
-
-        const ctx = canvas.getContext('2d');
-
-        // Set canvas size
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        // Particle properties (fewer on small screens)
-        const particles = [];
-        const particleCount = window.innerWidth < 768 ? 25 : 50;
-
-        // Create particles
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 2 + 1,
-                color: `rgba(0, 255, 255, ${Math.random() * 0.5 + 0.1})`,
-                speedX: Math.random() * 2 - 1,
-                speedY: Math.random() * 2 - 1
-            });
-        }
-
-        // Animation loop (paused while the tab is hidden)
-        let animationId = null;
-
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                if (animationId !== null) {
-                    cancelAnimationFrame(animationId);
-                    animationId = null;
-                }
-            } else if (animationId === null) {
-                animationId = requestAnimationFrame(animateParticles);
-            }
-        });
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(particle => {
-                // Move particle
-                particle.x += particle.speedX;
-                particle.y += particle.speedY;
-
-                // Wrap around edges
-                if (particle.x < 0) particle.x = canvas.width;
-                if (particle.x > canvas.width) particle.x = 0;
-                if (particle.y < 0) particle.y = canvas.height;
-                if (particle.y > canvas.height) particle.y = 0;
-
-                // Draw particle
-                ctx.beginPath();
-                ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-                ctx.fillStyle = particle.color;
-                ctx.fill();
-            });
-
-            animationId = requestAnimationFrame(animateParticles);
-        }
-
-        animationId = requestAnimationFrame(animateParticles);
-    }
-}
-
-// Initialize particles
-setupParticles();
-
-// Add a cool scanline effect
-document.addEventListener('DOMContentLoaded', function() {
-    const scanline = document.querySelector('.scanline');
-
-    if (scanline) {
-        // Make scanline move down the screen
-        function animateScanline() {
-            scanline.style.top = '0';
-            scanline.style.transition = 'none';
-
-            setTimeout(() => {
-                scanline.style.top = '100%';
-                scanline.style.transition = 'top 8s linear';
-
-                // Repeat
-                setTimeout(animateScanline, 8000);
-            }, 100);
-        }
-
-        animateScanline();
-    }
-});
