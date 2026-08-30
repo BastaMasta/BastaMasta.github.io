@@ -1,484 +1,397 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sameed Ahmed | Portfolio</title>
-    <meta name="description" content="Portfolio of Sameed Ahmed (BastaMasta) — Rust & systems developer building CLI tools, emulators, a hobby OS, hardware projects, and a self-hosted home lab.">
-    <meta name="theme-color" content="#0d0d11">
-    <link rel="canonical" href="https://bastamasta.dev">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sameed Ahmed — ZAP-8</title>
+<meta name="description" content="Sameed Ahmed (BastaMasta) — systems programmer in Belagavi, India. Rust, a hobby kernel, a CHIP-8 interpreter, custom PCBs, and a Debian box doing more work than it signed up for.">
+<meta name="theme-color" content="#0b0a12">
+<link rel="canonical" href="https://bastamasta.dev">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
-    <!-- Open Graph / Twitter -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bastamasta.dev">
-    <meta property="og:title" content="Sameed Ahmed | Portfolio">
-    <meta property="og:description" content="Rust & systems developer — CLI tools, emulators, OS dev, hardware, and a self-hosted home lab.">
-    <meta property="og:image" content="https://bastamasta.dev/images/profile-hero.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@BastaMasta3150">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bastamasta.dev">
+<meta property="og:title" content="Sameed Ahmed — ZAP-8">
+<meta property="og:description" content="A portfolio you walk around. Rust, kernels, PCBs, and a home server that never sleeps.">
+<meta property="og:image" content="https://bastamasta.dev/images/profile-hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@BastaMasta3150">
 
-    <!-- Fonts & icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
-    <script defer src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
 
-    <!-- Analytics -->
-    <script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETD1YNN5NE"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-ETD1YNN5NE');
-    </script>
+<script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ETD1YNN5NE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-ETD1YNN5NE');
+</script>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Sameed Ahmed",
-      "alternateName": "BastaMasta",
-      "url": "https://bastamasta.dev",
-      "jobTitle": "Systems Developer",
-      "sameAs": [
-        "https://github.com/BastaMasta",
-        "https://gitea.bastamasta.dev",
-        "https://x.com/BastaMasta3150",
-        "https://bsky.app/profile/sameedahmed.bsky.social",
-        "https://www.linkedin.com/in/sameed-ahmed-354a7b258"
-      ]
-    }
-    </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Sameed Ahmed",
+  "alternateName": "BastaMasta",
+  "url": "https://bastamasta.dev",
+  "jobTitle": "Systems Programmer",
+  "address": { "@type": "PostalAddress", "addressLocality": "Belagavi", "addressCountry": "IN" },
+  "sameAs": [
+    "https://github.com/BastaMasta",
+    "https://gitea.bastamasta.dev",
+    "https://crates.io/crates/boxy-cli",
+    "https://x.com/BastaMasta3150",
+    "https://bsky.app/profile/sameedahmed.bsky.social",
+    "https://www.linkedin.com/in/sameed-ahmed-354a7b258"
+  ]
+}
+</script>
 </head>
-<body>
+<body class="no-js">
 
-<div class="bg-decor" aria-hidden="true"></div>
+<a class="skip-link" href="#doc">Skip to the readable version</a>
 
-<nav id="sitenav">
-    <a href="#home" class="brand">Sameed Ahmed</a>
-    <div class="nav-items">
-        <a href="#home" class="nav-link">Home<span class="nav-indicator"></span></a>
-        <a href="#about" class="nav-link">About<span class="nav-indicator"></span></a>
-        <a href="#projects" class="nav-link">Projects<span class="nav-indicator"></span></a>
-        <a href="#company" class="nav-link">Studio<span class="nav-indicator"></span></a>
-        <a href="#contact" class="nav-link">Contact<span class="nav-indicator"></span></a>
+<!-- ===================== CONSOLE SHELL (built up by JS) ===================== -->
+<div id="console" hidden>
+  <div id="cabinet">
+    <canvas id="screen" width="320" height="180" aria-hidden="true"></canvas>
+    <div id="glass" aria-hidden="true"></div>
+    <div id="bezel" aria-hidden="true">
+      <span class="bezel-brand">ZAP&#8209;8</span>
+      <span class="bezel-led"></span>
     </div>
-    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+  </div>
+
+  <div id="hud" role="toolbar" aria-label="Console controls">
+    <p id="hint" aria-live="polite"></p>
+    <div id="hud-keys"></div>
+  </div>
+
+  <div id="corner">
+    <button id="mute" type="button" aria-pressed="false" title="Toggle sound">
+      <span aria-hidden="true">&#9834;</span><span class="sr-only">Toggle sound</span>
+    </button>
+    <button id="ripcord" type="button" aria-pressed="false">
+      <span aria-hidden="true">&#9636;</span> Read&nbsp;plain&nbsp;version <kbd aria-hidden="true">P</kbd>
+    </button>
+  </div>
+</div>
+
+<!-- Document-view navigation. Plain markup, so it still works with no JS;
+     the console hides it entirely. -->
+<nav id="toc" aria-label="Sections">
+  <a class="toc-brand" href="#masthead">Sameed&nbsp;Ahmed</a>
+  <ol>
+    <li><a href="#doc-about"><span>01</span> whoami</a></li>
+    <li><a href="#doc-homelab"><span>02</span> The rack</a></li>
+    <li><a href="#doc-hardware"><span>03</span> The bench</a></li>
+    <li><a href="#doc-projects"><span>04</span> Cartridges</a></li>
+    <li><a href="#doc-studio"><span>05</span> ZapBurrito</a></li>
+    <li><a href="#doc-contact"><span>06</span> Contact</a></li>
+    <li><a href="#doc-resume"><span>07</span> Résumé</a></li>
+  </ol>
 </nav>
 
-<main>
-    <section id="home" class="hero">
-        <div class="hero-inner">
-            <div class="hero-copy">
-                <p class="hero-eyebrow">Systems programmer &middot; Belagavi, India</p>
-                <h1 class="hero-title">Sameed Ahmed</h1>
-                <p class="hero-role"><span class="typing-text"></span></p>
-                <p class="hero-lede">I build things close to the metal — a hobby OS, an emulator, CLI tools people actually install — and I run every service my own home server can carry.</p>
-                <div class="hero-buttons">
-                    <a href="#about" class="btn btn-outline">More about me</a>
-                    <a href="#contact" class="btn btn-filled">Get in touch</a>
-                </div>
-            </div>
-            <div class="hero-portrait">
-                <div class="portrait-frame">
-                    <img src="/images/profile-hero.jpg" alt="Sameed Ahmed" width="800" height="657" fetchpriority="high" decoding="async">
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ===================== CONTENT =====================
+     These sections are the whole portfolio. In plain mode they flow as a
+     document; in console mode CSS lifts the active one into an overlay panel.
+     No JS is required to read any of it. -->
+<main id="doc">
 
-    <section id="about" class="section">
-        <div class="section-header reveal">
-            <span class="section-tag">01</span>
-            <h2>About</h2>
-        </div>
+  <header id="masthead">
+    <p class="kicker">Sameed Ahmed &middot; BastaMasta &middot; Belagavi, India</p>
+    <h1>Systems programmer.<br>Mostly Rust, occasionally a soldering iron.</h1>
+    <p class="lede">I write software that runs close to the metal, and when it needs a body, I design the board it runs on. This is the plain version of my portfolio — the same content as the interactive one, minus the pixels.</p>
 
-        <div class="about-grid">
-            <div class="about-prose reveal">
-                <p>Sameed Ahmed — aka BastaMasta. Systems programmer from India, striving to make the world a more unified and connected place (for my own convenience, of course).</p>
-                <p>Mostly living in Rust these days — building a toy OS from scratch, a CHIP-8 emulator, and CLI tools like boxy-cli (live on crates.io). When software needs a body, I design PCBs in KiCad and build oddball hardware like an 8-bit binary keyboard.</p>
-                <p><span class="status-dot"></span> Home server active — a Debian box hosting my own Git forge, analytics, media and automation. If it can be self-hosted, it probably already is.</p>
-                <p>Currently building ZapBurrito Studios, an indie game studio for beautiful retro-style games — and forever poking one layer deeper down the stack.</p>
-            </div>
+    <figure class="hero">
+      <img src="/images/workshop.png" width="1480" height="360" fetchpriority="high" decoding="async"
+           alt="Pixel-art panorama of a workshop: a desk with a CRT terminal, a server rack with blinking lights, an electronics bench, a shelf of game cartridges, an arcade cabinet, a mail slot, a printer, a sleeping cat, and a neon ZapBurrito sign.">
+      <figcaption>The ZAP&#8209;8 workshop. The interactive version renders this room live, and you can walk around it.</figcaption>
+    </figure>
 
-            <div class="about-side reveal">
-                <div class="stat-row">
-                    <div class="stat">
-                        <div class="stat-number">15+</div>
-                        <div class="stat-text">Projects &amp; counting</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">7+</div>
-                        <div class="stat-text">Happy clients</div>
-                    </div>
-                </div>
-                <p class="stat-note">Certain projects are not made public due to privacy concerns.</p>
-            </div>
-        </div>
+    <p class="masthead-actions">
+      <a class="btn primary" href="#doc-projects">See the projects</a>
+      <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf">Résumé (PDF)</a>
+      <a class="btn" href="https://github.com/BastaMasta" rel="noopener">GitHub</a>
+    </p>
 
-        <div class="skills reveal">
-            <h3 class="skills-heading">Stack</h3>
-            <div class="skill-groups">
-                <div class="skill-group">
-                    <div class="skill-group-label">Core systems</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Rust</span>
-                        <span class="skill-tag">C</span>
-                        <span class="skill-tag">C++</span>
-                        <span class="skill-tag">Assembly [8086]</span>
-                    </div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-group-label">Scripting &amp; apps</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">Flutter/Android</span>
-                        <span class="skill-tag">WebDev</span>
-                    </div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-group-label">Infra &amp; hardware</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Linux/Self-hosting</span>
-                        <span class="skill-tag">Embedded Systems/IoT</span>
-                    </div>
-                </div>
-                <div class="skill-group">
-                    <div class="skill-group-label">For fun</div>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Game Dev</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <dl class="glance">
+      <div><dt>Based in</dt><dd>Belagavi, Karnataka, India</dd></div>
+      <div><dt>Working in</dt><dd>Rust, C, embedded, Linux infrastructure</dd></div>
+      <div><dt>Shipped</dt><dd><a href="https://crates.io/crates/boxy-cli" rel="noopener">boxy-cli</a> on crates.io &middot; a CHIP&#8209;8 interpreter &middot; custom PCBs</dd></div>
+      <div><dt>Open to</dt><dd>Internships, freelance work, and collaborations</dd></div>
+    </dl>
+  </header>
 
-    <section id="projects" class="section">
-        <div class="section-header reveal">
-            <span class="section-tag">02</span>
-            <h2>Projects</h2>
-        </div>
+  <!-- ---------- ABOUT ---------- -->
+  <section id="doc-about" class="panel" data-panel="about" data-num="01" data-title="whoami" aria-labelledby="h-about">
+    <h2 id="h-about">whoami</h2>
+    <p>Sameed Ahmed. I write software that runs close to the metal, and when it needs a body, I design the board it runs on.</p>
+    <p>Most of my time goes into Rust — a hobby kernel that boots and then usually panics, a CHIP&#8209;8 interpreter, and command-line tools that strangers have actually installed. Before Rust I wrote enough 8086 assembly to permanently respect what compilers do for us.</p>
+    <p>I self-host nearly everything I use. Not on principle — I just like knowing where my data sleeps.</p>
+    <p>I also run <strong>ZapBurrito Studios</strong>, which is a game studio in roughly the same way a kernel that panics is an operating system: technically, and eventually.</p>
 
-        <div class="project-filters reveal">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="live">Live</button>
-            <button class="filter-btn" data-filter="wip">In progress</button>
-            <button class="filter-btn" data-filter="done">Done</button>
-            <button class="filter-btn" data-filter="broken">Broken</button>
-        </div>
+    <h3>Stack</h3>
+    <dl class="stack">
+      <div><dt>Systems</dt><dd>Rust &middot; C &middot; C++ &middot; 8086 assembly</dd></div>
+      <div><dt>Scripting &amp; apps</dt><dd>Python &middot; Flutter / Android &middot; the web platform</dd></div>
+      <div><dt>Infrastructure</dt><dd>Debian &middot; Docker &middot; Cloudflare &middot; self-hosting most things</dd></div>
+      <div><dt>Hardware</dt><dd>KiCad &middot; embedded / IoT &middot; a soldering iron I should replace</dd></div>
+      <div><dt>For fun</dt><dd>GameMaker &middot; pixel art &middot; emulator internals</dd></div>
+    </dl>
+    <p class="aside">Some client work isn't listed here — a few projects are under NDA or just not mine to publish.</p>
+  </section>
 
-        <div class="projects-container">
-            <article class="project-card reveal" data-status="live">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-server" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Home Lab // Debian Server</h3>
-                    </div>
-                    <p class="project-description">My Debian home server, running a buttload of self-hosted services — git, analytics, media, automation, monitoring and more — all behind Cloudflare.</p>
-                    <div class="project-tags"><span class="project-tag">Debian</span><span class="project-tag">Docker</span><span class="project-tag">Self-hosted</span></div>
-                    <div class="project-footer">
-                        <span class="project-status live">Live</span>
-                        <a href="https://server.bastamasta.dev" target="_blank" rel="noopener" class="btn btn-outline small">Visit server</a>
-                    </div>
-                </div>
-            </article>
+  <!-- ---------- HOMELAB ---------- -->
+  <section id="doc-homelab" class="panel" data-panel="homelab" data-num="02" data-title="the rack" aria-labelledby="h-homelab">
+    <h2 id="h-homelab">The rack</h2>
+    <p>One Debian box in my house, doing considerably more work than it signed up for. Everything sits behind Cloudflare; everything that can be containerised is.</p>
+    <ul class="services">
+      <li><span class="dot ok"></span><a href="https://gitea.bastamasta.dev" rel="noopener">Gitea</a> — my own Git forge, where things live before they're presentable</li>
+      <li><span class="dot ok"></span><a href="https://analytics.bastamasta.dev" rel="noopener">Umami</a> — analytics that don't sell anyone out</li>
+      <li><span class="dot ok"></span><a href="https://server.bastamasta.dev" rel="noopener">Dashboard</a> — the front door</li>
+      <li><span class="dot ok"></span>Media server, automation, monitoring, backups</li>
+      <li><span class="dot ok"></span>Reverse proxy, DNS, and more YAML than I'd like to admit</li>
+    </ul>
+    <p>It has survived one power cut, two bad kernel upgrades and a cat. Uptime is a lifestyle.</p>
+  </section>
 
-            <article class="project-card reveal" data-status="live">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fa-brands fa-git-alt" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Self-hosted Gitea</h3>
-                    </div>
-                    <p class="project-description">My own Git forge running on the home server — home to projects that haven't made it to GitHub (yet).</p>
-                    <div class="project-tags"><span class="project-tag">Gitea</span><span class="project-tag">Self-hosted</span><span class="project-tag">DevOps</span></div>
-                    <div class="project-footer">
-                        <span class="project-status live">Live</span>
-                        <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" class="btn btn-outline small">Visit Gitea</a>
-                    </div>
-                </div>
-            </article>
+  <!-- ---------- HARDWARE ---------- -->
+  <section id="doc-hardware" class="panel" data-panel="hardware" data-num="03" data-title="the bench" aria-labelledby="h-hardware">
+    <h2 id="h-hardware">The bench</h2>
+    <p>Where software stops being an abstraction. Boards drawn in KiCad, assembled by hand, debugged with a multimeter and optimism.</p>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-terminal" aria-hidden="true"></i></div>
-                        <h3 class="project-title">ShellDeck</h3>
-                    </div>
-                    <p class="project-description">A terminal-centric power tool, currently in active development on my self-hosted Gitea.</p>
-                    <div class="project-tags"><span class="project-tag">CLI</span><span class="project-tag">Terminal</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                        <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" class="btn btn-outline small">On Gitea</a>
-                    </div>
-                </div>
-            </article>
+    <h3>BinaryKeeb 1.0</h3>
+    <p>An eight-key keyboard. Each key is one bit. You type a byte, it types a character. It is a deeply impractical object and I love it.</p>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-microchip" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Toy OS (Rust)</h3>
-                    </div>
-                    <p class="project-description">A hobby operating system written from scratch in Rust — exploring bare-metal programming, bootloaders and kernel development.</p>
-                    <div class="project-tags"><span class="project-tag">Rust</span><span class="project-tag">OSDev</span><span class="project-tag">Bare-metal</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                    </div>
-                </div>
-            </article>
+    <div class="keeb" data-widget="binarykeeb">
+      <p class="keeb-fallback">Eight toggle switches, one per bit — flip them to spell a character in ASCII. <em>Interactive with JavaScript enabled.</em></p>
+    </div>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-ghost" aria-hidden="true"></i></div>
-                        <h3 class="project-title">CHIP-8 Emulator (Rust)</h3>
-                    </div>
-                    <p class="project-description">An emulator for the classic CHIP-8 virtual machine, written in Rust — running retro ROMs the way they were meant to flicker.</p>
-                    <div class="project-tags"><span class="project-tag">Rust</span><span class="project-tag">Emulation</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                    </div>
-                </div>
-            </article>
+    <h3>Lumio V2</h3>
+    <p>Second revision of a custom PCB, designed in KiCad. The first revision taught me what a ground plane is for.</p>
 
-            <article class="project-card reveal" data-status="live">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-box" aria-hidden="true"></i></div>
-                        <h3 class="project-title">boxy-cli [Rust Crate]</h3>
-                    </div>
-                    <p class="project-description">A Rust command-line tool for creating beautiful ASCII boxes and borders with customizable styles.</p>
-                    <div class="project-tags"><span class="project-tag">Rust</span><span class="project-tag">CLI</span><span class="project-tag">Crate</span></div>
-                    <div class="project-footer">
-                        <span class="project-status live">Live</span>
-                        <a href="https://crates.io/crates/boxy-cli" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+    <h3>TARS replica</h3>
+    <p>An in-progress attempt at the walking monolith from <em>Interstellar</em>. Currently more monolith than walking.</p>
 
-            <article class="project-card reveal" data-status="live">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-calendar-alt" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Yukti 2k25 Event Website</h3>
-                    </div>
-                    <p class="project-description">The event website for Yukti 2k25, a National Level Techno-Cultural Fest organized by VTU, Belagavi, India.</p>
-                    <div class="project-tags"><span class="project-tag">WebDev</span><span class="project-tag">Event</span></div>
-                    <div class="project-footer">
-                        <span class="project-status live">Live</span>
-                        <a href="https://yukti.bastamasta.dev" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+    <p class="masthead-actions">
+      <a class="btn" href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener">BinaryKeeb on GitHub</a>
+      <a class="btn" href="https://github.com/BastaMasta/LumioV2" rel="noopener">Lumio V2 on GitHub</a>
+    </p>
+  </section>
 
-            <article class="project-card reveal" data-status="live">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-brain" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Brainfuck Interpreter (Rust)</h3>
-                    </div>
-                    <p class="project-description">An interpreter for the Brainfuck programming language, written in Rust. Try it right here in the browser.</p>
-                    <div class="project-tags"><span class="project-tag">Rust</span><span class="project-tag">Interpreter</span></div>
-                    <div class="project-footer">
-                        <span class="project-status live">Live</span>
-                        <a href="./projects/brainfuck/" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+  <!-- ---------- PROJECTS ---------- -->
+  <section id="doc-projects" class="panel wide" data-panel="projects" data-num="04" data-title="cartridges" aria-labelledby="h-projects">
+    <h2 id="h-projects">Cartridges</h2>
+    <p class="panel-lede">Fifteen things I've built. A few of them run right here in the browser.</p>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-volume-up" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Meme SoundPad</h3>
-                    </div>
-                    <p class="project-description">A customizable soundboard application for quick access to meme sounds and effects.</p>
-                    <div class="project-tags"><span class="project-tag">Flutter</span><span class="project-tag">App</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                        <a href="https://github.com/BastaMasta/MemeSoundPad" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+    <div class="filters" role="group" aria-label="Filter projects by status">
+      <button type="button" class="filter is-on" data-filter="all">All</button>
+      <button type="button" class="filter" data-filter="live">Live</button>
+      <button type="button" class="filter" data-filter="wip">In progress</button>
+      <button type="button" class="filter" data-filter="done">Done</button>
+      <button type="button" class="filter" data-filter="dead">Bit-rotted</button>
+    </div>
 
-            <article class="project-card reveal" data-status="done">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-keyboard" aria-hidden="true"></i></div>
-                        <h3 class="project-title">BinaryKeeb 1.0 [Hardware Binary Keyboard]</h3>
-                    </div>
-                    <p class="project-description">A hardware project for a binary keyboard, allowing for 8-bit binary inputs.</p>
-                    <div class="project-tags"><span class="project-tag">Hardware</span><span class="project-tag">Python</span></div>
-                    <div class="project-footer">
-                        <span class="project-status done">Completed</span>
-                        <a href="https://github.com/BastaMasta/BinaryKeeb" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+    <ol class="carts">
 
-            <article class="project-card reveal" data-status="done">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-lightbulb" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Lumio V2</h3>
-                    </div>
-                    <p class="project-description">A custom PCB project designed in KiCad — the second revision of the Lumio board.</p>
-                    <div class="project-tags"><span class="project-tag">KiCad</span><span class="project-tag">Hardware</span><span class="project-tag">PCB</span></div>
-                    <div class="project-footer">
-                        <span class="project-status done">Completed</span>
-                        <a href="https://github.com/BastaMasta/LumioV2" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+      <li class="cart" data-status="live" data-hue="amber" data-code="C8">
+        <h3>CHIP-8 interpreter</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Emulation</span></p>
+        <p>A CHIP-8 virtual machine written in Rust. The version on this page is a JavaScript port of the same design, running <strong>Burrito Drop</strong> — a game I wrote in CHIP-8 assembly. Walk to the arcade cabinet and press <kbd>Enter</kbd> to play it, or take the ROM and run it on your own interpreter.</p>
+        <p class="cart-links">
+          <a href="https://github.com/BastaMasta" rel="noopener">Source</a>
+          <a href="/roms/burrito-drop.ch8" download>burrito-drop.ch8 (188 B)</a>
+          <a href="/roms/burrito-drop.asm" download>Assembly source</a>
+        </p>
+      </li>
 
-            <article class="project-card reveal" data-status="done">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-image" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Image Processor [CLI Tool] (Rust)</h3>
-                    </div>
-                    <p class="project-description">A simple command-line tool for processing and manipulating images, built with Rust.</p>
-                    <div class="project-tags"><span class="project-tag">Rust</span><span class="project-tag">CLI</span></div>
-                    <div class="project-footer">
-                        <span class="project-status done">Completed</span>
-                        <a href="https://github.com/BastaMasta/Personal-Projects/" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+      <li class="cart" data-status="wip" data-hue="red" data-code="OS">
+        <h3>A kernel, from scratch</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Bare metal</span><span class="tag">x86</span></p>
+        <p>Bootloader, GDT, interrupts, a VGA text driver and a heap allocator that mostly works. Every layer I finish reveals two I didn't know about.</p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">On my Gitea</a></p>
+      </li>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-gamepad" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Action RPG [Name not decided yet]</h3>
-                    </div>
-                    <p class="project-description">An action RPG game project, currently in development.</p>
-                    <div class="project-tags"><span class="project-tag">GameMaker</span><span class="project-tag">GameDev</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                        <a href="https://github.com/BastaMasta/ARPG_Build/" target="_blank" rel="noopener" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+      <li class="cart" data-status="live" data-hue="cyan" data-code="BX">
+        <h3>boxy-cli</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Crate</span><span class="tag">CLI</span></p>
+        <p>Draws good-looking boxes and borders in a terminal. Published on crates.io, which means people I've never met have run my code — still the best part of shipping anything.</p>
+        <p class="cart-links">
+          <a href="https://crates.io/crates/boxy-cli" rel="noopener">crates.io</a>
+          <a class="launch" href="https://play.bastamasta.dev/boxy" rel="noopener" data-soon>Run it in your browser</a>
+        </p>
+      </li>
 
-            <article class="project-card reveal" data-status="wip">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-robot" aria-hidden="true"></i></div>
-                        <h3 class="project-title">TARS Replica [Interstellar]</h3>
-                    </div>
-                    <p class="project-description">A replica of the TARS robot from Interstellar, featuring similar functionalities.</p>
-                    <div class="project-tags"><span class="project-tag">Embedded</span><span class="project-tag">Robotics</span></div>
-                    <div class="project-footer">
-                        <span class="project-status wip">In progress</span>
-                        <a href="./oops" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
+      <li class="cart" data-status="live" data-hue="green" data-code="BF">
+        <h3>Brainfuck interpreter</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Interpreter</span></p>
+        <p>An interpreter for the least ergonomic language ever designed. Writing one is a rite of passage; writing one that's fast is an actual exercise.</p>
+        <p class="cart-links">
+          <a href="./projects/brainfuck/">Try it here</a>
+          <a class="launch" href="https://play.bastamasta.dev/bf" rel="noopener" data-soon>Run the real binary</a>
+        </p>
+      </li>
 
-            <article class="project-card reveal" data-status="broken">
-                <div class="project-card-inner">
-                    <div class="project-header">
-                        <div class="project-logo"><i class="fas fa-plug-circle-exclamation" aria-hidden="true"></i></div>
-                        <h3 class="project-title">Google Forms to Discord Integration Bots (Python)</h3>
-                    </div>
-                    <p class="project-description">Bots to integrate Google Forms with Discord for automated responses and notifications.</p>
-                    <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">Discord</span></div>
-                    <div class="project-footer">
-                        <span class="project-status broken">Broken</span>
-                        <a href="./oops" class="btn btn-outline small">View project</a>
-                    </div>
-                </div>
-            </article>
-        </div>
-    </section>
+      <li class="cart" data-status="live" data-hue="green" data-code="HL">
+        <h3>The home lab</h3>
+        <p class="cart-meta"><span class="tag">Debian</span><span class="tag">Docker</span><span class="tag">Self-hosted</span></p>
+        <p>A Debian server running my Git forge, analytics, media, automation and monitoring. If a service can be self-hosted, it probably already is.</p>
+        <p class="cart-links"><a href="https://server.bastamasta.dev" rel="noopener">Dashboard</a></p>
+      </li>
 
-    <section id="company" class="section">
-        <div class="section-header reveal">
-            <span class="section-tag">03</span>
-            <h2>Studio</h2>
-        </div>
-        <div class="company-card reveal">
-            <img class="company-logo" alt="ZapBurrito Studios Logo" src="/images/zapburrito.png" width="120" height="120" loading="lazy" decoding="async">
-            <div class="company-info">
-                <div class="coming-soon">Coming soon</div>
-                <h3>ZapBurrito Studios</h3>
-                <p class="company-description">An indie game studio dedicated to delivering beautiful, retro-style games.</p>
-                <div class="company-stats">
-                    <div class="company-stat"><div class="stat-label">Launch</div><div class="stat-value">Q4 2027</div></div>
-                    <div class="company-stat"><div class="stat-label">Focus</div><div class="stat-value">Indie games &middot; Software solutions</div></div>
-                </div>
-            </div>
-        </div>
-    </section>
+      <li class="cart" data-status="live" data-hue="orange" data-code="GT">
+        <h3>Self-hosted Gitea</h3>
+        <p class="cart-meta"><span class="tag">Gitea</span><span class="tag">DevOps</span></p>
+        <p>My own Git forge. Home to everything that hasn't earned a GitHub README yet.</p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">Visit</a></p>
+      </li>
 
-    <section id="contact" class="section">
-        <div class="section-header reveal">
-            <span class="section-tag">04</span>
-            <h2>Contact</h2>
-        </div>
-        <div class="contact-grid">
-            <div class="contact-info reveal">
-                <ul class="contact-list">
-                    <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i><div><div class="contact-label">Location</div><div class="contact-value">Belagavi, India</div></div></li>
-                    <li><i class="fas fa-phone-alt" aria-hidden="true"></i><div><div class="contact-label">Phone</div><div class="contact-value">+91 8217887821</div></div></li>
-                    <li><i class="fas fa-envelope" aria-hidden="true"></i><div><div class="contact-label">Email</div><div class="contact-value">sameedahmed@bastamasta.dev</div></div></li>
-                </ul>
+      <li class="cart" data-status="wip" data-hue="lilac" data-code="SD">
+        <h3>ShellDeck</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">TUI</span></p>
+        <p>A terminal-first control surface for the things I do most days. In active development, which is a generous way of saying it works on my machine.</p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">On my Gitea</a></p>
+      </li>
 
-                <blockquote class="quote-card">
-                    <p>"This guy is the man he went above and Beyond. Everything was professional and done within a few days. I'd highly recommend to anyone trying to make a discord bot he knows what he's doing"</p>
-                    <footer>
-                        <img src="/images/profile.webp" alt="" width="32" height="32" loading="lazy" decoding="async">
-                        <span>phantompeppers — Fiverr customer, Discord bot</span>
-                    </footer>
-                </blockquote>
+      <li class="cart" data-status="done" data-hue="cyan" data-code="BK">
+        <h3>BinaryKeeb 1.0</h3>
+        <p class="cart-meta"><span class="tag">Hardware</span><span class="tag">Python</span></p>
+        <p>Eight keys, eight bits, one character at a time. Slower than a keyboard and infinitely more satisfying.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener">GitHub</a></p>
+      </li>
 
-                <a href="/docs/Sameed Ahmed - Resume.pdf" class="btn btn-filled" target="_blank"><i class="fas fa-file-arrow-down" aria-hidden="true"></i> View resume</a>
-            </div>
+      <li class="cart" data-status="done" data-hue="green" data-code="LU">
+        <h3>Lumio V2</h3>
+        <p class="cart-meta"><span class="tag">KiCad</span><span class="tag">PCB</span></p>
+        <p>A custom board, second revision. Routed by hand because autorouters have no soul.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/LumioV2" rel="noopener">GitHub</a></p>
+      </li>
 
-            <div class="contact-form-container reveal">
-                <form id="contactForm" class="contact-form" action="https://formspree.io/f/meoeplwk" method="POST">
-                    <div class="input-container">
-                        <input type="text" id="name" name="name" required class="text-input">
-                        <label for="name" class="input-label">Name</label>
-                    </div>
-                    <div class="input-container">
-                        <input type="email" id="email" name="email" required class="text-input">
-                        <label for="email" class="input-label">Email</label>
-                    </div>
-                    <div class="input-container">
-                        <input type="text" id="subject" name="subject" required class="text-input">
-                        <label for="subject" class="input-label">Subject</label>
-                    </div>
-                    <div class="input-container">
-                        <textarea id="message" name="message" required class="text-input textarea"></textarea>
-                        <label for="message" class="input-label">Message</label>
-                    </div>
-                    <button type="submit" class="btn btn-filled full-width">Send message</button>
-                </form>
-            </div>
-        </div>
-    </section>
+      <li class="cart" data-status="live" data-hue="amber" data-code="YK">
+        <h3>Yukti 2k25</h3>
+        <p class="cart-meta"><span class="tag">Web</span><span class="tag">Event</span></p>
+        <p>The site for Yukti 2k25, VTU Belagavi's national techno-cultural fest. Built fast, held up under a traffic spike, which is the only review that matters.</p>
+        <p class="cart-links"><a href="https://yukti.bastamasta.dev" rel="noopener">Visit</a></p>
+      </li>
+
+      <li class="cart" data-status="done" data-hue="lilac" data-code="IM">
+        <h3>Image processor</h3>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">CLI</span></p>
+        <p>A small command-line image manipulation tool. Written mainly to find out how much of image processing is just convolution. (Most of it.)</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/Personal-Projects/" rel="noopener">GitHub</a></p>
+      </li>
+
+      <li class="cart" data-status="wip" data-hue="orange" data-code="MS">
+        <h3>Meme SoundPad</h3>
+        <p class="cart-meta"><span class="tag">Flutter</span><span class="tag">Android</span></p>
+        <p>A soundboard app. Not important work. Very frequently used work.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/MemeSoundPad" rel="noopener">GitHub</a></p>
+      </li>
+
+      <li class="cart" data-status="wip" data-hue="red" data-code="RPG">
+        <h3>Untitled action RPG</h3>
+        <p class="cart-meta"><span class="tag">GameMaker</span><span class="tag">ZapBurrito</span></p>
+        <p>The first ZapBurrito project. Still untitled, because naming things is the hard problem people warned me about.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/ARPG_Build/" rel="noopener">GitHub</a></p>
+      </li>
+
+      <li class="cart" data-status="wip" data-hue="cyan" data-code="TR">
+        <h3>TARS replica</h3>
+        <p class="cart-meta"><span class="tag">Embedded</span><span class="tag">Robotics</span></p>
+        <p>A working replica of the robot from <em>Interstellar</em>. Honesty setting currently at 100%.</p>
+      </li>
+
+      <li class="cart" data-status="dead" data-hue="lilac" data-code="GF">
+        <h3>Google Forms → Discord bots</h3>
+        <p class="cart-meta"><span class="tag">Python</span><span class="tag">Discord</span></p>
+        <p>Piped form responses into Discord channels for a few clients. Worked well until Google changed an API, as Google does.</p>
+      </li>
+
+    </ol>
+  </section>
+
+  <!-- ---------- STUDIO ---------- -->
+  <section id="doc-studio" class="panel" data-panel="studio" data-num="05" data-title="zapburrito studios" aria-labelledby="h-studio">
+    <h2 id="h-studio">ZapBurrito Studios</h2>
+    <p class="badge">In development</p>
+    <p>A one-person indie studio making retro-styled games — the kind with a fixed palette, a chunky font and no tutorial popup telling you which button is jump.</p>
+    <p>The first title is an action RPG. It does not have a name yet. It has a combat loop, a tileset, and a folder called <code>tmp_final_v3</code>.</p>
+    <dl class="stack">
+      <div><dt>Target</dt><dd>Q4 2027, cheerfully subject to reality</dd></div>
+      <div><dt>Focus</dt><dd>Retro-style games &middot; small, sharp software</dd></div>
+      <div><dt>Headcount</dt><dd>One, plus a cat with no defined role</dd></div>
+    </dl>
+    <p class="aside">The console you're using right now is named after the studio. Everything is a prototype for something.</p>
+  </section>
+
+  <!-- ---------- CONTACT ---------- -->
+  <section id="doc-contact" class="panel" data-panel="contact" data-num="06" data-title="mail slot" aria-labelledby="h-contact">
+    <h2 id="h-contact">Get in touch</h2>
+    <p>Freelance work, collaborations, or a question about any of this — all welcome.</p>
+
+    <blockquote>
+      <p>“This guy is the man he went above and Beyond. Everything was professional and done within a few days. I'd highly recommend to anyone trying to make a discord bot he knows what he's doing”</p>
+      <footer>phantompeppers &middot; Fiverr client</footer>
+    </blockquote>
+
+
+    <ul class="contact-list">
+      <li><span class="lbl">Email</span><a href="mailto:sameedahmed@bastamasta.dev">sameedahmed@bastamasta.dev</a></li>
+      <li><span class="lbl">Phone</span><a href="tel:+918217887821">+91 82178 87821</a></li>
+      <li><span class="lbl">Location</span><span>Belagavi, Karnataka, India</span></li>
+    </ul>
+
+    <form id="contact-form" action="https://formspree.io/f/meoeplwk" method="POST">
+      <p class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" required autocomplete="name"></p>
+      <p class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required autocomplete="email"></p>
+      <p class="field"><label for="f-subject">Subject</label><input id="f-subject" name="subject" type="text" required></p>
+      <p class="field"><label for="f-message">Message</label><textarea id="f-message" name="message" rows="5" required></textarea></p>
+      <p><button class="btn primary" type="submit">Send</button></p>
+      <p class="form-status" role="status"></p>
+    </form>
+
+    <ul class="social">
+      <li><a href="https://github.com/BastaMasta" rel="noopener">GitHub</a></li>
+      <li><a href="https://gitea.bastamasta.dev" rel="noopener">Gitea</a></li>
+      <li><a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" rel="noopener">LinkedIn</a></li>
+      <li><a href="https://x.com/BastaMasta3150" rel="noopener">X</a></li>
+      <li><a href="https://bsky.app/profile/sameedahmed.bsky.social" rel="noopener">Bluesky</a></li>
+      <li><a href="https://discordapp.com/users/690079385436684302" rel="noopener">Discord</a></li>
+      <li><a href="https://www.instagram.com/sameed_ahmed_3150/" rel="noopener">Instagram</a></li>
+    </ul>
+  </section>
+
+  <!-- ---------- RESUME ---------- -->
+  <section id="doc-resume" class="panel" data-panel="resume" data-num="07" data-title="printer" aria-labelledby="h-resume">
+    <h2 id="h-resume">Résumé</h2>
+    <p>The conventional version, for conventional situations.</p>
+    <p class="masthead-actions">
+      <a class="btn primary" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Open PDF</a>
+      <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf" download>Download</a>
+    </p>
+    <p class="aside">If you're hiring for anything involving Rust, embedded work, or infrastructure that has to actually stay up — that's the part of the job I'd want.</p>
+  </section>
+
+  <!-- ---------- EASTER EGG ---------- -->
+  <section id="doc-cat" class="panel narrow" data-panel="cat" data-title="oreo" aria-labelledby="h-cat">
+    <h2 id="h-cat">Oreo</h2>
+    <p>The cat. A ragdoll, which means he is enormous, goes completely boneless the moment you pick him up, and follows me between rooms like a very slow shadow.</p>
+    <p>Responsibilities include sitting on the warm part of the server rack and walking across the keyboard during builds. Has caused exactly one production incident.</p>
+    <p data-oreo="rack" hidden>Today he is on top of the server rack, which is the warmest surface in the house and therefore, in his assessment, his.</p>
+  </section>
+
+  <footer id="colophon">
+    <p>Built as a fantasy console. 320×180, sixteen colours, no game engine. <a href="https://github.com/BastaMasta/BastaMasta.github.io" rel="noopener">Source</a>.</p>
+    <p>&copy; 2026 Sameed Ahmed &middot; ZapBurrito Studios</p>
+  </footer>
 </main>
 
-<footer class="site-footer">
-    <div class="footer-content">
-        <div class="footer-social">
-            <a href="https://www.instagram.com/sameed_ahmed_3150/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
-            <a href="https://discordapp.com/users/690079385436684302" target="_blank" rel="noopener" aria-label="Discord"><i class="fab fa-discord" aria-hidden="true"></i></a>
-            <a href="https://github.com/BastaMasta" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
-            <a href="https://gitea.bastamasta.dev" target="_blank" rel="noopener" aria-label="Gitea"><i class="fa-brands fa-git-alt" aria-hidden="true"></i></a>
-            <a href="https://x.com/BastaMasta3150" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
-            <a href="https://bsky.app/profile/sameedahmed.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky"><i class="fa-brands fa-bluesky" aria-hidden="true"></i></a>
-            <a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a>
-        </div>
-        <p class="footer-copyright">&copy; 2026 Sameed Ahmed &middot; ZapBurrito Studios</p>
-    </div>
-</footer>
-
-<script src="script.js"></script>
+<script type="module" src="js/main.js"></script>
+<script>document.body.classList.remove('no-js');</script>
 </body>
 </html>
