@@ -5,7 +5,8 @@
    truth: console mode just lifts a section into an overlay panel, so the plain
    version and the console version can never drift apart. */
 
-import { Framebuffer, SCREEN_W, C, paletteRGB, blitRGBA, LIGHT_MAP, DARK_MAP } from './gfx.js';
+import { Framebuffer, SCREEN_W, C, paletteU32, blitU32, buildShadeMask, applyMask,
+         LIGHT_MAP, DARK_MAP } from './gfx.js';
 import { drawRoom, ROOM_W, ROOM_H, FLOOR_Y, HOTSPOTS } from './room.js';
 import { Player } from './player.js';
 import { ICON } from './font.js';
@@ -21,6 +22,12 @@ const isCoarse = () => matchMedia('(pointer: coarse)').matches;
 /* Bounds for the adaptive framebuffer. Width varies with the viewport; height
    never exceeds the room art's 180px. */
 const MIN_FB_W = 150, MAX_FB_W = 400, MIN_FB_H = 140, MAX_SCALE = 4;
+
+/* Boot sequence pacing. Slow enough that the POST lines can actually be read
+   before the workshop loads; any key still skips it, and it only plays once
+   per session. */
+const BOOT_LINE_SECS = 0.25;
+const BOOT_HOLD_SECS = 1.8;
 /* Below this the view feels claustrophobic, so a big screen trades one step of
    scale for a wider window on the room. Phones can't afford that and fall back
    to MIN_FB_W. */
@@ -101,7 +108,7 @@ class Zap8 {
     this.ctx = this.canvas.getContext('2d', { alpha: false });
     this.ctx.imageSmoothingEnabled = false;
     this.fb = null;            // sized in resize(), which runs before the
-    this.rgb = paletteRGB();   // first frame
+    this.pal32 = paletteU32(); // packed palette for the blit
     this.camY = 0;
     this.scale = 1;
 
@@ -143,9 +150,6 @@ class Zap8 {
     this.resize();
     this.syncTouchPad();
     addEventListener('resize', () => { if (this.active) this.resize(); });
-    try {
-      if (sessionStorage.getItem('zap8:booted')) this.mode = 'room';
-    } catch { /* storage blocked; just play the boot sequence again */ }
     this.setHudKeys();
     let last = performance.now();
     let faults = 0;
@@ -225,6 +229,15 @@ class Zap8 {
       this.ctx.imageSmoothingEnabled = false;
       this.imageData = this.ctx.createImageData(w, h);
       this.rgba = this.imageData.data;
+      this.out32 = new Uint32Array(this.rgba.buffer);
+      // The vignette never moves for a given screen size, so its dither
+      // pattern is fixed and can be reduced to a list of pixels to darken.
+      this.vignette = buildShadeMask(w, h, 0, 0, w, h, (x, y) => {
+        const nx = (x - w / 2) / (w / 2);
+        const ny = (y - h / 2) / (h / 2);
+        const d = nx * nx * 0.9 + ny * ny;
+        return d < 0.75 ? 0 : Math.min(1, (d - 0.75) * 1.5);
+      });
     }
 
     // Crop mostly off the ceiling, so the floor and the player stay in frame.
@@ -405,18 +418,19 @@ class Zap8 {
 
   updateBoot(dt) {
     this.bootT += dt;
-    const line = Math.floor(this.bootT / 0.16);
+    const line = Math.floor(this.bootT / BOOT_LINE_SECS);
     if (line !== this.bootLine && line < BOOT_LINES.length) {
       this.bootLine = line;
       sfx.blip(1400 + Math.random() * 200, 0.012, 'square', 0.015);
     }
-    if (this.bootT > BOOT_LINES.length * 0.16 + 0.9) this.skipBoot();
+    if (this.bootT > BOOT_LINES.length * BOOT_LINE_SECS + BOOT_HOLD_SECS) {
+      this.skipBoot();
+    }
   }
 
   skipBoot() {
     if (this.mode !== 'boot') return;
     this.mode = 'room';
-    try { sessionStorage.setItem('zap8:booted', '1'); } catch { /* ignore */ }
     this.updateHint();
     this.syncTouchPad();
     sfx.blip(880, 0.09);
@@ -541,7 +555,7 @@ class Zap8 {
     else if (this.mode === 'game') this.renderGame(fb);
     else this.renderRoom(fb);
 
-    blitRGBA(fb, this.rgba, this.rgb);
+    blitU32(fb, this.out32, this.pal32);
     this.ctx.putImageData(this.imageData, 0, 0);
   }
 
@@ -581,12 +595,7 @@ class Zap8 {
     }
 
     // Vignette, so the tube edges fall away.
-    fb.shade(0, 0, fb.w, fb.h, (x, y) => {
-      const nx = (x - fb.w / 2) / (fb.w / 2);
-      const ny = (y - fb.h / 2) / (fb.h / 2);
-      const d = nx * nx * 0.9 + ny * ny;
-      return d < 0.75 ? 0 : Math.min(1, (d - 0.75) * 1.5);
-    }, DARK_MAP);
+    applyMask(fb, this.vignette, DARK_MAP);
 
     this.drawTopBar(fb);
   }

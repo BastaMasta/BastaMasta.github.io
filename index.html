@@ -19,8 +19,20 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" media="print" onload="this.media='all'"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
+
+<!-- Let the browser fetch the module graph in parallel instead of discovering
+     each import only after the previous file has parsed. -->
+<link rel="modulepreload" href="/js/main.js">
+<link rel="modulepreload" href="/js/gfx.js">
+<link rel="modulepreload" href="/js/room.js">
+<link rel="modulepreload" href="/js/player.js">
+<link rel="modulepreload" href="/js/font.js">
+<link rel="modulepreload" href="/js/toys/chip8.js">
+<link rel="modulepreload" href="/js/toys/rom.js">
 
 <script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-ETD1YNN5NE"></script>
@@ -108,7 +120,7 @@
     <p class="lede">I write software that runs close to the metal, and when it needs a body, I design the board it runs on. This is the plain version of my portfolio — the same content as the interactive one, minus the pixels.</p>
 
     <figure class="hero">
-      <img src="/images/workshop.png" width="1480" height="360" fetchpriority="high" decoding="async"
+      <img src="/images/workshop.png" width="1480" height="360" loading="lazy" decoding="async"
            alt="Pixel-art panorama of a workshop: a desk with a CRT terminal, a server rack with blinking lights, an electronics bench, a shelf of game cartridges, an arcade cabinet, a mail slot, a printer, a sleeping cat, and a neon ZapBurrito sign.">
       <figcaption>The ZAP&#8209;8 workshop. The interactive version renders this room live, and you can walk around it.</figcaption>
     </figure>

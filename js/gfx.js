@@ -242,6 +242,36 @@ export class Framebuffer {
   }
 }
 
+/* Precomputed lighting.
+   The Bayer threshold depends only on a pixel's absolute position, so for a
+   shape that never moves, "does this pixel get lit" is a constant. Working it
+   out once and keeping the list of framebuffer indices turns a per-frame
+   falloff calculation over tens of thousands of pixels into a flat array walk. */
+export function buildShadeMask(w, h, x, y, sw, sh, fn) {
+  const idx = [];
+  for (let yy = 0; yy < sh; yy++) {
+    const py = y + yy;
+    if (py < 0 || py >= h) continue;
+    for (let xx = 0; xx < sw; xx++) {
+      const px = x + xx;
+      if (px < 0 || px >= w) continue;
+      const amt = fn(xx, yy);
+      if (amt <= 0) continue;
+      if (BAYER4[py & 3][px & 3] >= amt * 16) continue;
+      idx.push(py * w + px);
+    }
+  }
+  return Uint32Array.from(idx);
+}
+
+export function applyMask(fb, mask, map) {
+  const px = fb.px;
+  for (let i = 0; i < mask.length; i++) {
+    const j = mask[i];
+    px[j] = map[px[j]];
+  }
+}
+
 /* Lighting ramp: where light falls, each colour is promoted one step up its
    own ladder rather than being tinted. This is how indexed hardware fakes
    illumination, and it keeps everything inside the 16-colour palette. */
@@ -277,6 +307,30 @@ export function paletteRGB(pal = PALETTE) {
     parseInt(hex.slice(3, 5), 16),
     parseInt(hex.slice(5, 7), 16),
   ]);
+}
+
+/* Packed-pixel palette, so the blit is one 32-bit store per pixel instead of
+   four byte stores. */
+const LITTLE_ENDIAN = (() => {
+  const buf = new ArrayBuffer(4);
+  new Uint32Array(buf)[0] = 1;
+  return new Uint8Array(buf)[0] === 1;
+})();
+
+export function paletteU32(pal = PALETTE) {
+  return Uint32Array.from(pal.map((hex) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return LITTLE_ENDIAN
+      ? (255 << 24) | (b << 16) | (g << 8) | r
+      : (r << 24) | (g << 16) | (b << 8) | 255;
+  }));
+}
+
+export function blitU32(fb, out32, pal32) {
+  const px = fb.px;
+  for (let i = 0; i < px.length; i++) out32[i] = pal32[px[i]];
 }
 
 export function blitRGBA(fb, out, rgb) {

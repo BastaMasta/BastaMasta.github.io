@@ -3,7 +3,7 @@
    hotspot the camera and interaction code use; the art is drawn procedurally
    so it can be tuned without shipping a sprite atlas. */
 
-import { C, T, LIGHT_MAP } from './gfx.js';
+import { C, T, LIGHT_MAP, Framebuffer, buildShadeMask, applyMask } from './gfx.js';
 
 export const ROOM_W = 740;
 export const ROOM_H = 180;
@@ -42,7 +42,7 @@ function led(fb, x, y, on, colOn, colOff = C.VOID) {
 
 /* ---------- the shell: walls, floor, window ---------- */
 
-function drawWalls(fb, t) {
+function drawWalls(fb) {
   fb.rect(0, 0, ROOM_W, FLOOR_Y, C.DEEP);
 
   // Wall panelling: faint vertical seams every 40px.
@@ -66,19 +66,24 @@ function drawWalls(fb, t) {
     fb.line(x, FLOOR_Y + 1, x - 10, fb.h, C.VIOLET);
   }
 
-  drawWindow(fb, t, 236, 16);
+  drawWindow(fb, 236, 16);
   drawCables(fb);
 }
 
-function drawWindow(fb, t, x, y) {
+const WINDOW_X = 236, WINDOW_Y = 16;
+const STARS = [[7,6],[15,12],[24,5],[33,18],[44,9],[50,24],[12,28],[38,31],[20,20],[46,35]];
+
+/* Redrawn every frame — ten pixels, so it stays cheap. */
+function drawStars(fb, t) {
+  for (const [sx, sy] of STARS) {
+    const tw = flick(t, 2.1, sx * 0.7 + sy);
+    fb.set(WINDOW_X + sx, WINDOW_Y + sy, tw > 0.55 ? C.WHITE : C.LILAC);
+  }
+}
+
+function drawWindow(fb, x, y) {
   const w = 58, h = 42;
   fb.rect(x, y, w, h, C.VOID);
-  // Night sky over Belagavi.
-  const stars = [[7,6],[15,12],[24,5],[33,18],[44,9],[50,24],[12,28],[38,31],[20,20],[46,35]];
-  for (const [sx, sy] of stars) {
-    const tw = flick(t, 2.1, sx * 0.7 + sy);
-    fb.set(x + sx, y + sy, tw > 0.55 ? C.WHITE : C.LILAC);
-  }
   // Distant hills.
   for (let i = 0; i < w; i++) {
     const hy = h - 8 + Math.round(Math.sin(i * 0.22) * 2 + Math.sin(i * 0.07) * 2);
@@ -254,10 +259,7 @@ function drawShelf(fb, t, cartCount = 15) {
   for (let r = 0; r < 2; r++) {
     const sy = y + r * 30 + 27;
     for (let i = 0; i < w - 6; i += 2) fb.set(x + 3 + i, sy, C.CYAN);
-    fb.shade(x - 4, sy + 1, w + 8, 22, (xx, yy) => {
-      const nx = (xx - (w + 8) / 2) / ((w + 8) / 2);
-      return Math.max(0, 0.8 * (1 - nx * nx) * (1 - yy / 22));
-    }, LIGHT_MAP);
+    applyMask(fb, cache.shelfGlow[r], LIGHT_MAP);
   }
 
   // One cart pulled halfway out, catching the light.
@@ -422,7 +424,7 @@ function drawCat(fb, t, awake, onRack) {
 
 /* A hanging bulb with a soft dithered cone. Light is the main thing selling
    depth in here, so each fixture also warms the wall behind it. */
-function drawLamp(fb, t, x, cordLen = 22, col = C.AMBER) {
+function drawLampFixture(fb, t, x, cordLen = 22, col = C.AMBER) {
   const sway = Math.sin(t * 0.6 + x) * 0.6;
   const bx = x + Math.round(sway);
   const by = cordLen;
@@ -431,29 +433,32 @@ function drawLamp(fb, t, x, cordLen = 22, col = C.AMBER) {
   fb.rect(bx - 5, by - 3, 11, 3, C.VIOLET);
   fb.rect(bx - 1, by + 2, 3, 2, col);
   fb.set(bx, by + 4, C.AMBER_LT);
+}
 
-  // The cone brightens whatever it lands on instead of tinting it.
-  const top = by + 3;
+/* The cone's shape is fixed, so its dither pattern is too — it is baked into a
+   mask once and replayed as a flat index walk. */
+function lampConeMask(x, cordLen) {
+  const top = cordLen + 3;
   const depth = FLOOR_Y + 14 - top;
   const slope = 0.58, base = 6;
   const maxHalf = Math.ceil(base + depth * slope);
-  fb.shade(bx - maxHalf, top, maxHalf * 2, depth, (xx, yy) => {
+  return buildShadeMask(ROOM_W, ROOM_H, x - maxHalf, top, maxHalf * 2, depth, (xx, yy) => {
     const half = base + yy * slope;
     const dx = Math.abs(xx - maxHalf);
     if (dx > half) return 0;
     const edge = 1 - Math.pow(dx / half, 3.2);
     const fall = Math.pow(1 - yy / depth, 0.85);
     return 1.15 * edge * fall;
-  }, LIGHT_MAP);
+  });
 }
 
 /* Wall glow behind a light-emitting object, so nothing floats. */
-function wallGlow(fb, x, y, w, h, amt = 0.5) {
-  fb.shade(x, y, w, h, (xx, yy) => {
+function wallGlowMask(x, y, w, h, amt = 0.5) {
+  return buildShadeMask(ROOM_W, ROOM_H, x, y, w, h, (xx, yy) => {
     const nx = (xx - w / 2) / (w / 2), ny = (yy - h / 2) / (h / 2);
     const d = nx * nx + ny * ny;
     return d > 1 ? 0 : amt * (1 - d);
-  }, LIGHT_MAP);
+  });
 }
 
 const POSTER_CRAB = [
@@ -544,7 +549,7 @@ function drawStudio(fb, t) {
   fb.frame(sx, sy, sw, sh, buzz ? C.ORANGE : C.BROWN);
   fb.text(sx + 5, sy + 6, 'ZAPBURRITO', buzz ? C.AMBER_LT : C.BROWN);
   if (buzz) {
-    wallGlow(fb, sx - 10, sy - 8, sw + 20, sh + 20, 0.55);
+    applyMask(fb, cache.neonGlow, LIGHT_MAP);
     fb.hline(sx + 3, sy + sh - 3, sw - 6, C.ORANGE);
   }
   // Mounting brackets.
@@ -589,25 +594,61 @@ function drawStudio(fb, t) {
   fb.set(dx + 6, topY - 9, C.RED);
   fb.set(dx + 8, topY - 10, C.CYAN);
 
-  fb.ditherShape(dx - 6, FLOOR_Y, dw + 12, 8, C.ORANGE, (xx, yy) => {
+}
+
+/* ---------- composite ----------
+   The room is mostly static: walls, posters, floor clutter and the wall glows
+   never change. Redrawing all of it procedurally every frame was about 70% of
+   the render cost, which is what made the console feel heavy on phones. It is
+   now painted once into a base layer and copied with a single typed-array set,
+   and every fixed light is a precomputed index mask rather than per-pixel
+   falloff maths. */
+
+let cache = null;
+
+function buildCache() {
+  const base = new Framebuffer(ROOM_W, ROOM_H);
+  drawWalls(base);
+  drawPosters(base);
+
+  // Warm the wall behind each emitter before the objects land on top.
+  for (const [x, y, w, h, amt] of [
+    [16, 56, 70, 62, 0.55],    // CRT
+    [94, 48, 64, 106, 0.4],    // rack
+    [352, 42, 68, 76, 0.6],    // arcade marquee
+  ]) applyMask(base, wallGlowMask(x, y, w, h, amt), LIGHT_MAP);
+
+  drawClutter(base);
+
+  // The studio desk's floor pool sits under everything there, so it bakes in.
+  const dx = 628, dw = 78;
+  base.ditherShape(dx - 6, FLOOR_Y, dw + 12, 8, C.ORANGE, (xx, yy) => {
     const nx = (xx - (dw + 12) / 2) / ((dw + 12) / 2), ny = yy / 8;
     const d = nx * nx + ny * ny;
     return d > 1 ? 0 : 0.3 * (1 - d);
   });
+
+  const shelfX = 258, shelfY = 58, shelfW = 84;
+  return {
+    base,
+    lamps: [204, 508, 664].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
+    shelfGlow: [0, 1].map((r) => {
+      const sy = shelfY + r * 30 + 28;
+      return buildShadeMask(ROOM_W, ROOM_H, shelfX - 4, sy, shelfW + 8, 22, (xx, yy) => {
+        const nx = (xx - (shelfW + 8) / 2) / ((shelfW + 8) / 2);
+        return Math.max(0, 0.8 * (1 - nx * nx) * (1 - yy / 22));
+      });
+    }),
+    neonGlow: wallGlowMask(614, 16, 94, 38, 0.55),
+  };
 }
 
-/* ---------- composite ---------- */
-
 export function drawRoom(fb, t, state = {}) {
-  drawWalls(fb, t);
-  drawPosters(fb);
+  if (!cache) cache = buildCache();
 
-  // Warm the wall behind each emitter before the objects land on top.
-  wallGlow(fb, 16, 56, 70, 62, 0.55);   // CRT
-  wallGlow(fb, 94, 48, 64, 106, 0.4);   // rack
-  wallGlow(fb, 352, 42, 68, 76, 0.6);   // arcade marquee
+  fb.px.set(cache.base.px);          // the static layer, in one copy
+  drawStars(fb, t);
 
-  drawClutter(fb);
   drawDesk(fb, t);
   drawRack(fb, t);
   drawBench(fb, t);
@@ -620,7 +661,8 @@ export function drawRoom(fb, t, state = {}) {
   drawStudio(fb, t);
 
   // Fixtures hang in front of everything they light.
-  drawLamp(fb, t, 204, 22, C.AMBER);
-  drawLamp(fb, t, 508, 26, C.AMBER);
-  drawLamp(fb, t, 664, 20, C.AMBER);
+  drawLampFixture(fb, t, 204, 22, C.AMBER);
+  drawLampFixture(fb, t, 508, 26, C.AMBER);
+  drawLampFixture(fb, t, 664, 20, C.AMBER);
+  for (const m of cache.lamps) applyMask(fb, m, LIGHT_MAP);
 }
