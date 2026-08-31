@@ -120,6 +120,7 @@ class Zap8 {
     this.mode = 'boot';        // boot | room | game
     this.active = true;        // false while the document view is showing
     this.openPanel = null;
+    this.restoreFocus = null;
     this.near = null;
     this.catAwake = false;
     // One roll per visit: nine times out of ten Oreo is on his beanbag, and
@@ -322,7 +323,8 @@ class Zap8 {
         return;
       }
 
-      if ((e.key === 'p' || e.key === 'P') && !this.openPanel) {
+      if (e.key === 'p' || e.key === 'P') {
+        if (this.openPanel) this.closePanel(true);
         this.onTogglePlain?.();
         e.preventDefault();
         return;
@@ -451,6 +453,7 @@ class Zap8 {
 
   showPanel(section) {
     if (this.openPanel) this.closePanel(true);
+    this.restoreFocus = document.activeElement;
     this.openPanel = section;
     section.classList.add('is-open');
     document.body.classList.add('panel-open');
@@ -472,7 +475,12 @@ class Zap8 {
     document.body.classList.remove('panel-open');
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
     if (!quiet) sfx.close();
-    this.canvas.focus?.();
+    // Put focus back where it was, so keyboard users do not lose their place.
+    const back = this.restoreFocus;
+    this.restoreFocus = null;
+    if (back && back.isConnected && typeof back.focus === 'function') {
+      back.focus({ preventScroll: true });
+    }
     this.updateHint();
     this.syncTouchPad();
   }
@@ -975,6 +983,14 @@ function wirePanels(engine) {
    ============================================================ */
 
 function init() {
+  // pointer-events:none hides these from the mouse only; without this they
+  // stay tabbable and lead somewhere that isn't there yet.
+  $$('a.launch[data-soon]').forEach((a) => {
+    a.setAttribute('aria-disabled', 'true');
+    a.setAttribute('tabindex', '-1');
+    a.addEventListener('click', (e) => e.preventDefault());
+  });
+
   buildBinaryKeeb();
   buildFilters();
   buildContactForm();

@@ -12,6 +12,10 @@
 <link rel="apple-touch-icon" href="/images/icon-180.png">
 <link rel="stylesheet" href="/styles.css">
 <style>
+  h1 {
+    font-family: var(--display); font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.14; color: var(--white); margin: 0 0 20px;
+  }
   .crumb { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 22px; }
   .crumb a { color: var(--amber); text-decoration: none; }
   .crumb a:hover { text-decoration: underline; }
@@ -57,9 +61,7 @@
 <main id="doc">
   <p class="crumb"><a href="/">&larr; Sameed Ahmed</a></p>
 
-  <h1 style="font-family:var(--display);font-size:clamp(28px,5vw,44px);line-height:1.14;color:var(--white);margin:0 0 20px;">
-    Brainfuck interpreter
-  </h1>
+  <h1>Brainfuck interpreter</h1>
   <p class="lede">Written in Rust. Brainfuck has eight instructions, no syntax to speak of, and no way to tell what a program does except run it — which makes writing an interpreter for it a genuinely useful afternoon.</p>
 
   <section class="panel">

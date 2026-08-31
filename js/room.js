@@ -15,6 +15,10 @@ export const FLOOR_Y = 148;
      `lx`   where the floating label points, i.e. the object itself.
      `ly`   optional label height, for objects tall enough that the default
             would land on top of them.
+     Every `x` must sit at least a few pixels inside its own `span`: the walk
+     stops within +/-2px of the target, so a stand spot on the span boundary
+     can leave the player just outside the station.
+
      `span` the world range over which the station is actually active. This is
             deliberately separate from `x`: reusing the standing spot as the
             activation range made the rack openable only from a narrow strip on
@@ -25,10 +29,10 @@ export const HOTSPOTS = [
   { id: 'homelab', x: 160, lx: 126, span: [100, 166], label: 'SERVER RACK', panel: 'homelab' },
   { id: 'bench',   x: 205, lx: 205, span: [166, 250], label: 'WORKBENCH',   panel: 'hardware' },
   { id: 'shelf',   x: 299, lx: 299, span: [252, 346], label: 'CARTRIDGES',  panel: 'projects' },
-  { id: 'cat',     x: 352, lx: 370, span: [350, 388], label: 'OREO',        panel: 'cat' },
-  { id: 'arcade',  x: 390, lx: 420, span: [390, 450], label: 'ARCADE',      action: 'game', ly: 40 },
+  { id: 'cat',     x: 356, lx: 370, span: [350, 388], label: 'OREO',        panel: 'cat' },
+  { id: 'arcade',  x: 394, lx: 420, span: [390, 450], label: 'ARCADE',      action: 'game', ly: 40 },
   { id: 'printer', x: 482, lx: 483, span: [452, 512], label: 'PRINTER',     panel: 'resume' },
-  { id: 'mail',    x: 518, lx: 541, span: [516, 566], label: 'MAIL SLOT',   panel: 'contact' },
+  { id: 'mail',    x: 522, lx: 541, span: [516, 566], label: 'MAIL SLOT',   panel: 'contact' },
   { id: 'studio',  x: 620, lx: 613, span: [570, 704], label: 'STUDIO',      panel: 'studio', ly: 58 },
 ];
 
@@ -355,7 +359,7 @@ const CAT = [
   '..d.....d..',
   '.ddd...ddd.',
   '.ddddddddd.',
-  '.dbbdddbbd.',   // blue eyes
+  '.ddbbdbbdd.',   // blue eyes, set closer together
   '.dcccccccd.',
   '..cccnccc..',   // nose
   '..ccccccc..',
@@ -382,7 +386,7 @@ const CAT_MAP = {
   'd': C.BROWN,      // seal points
   'c': C.LILAC_LT,   // cream coat
   'b': C.CYAN,       // blue eyes
-  'n': C.RED,        // nose
+  'n': C.ORANGE,     // nose, muted warm brown-pink
   '-': C.BROWN,      // closed eyes
   '.': T,
 };
