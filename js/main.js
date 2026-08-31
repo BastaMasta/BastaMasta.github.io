@@ -701,56 +701,170 @@ const BOOT_LINES = [
    DOM widgets that live in both modes
    ============================================================ */
 
+/* The BinaryKeeb, as it actually is: two keys, 0 and 1, tapped eight times to
+   spell one ASCII character. The eight-switch layout is kept as an alternative
+   because it is a nicer way to explore a byte, but it is not the hardware. */
 function buildBinaryKeeb() {
   const host = $('[data-widget="binarykeeb"]');
   if (!host) return;
   host.innerHTML = '';
 
-  const live = document.createElement('div');
-  live.className = 'keeb-live';
+  const el = (tag, cls, text) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    if (tag === 'button') n.type = 'button';
+    return n;
+  };
 
-  const keys = document.createElement('div');
-  keys.className = 'keeb-keys';
+  const live = el('div', 'keeb-live');
 
-  const readout = document.createElement('div');
-  readout.className = 'keeb-readout';
-  const chEl = document.createElement('span');
-  chEl.className = 'keeb-char';
-  const numEl = document.createElement('span');
-  numEl.className = 'keeb-num';
-  readout.append(chEl, numEl);
+  // ---- layout switch ----
+  const modes = el('div', 'keeb-modes');
+  modes.setAttribute('role', 'group');
+  modes.setAttribute('aria-label', 'Keyboard layout');
+  const mode2 = el('button', 'keeb-mode', '2-key');
+  const mode8 = el('button', 'keeb-mode', '8-key');
+  modes.append(mode2, mode8);
 
-  const bits = new Array(8).fill(0);
+  // ---- 2-key: the real layout ----
+  const seq = el('div', 'keeb-pane');
+  const screen = el('div', 'keeb-screen');
+  const typedEl = el('span', 'keeb-typed', '');
+  screen.append(typedEl, el('span', 'keeb-caret'));
 
-  function update() {
-    const byte = bits.reduce((acc, b) => (acc << 1) | b, 0);
+  const slots = el('div', 'keeb-slots');
+  const slotEls = Array.from({ length: 8 }, () => {
+    const d = el('span', 'keeb-slot', '·');
+    slots.append(d);
+    return d;
+  });
+
+  const bigkeys = el('div', 'keeb-bigkeys');
+  const key0 = el('button', 'keeb-bigkey', '0');
+  const key1 = el('button', 'keeb-bigkey', '1');
+  bigkeys.append(key0, key1);
+
+  const aux = el('div', 'keeb-aux');
+  const back = el('button', 'keeb-aux-btn', '\u232B');
+  back.setAttribute('aria-label', 'Delete the last bit');
+  const clear = el('button', 'keeb-aux-btn', 'Clear');
+  const hint = el('span', 'keeb-hint');
+  aux.append(back, clear, hint);
+  seq.append(screen, slots, bigkeys, aux);
+
+  let bits = [];
+  let typed = '';
+  let last = null;
+
+  function renderSeq() {
+    slotEls.forEach((sl, i) => {
+      sl.textContent = i < bits.length ? String(bits[i]) : '·';
+      sl.classList.toggle('is-set', i < bits.length);
+      sl.classList.toggle('is-next', i === bits.length);
+    });
+    typedEl.textContent = typed;
+    if (bits.length) {
+      hint.textContent = `${8 - bits.length} more bit${bits.length === 7 ? '' : 's'}`;
+    } else if (last) {
+      hint.textContent = `${last.binary} = ${last.byte} = 0x${last.hex}`
+        + (last.printable ? '' : ' (unprintable)');
+    } else {
+      hint.textContent = 'eight bits, most significant first';
+    }
+  }
+
+  function pushBit(b) {
+    if (bits.length >= 8) return;
+    bits.push(b);
+    sfx.blip(b ? 720 : 420, 0.04);
+    if (bits.length === 8) {
+      const binary = bits.join('');
+      const byte = bits.reduce((a, x) => (a << 1) | x, 0);
+      const printable = byte >= 32 && byte < 127;
+      typed += printable ? String.fromCharCode(byte) : '\u25A1';
+      last = { binary, byte, printable, hex: byte.toString(16).toUpperCase().padStart(2, '0') };
+      bits = [];
+      sfx.blip(980, 0.07);
+    } else {
+      last = null;
+    }
+    renderSeq();
+  }
+
+  key0.addEventListener('click', () => pushBit(0));
+  key1.addEventListener('click', () => pushBit(1));
+  back.addEventListener('click', () => {
+    if (bits.length) bits.pop();
+    else typed = typed.slice(0, -1);
+    last = null;
+    sfx.blip(300, 0.04);
+    renderSeq();
+  });
+  clear.addEventListener('click', () => {
+    bits = []; typed = ''; last = null;
+    sfx.blip(240, 0.06);
+    renderSeq();
+  });
+  // Typing 0/1 works too, once focus is inside the widget.
+  seq.addEventListener('keydown', (e) => {
+    if (e.key === '0' || e.key === '1') { pushBit(Number(e.key)); e.preventDefault(); }
+    else if (e.key === 'Backspace') { back.click(); e.preventDefault(); }
+  });
+
+  // ---- 8-key: the alternative ----
+  const sw = el('div', 'keeb-pane');
+  const swKeys = el('div', 'keeb-keys');
+  const swOut = el('div', 'keeb-readout');
+  const swChar = el('span', 'keeb-char');
+  const swNum = el('span', 'keeb-num');
+  swOut.append(swChar, swNum);
+  const swBits = new Array(8).fill(0);
+
+  function renderSw() {
+    const byte = swBits.reduce((acc, b) => (acc << 1) | b, 0);
     const printable = byte >= 32 && byte < 127;
-    chEl.textContent = printable ? String.fromCharCode(byte) : '·';
-    chEl.style.color = printable ? '' : 'var(--violet-lt)';
-    numEl.textContent = `${bits.join('')}  =  ${byte}  =  0x${byte.toString(16).toUpperCase().padStart(2, '0')}`
+    swChar.textContent = printable ? String.fromCharCode(byte) : '·';
+    swChar.style.color = printable ? '' : 'var(--violet-lt)';
+    swNum.textContent = `${swBits.join('')}  =  ${byte}  =  0x${byte.toString(16).toUpperCase().padStart(2, '0')}`
       + (printable ? '' : '  (unprintable)');
   }
 
-  bits.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'keeb-key';
+  swBits.forEach((_, i) => {
+    const b = el('button', 'keeb-key', '0');
     b.setAttribute('aria-pressed', 'false');
     b.setAttribute('aria-label', `Bit ${7 - i}, value ${1 << (7 - i)}`);
-    b.textContent = '0';
     b.addEventListener('click', () => {
-      bits[i] ^= 1;
-      b.textContent = String(bits[i]);
-      b.setAttribute('aria-pressed', String(!!bits[i]));
-      sfx.blip(bits[i] ? 720 : 360, 0.04);
-      update();
+      swBits[i] ^= 1;
+      b.textContent = String(swBits[i]);
+      b.setAttribute('aria-pressed', String(!!swBits[i]));
+      sfx.blip(swBits[i] ? 720 : 360, 0.04);
+      renderSw();
     });
-    keys.append(b);
+    swKeys.append(b);
   });
+  sw.append(swKeys, swOut);
 
-  live.append(keys, readout);
+  // ---- wire the switch ----
+  function setMode(m) {
+    const two = m !== '8';
+    seq.hidden = !two;
+    sw.hidden = two;
+    mode2.setAttribute('aria-pressed', String(two));
+    mode8.setAttribute('aria-pressed', String(!two));
+    try { localStorage.setItem('zap8:keeb', two ? '2' : '8'); } catch { /* ignore */ }
+  }
+  mode2.addEventListener('click', () => { setMode('2'); sfx.blip(560, 0.04); });
+  mode8.addEventListener('click', () => { setMode('8'); sfx.blip(460, 0.04); });
+
+  live.append(modes, seq, sw);
   host.append(live);
-  update();
+
+  let saved = '2';
+  try { saved = localStorage.getItem('zap8:keeb') || '2'; } catch { /* ignore */ }
+  setMode(saved);
+  renderSeq();
+  renderSw();
 }
 
 function buildFilters() {

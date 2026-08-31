@@ -2,20 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sameed Ahmed — Systems Programmer</title>
 <meta name="description" content="Sameed Ahmed (BastaMasta) — systems programmer in Belagavi, India. Rust, a hobby kernel, a CHIP-8 interpreter, custom PCBs, and a Debian box doing more work than it signed up for.">
 <meta name="theme-color" content="#0b0a12">
 <link rel="canonical" href="https://bastamasta.dev">
 <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://bastamasta.dev">
 <meta property="og:title" content="Sameed Ahmed — Systems Programmer">
 <meta property="og:description" content="A portfolio you walk around. Rust, kernels, PCBs, and a home server that never sleeps.">
-<meta property="og:image" content="https://bastamasta.dev/images/profile-hero.jpg">
+<meta property="og:site_name" content="Sameed Ahmed">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://bastamasta.dev/images/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pixel-art workshop: a server rack, an electronics bench, a shelf of game cartridges, an arcade cabinet and a cat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@BastaMasta3150">
+<meta name="twitter:image" content="https://bastamasta.dev/images/social-card.png">
+<meta name="author" content="Sameed Ahmed">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -207,7 +216,7 @@
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Interpreter</span></p>
         <p>An interpreter for the least ergonomic language ever designed. Writing one is a rite of passage; writing one that's fast is an actual exercise.</p>
         <p class="cart-links">
-          <a href="./projects/brainfuck/">Try it here</a>
+          <a href="/projects/brainfuck/">Try it here</a>
           <a class="launch" href="https://play.bastamasta.dev/bf" rel="noopener" data-soon>Run the real binary</a>
         </p>
       </li>
@@ -236,7 +245,7 @@
       <li class="cart" data-status="done" data-hue="cyan" data-code="BK">
         <h3>BinaryKeeb 1.0</h3>
         <p class="cart-meta"><span class="tag">Hardware</span><span class="tag">Python</span></p>
-        <p>Eight keys, eight bits, one character at a time. Slower than a keyboard and infinitely more satisfying.</p>
+        <p>Two keys — one for <code>0</code>, one for <code>1</code>. Eight taps spells one character. Slower than a keyboard and infinitely more satisfying.</p>
         <p class="cart-links"><a href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener">GitHub</a></p>
       </li>
 
@@ -310,10 +319,10 @@
     <p>Where software stops being an abstraction. Boards drawn in KiCad, assembled by hand, debugged with a multimeter and optimism.</p>
 
     <h3>BinaryKeeb 1.0</h3>
-    <p>An eight-key keyboard. Each key is one bit. You type a byte, it types a character. It is a deeply impractical object and I love it.</p>
+    <p>A two-key keyboard: one key for <code>0</code>, one for <code>1</code>. You tap eight bits and it prints the ASCII character they spell. It is a deeply impractical object and I love it.</p>
 
     <div class="keeb" data-widget="binarykeeb">
-      <p class="keeb-fallback">Eight toggle switches, one per bit — flip them to spell a character in ASCII. <em>Interactive with JavaScript enabled.</em></p>
+      <p class="keeb-fallback">Two keys, <code>0</code> and <code>1</code>. Enter eight bits and it emits the matching ASCII character. <em>Interactive with JavaScript enabled.</em></p>
     </div>
 
     <h3>Lumio V2</h3>

@@ -1,103 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Sameed's Weird Site</title>
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-    <link rel="stylesheet" href="bf_styles.css">
-    <script src="https://kit.fontawesome.com/28dc592e68.js" crossorigin="anonymous"></script>
-    <style>
-        body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
-        .w3-row-padding img {margin-bottom: 12px}
-        /* Set the width of the sidebar to 120px */
-        .w3-sidebar {width: 120px;background: #222;}
-        /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-        #main {margin-left: 120px}
-        /* Remove margins from "page content" on small screens */
-        @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brainfuck interpreter — Sameed Ahmed</title>
+<meta name="description" content="A Brainfuck interpreter written in Rust by Sameed Ahmed. Run programs here in the browser; a hosted version calling the real compiled binary is on the way.">
+<meta name="theme-color" content="#0b0a12">
+<link rel="canonical" href="https://bastamasta.dev/projects/brainfuck/">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .crumb { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin: 0 0 22px; }
+  .crumb a { color: var(--amber); text-decoration: none; }
+  .crumb a:hover { text-decoration: underline; }
 
-    </style>
+  .bf { display: grid; gap: 14px; margin: 28px 0 8px; }
+  .bf label {
+    display: block; font-size: 11px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--amber); margin-bottom: 6px;
+  }
+  #bf-code {
+    min-height: 132px; resize: vertical; line-height: 1.5;
+    font-size: 14px; letter-spacing: .04em;
+  }
+  .bf-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .bf-row > div { flex: 1 1 240px; }
+  .bf-out {
+    min-height: 64px; padding: 14px 16px; white-space: pre-wrap; word-break: break-word;
+    background: var(--void); border: 1px solid var(--violet); border-radius: var(--radius);
+    color: var(--amber-lt); font-size: 15px;
+  }
+  .bf-out.is-empty { color: var(--violet-lt); }
+  .bf-status { font-size: 12px; color: var(--lilac); min-height: 1.2em; }
+  .bf-status.is-ok { color: var(--green); }
+  .bf-status.is-err { color: var(--red); }
+  .bf-samples { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .bf-samples span {
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--lilac);
+  }
+  .bf-samples button {
+    font: inherit; font-size: 12px; padding: 6px 12px; cursor: pointer;
+    background: transparent; color: var(--lilac);
+    border: 1px solid var(--violet); border-radius: var(--radius);
+  }
+  .bf-samples button:hover { color: var(--white); border-color: var(--lilac); }
+  .soon { border-left: 2px solid var(--amber); padding-left: 16px; }
+  .ops { display: grid; grid-template-columns: 42px 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
+  .ops dt { color: var(--amber-lt); }
+  .ops dd { margin: 0; color: var(--lilac-lt); }
+</style>
 </head>
-<body class="w3-black">
+<body class="plain">
 
-<!-- Navbar-->
-<div class="w3-top" id="myNavbar">
-    <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-left-align">
-        <a href="https://bastamasta.dev" class="w3-bar-item w3-button" style="width:10% !important; margin-left: 1%"><i class="fa fa-home w3-large"></i><br>HOME
-        </a>
-    </div>
-</div>
+<main id="doc">
+  <p class="crumb"><a href="/">&larr; Sameed Ahmed</a></p>
 
-<!-- Page Content -->
-<div class="w3-padding-large" id="main" style="margin-left: 0%">
-    <!-- Header/Home -->
-    <div class="w3-center w3-black w3-padding-16" ><br></div>
-    <div class="w3-center w3-black" id="home">
-        <div class="wavebg">
-            <h2 class="w3-xxxlarge"><span class="w3-hide-small"></span>BrainFuck<br>Interpreter</h2>
-            <p class="w3-xlarge">By Sameed Ahmed.</p>
+  <h1 style="font-family:var(--display);font-size:clamp(28px,5vw,44px);line-height:1.14;color:var(--white);margin:0 0 20px;">
+    Brainfuck interpreter
+  </h1>
+  <p class="lede">Written in Rust. Brainfuck has eight instructions, no syntax to speak of, and no way to tell what a program does except run it — which makes writing an interpreter for it a genuinely useful afternoon.</p>
+
+  <section class="panel">
+    <h2>Run something</h2>
+    <p>This page runs a JavaScript port of the same design, so it works without a server. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> runs. The input box is a byte stream: the first <code>,</code> takes the first character, the next <code>,</code> takes the one after it, and reading past the end gives zero.</p>
+
+    <div class="bf">
+      <div>
+        <label for="bf-code">Program</label>
+        <textarea id="bf-code" class="text-input" spellcheck="false" autocomplete="off">++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.</textarea>
+      </div>
+
+      <div class="bf-row">
+        <div>
+          <label for="bf-input">Input &mdash; each <code>,</code> reads the next character</label>
+          <input id="bf-input" class="text-input" type="text" spellcheck="false" autocomplete="off" value="">
         </div>
+        <button id="run-btn" class="btn primary" type="button">Run</button>
+      </div>
+
+      <div class="bf-samples">
+        <span>Samples</span>
+        <button type="button" data-sample="++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.">Hello World</button>
+        <button type="button" data-sample=",[.,]" data-input="echo me">Echo input</button>
+        <button type="button" data-sample="&gt;,[&gt;,]&lt;[.&lt;]" data-input="stressed">Reverse input</button>
+      </div>
+
+      <div>
+        <label for="bf-output">Output</label>
+        <div class="bf-out" id="bf-output">Hello World!</div>
+      </div>
+      <p class="bf-status" id="bf-status"></p>
     </div>
+  </section>
 
-    <!-- About Section -->
-    <div class="w3-container w3-padding-small">
-    <div class="w3-container w3-justify w3-text-light-grey w3-padding-small" id="about">
-        <h3 class="w3-text-light-grey">BrainFuck Interpreter (In Rust)</h3>
-        <hr style="width:100%" class="w3-opacity">
-        <p> Brainfuck is a turing complete programming language, built with only 8 commands, that is almost never used
-            for any sort of programming. BF is Known for its extreme minimalism and challenging syntax, Brainfuck is
-            designed to be a playful and educational exercise rather than a practical language for real-world
-            applications.
-        </p>
-        <p>This is one of my few big projects, a program written in rust, that is fully capable of interpreting Brainfuck code, all on its own.</p>
-    </div>
-    </div>
-    <div class="" style="margin-left: 30% ; width: 40%; height: 10%">
-        <p class="w3-padding-16 ">Here is a brainfuck Program to print "Hello World" : </p>
-        <script src="https://gist.github.com/BastaMasta/336c0f057811d6038bccb9b660086bdf.js"></script>
-    </div>
-    <div class="w3-center w3-padding-64">
-        <a href="/projects/brainfuck/assets/brainfuck_interpreter.exe" style="float:left; display:inline">
-            <i class="fa fa-download w3-xxxlarge"></i><p>Download CLI Executable</p>
-        </a><a href="https://github.com/BastaMasta/Personal-Projects/tree/main/brainfuck_interpreter" style="float:right; display:inline" target="_blank">
-        <i class="fa-solid fa-code w3-xxxlarge"></i><p>View Code</p>
-    </a>
-    </div>
-    <div class="w3-center w3-black w3-padding-16" style="height: 120px"><br></div>
+  <section class="panel">
+    <h2>The eight instructions</h2>
+    <dl class="ops">
+      <dt>&gt; &lt;</dt><dd>move the data pointer right or left</dd>
+      <dt>+ &minus;</dt><dd>increment or decrement the byte under the pointer</dd>
+      <dt>. ,</dt><dd>output the byte, or read one in</dd>
+      <dt>[ ]</dt><dd>jump past the matching bracket if the byte is zero, or back to it if it isn't</dd>
+    </dl>
+    <p class="aside">That's the whole language. It's Turing complete, which is the joke.</p>
+  </section>
 
-    <!-- Contact Section -->
-    <div class="w3-padding-32 w3-text-grey" id="contact" style="margin-left: 10%">
-        <h2 class="w3-text-light-grey">Contact Me</h2>
-        <hr style="width:200px" class="w3-opacity">
+  <section class="panel">
+    <h2>The real one</h2>
+    <p class="soon">The interpreter is a Rust binary, and the version running above is a port of it. I'm standing up a small hosted service that shells out to the actual compiled binary — same code you'd get from <code>cargo build</code> — and this page will redirect there once it's live. Until then, the port behaves the same for anything you'd reasonably type into a web page.</p>
+    <p class="masthead-actions">
+      <a class="btn" href="https://github.com/BastaMasta/Personal-Projects/tree/main/brainfuck_interpreter" rel="noopener noreferrer">Source on GitHub</a>
+      <a class="btn" href="/projects/brainfuck/assets/brainfuck_interpreter.exe" download>Download the CLI (Windows)</a>
+      <a class="btn primary" href="/#doc-projects">Other projects</a>
+    </p>
+  </section>
 
-        <div class="w3-section">
-            <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Belagavi, India</p>
-            <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Phone: +91 9353891420</p>
-            <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: sameedahmed@bastamasta.dev</p>
-            <div class="w3-padding-32 w3-center" style="margin-left: -10%">
-                <a href="/docs/Resume.pdf" class="w3-btn w3-gray w3-hover-white" target="_blank">View Resume</a>
-            </div>
-        </div>
-        <!-- End Contact Section -->
-    </div>
+  <footer id="colophon">
+    <p>&copy; 2026 Sameed Ahmed &middot; <a href="/">bastamasta.dev</a></p>
+  </footer>
+</main>
 
-    <!-- Footer -->
-    <footer class="w3-content w3-padding64  w3-text-grey w3-xlarge w3-center">
-        <i class="w3-xxlarge"><a class = "fa fa-instagram w3-hover-opacity w3-btn" href = "https://www.instagram.com/sameed_ahmed_3150/" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-discord w3-hover-opacity w3-btn" href = "https://discordapp.com/users/690079385436684302" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-github w3-hover-opacity w3-btn" href = "https://github.com/BastaMasta" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa-brands fa-x-twitter w3-hover-opacity w3-btn" href = "https://x.com/BastaMasta3150?s=09" target="_blank"></a></i>
-        <i class="w3-xxlarge"><a class = "fa fa-linkedin w3-hover-opacity w3-btn" href = "https://www.linkedin.com/in/sameed-ahmed-354a7b258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank"></a></i>
-        <!-- End footer -->
-    </footer>
-    <div class="w3-padding-32"></div>
-
-
-<!-- END PAGE CONTENT -->
-</div>
-
+<script src="script.js"></script>
 </body>
 </html>

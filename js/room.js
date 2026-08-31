@@ -5,7 +5,7 @@
 
 import { C, T, LIGHT_MAP, Framebuffer, buildShadeMask, applyMask } from './gfx.js';
 
-export const ROOM_W = 740;
+export const ROOM_W = 704;
 export const ROOM_H = 180;
 export const FLOOR_Y = 148;
 
@@ -25,12 +25,13 @@ export const HOTSPOTS = [
   { id: 'homelab', x: 160, lx: 126, span: [100, 166], label: 'SERVER RACK', panel: 'homelab' },
   { id: 'bench',   x: 205, lx: 205, span: [166, 250], label: 'WORKBENCH',   panel: 'hardware' },
   { id: 'shelf',   x: 299, lx: 299, span: [252, 346], label: 'CARTRIDGES',  panel: 'projects' },
-  { id: 'cat',     x: 356, lx: 374, span: [350, 396], label: 'OREO',        panel: 'cat' },
-  { id: 'printer', x: 418, lx: 452, span: [400, 478], label: 'PRINTER',     panel: 'resume' },
-  { id: 'mail',    x: 486, lx: 514, span: [482, 542], label: 'MAIL SLOT',   panel: 'contact' },
-  { id: 'arcade',  x: 548, lx: 582, span: [546, 610], label: 'ARCADE',      action: 'game', ly: 40 },
-  { id: 'studio',  x: 668, lx: 662, span: [614, 740], label: 'STUDIO',      panel: 'studio', ly: 58 },
+  { id: 'cat',     x: 352, lx: 370, span: [350, 388], label: 'OREO',        panel: 'cat' },
+  { id: 'arcade',  x: 390, lx: 420, span: [390, 450], label: 'ARCADE',      action: 'game', ly: 40 },
+  { id: 'printer', x: 482, lx: 483, span: [452, 512], label: 'PRINTER',     panel: 'resume' },
+  { id: 'mail',    x: 518, lx: 541, span: [516, 566], label: 'MAIL SLOT',   panel: 'contact' },
+  { id: 'studio',  x: 620, lx: 613, span: [570, 704], label: 'STUDIO',      panel: 'studio', ly: 58 },
 ];
+
 /* ---------- helpers ---------- */
 
 const flick = (t, speed, seed) =>
@@ -208,7 +209,8 @@ function drawBench(fb, t) {
   fb.rect(px + 4, py + 7, 5, 3, C.VOID);      // IC
   fb.set(px + 20, py + 9, C.RED);             // LED
 
-  // BinaryKeeb — eight keys, lit by the byte the panel is showing.
+  // BinaryKeeb — the eight bit LEDs, showing the byte currently being entered.
+  // (The board itself has only two keys; this row is its readout.)
   const kx = x + 36, ky = topY - 5;
   const byte = Math.floor(t * 2) & 0xff;
   for (let i = 0; i < 8; i++) {
@@ -272,7 +274,7 @@ function drawShelf(fb, t, cartCount = 15) {
 /* ---------- 5. arcade cabinet (ZapBurrito Studios) ---------- */
 
 function drawArcade(fb, t) {
-  const x = 560, y = 54, w = 44, h = FLOOR_Y - y;
+  const x = 398, y = 54, w = 44, h = FLOOR_Y - y;
   fb.rect(x, y, w, h, C.INDIGO);
   fb.frame(x, y, w, h, C.ORANGE);
   // Marquee.
@@ -303,7 +305,7 @@ function drawArcade(fb, t) {
 /* ---------- 6. mail slot (contact) ---------- */
 
 function drawMail(fb, t) {
-  const x = 498, y = 74, w = 32, h = 26;
+  const x = 525, y = 74, w = 32, h = 26;
   fb.rect(x, y, w, h, C.VIOLET);
   fb.frame(x, y, w, h, C.VIOLET_LT);
   fb.rect(x + 4, y + 6, w - 8, 4, C.VOID);       // the slot
@@ -323,7 +325,7 @@ function drawMail(fb, t) {
 /* ---------- 7. printer (resume) ---------- */
 
 function drawPrinter(fb, t) {
-  const x = 432, topY = 116, w = 40;
+  const x = 463, topY = 116, w = 40;
   // Side table.
   fb.rect(x - 2, topY, w + 4, 3, C.BROWN);
   fb.rect(x + 2, topY + 3, 3, FLOOR_Y - topY - 3, C.BROWN_DK);
@@ -350,15 +352,20 @@ function drawPrinter(fb, t) {
 /* Oreo, a ragdoll: cream coat, dark seal points on the ears, mask and paws,
    and the blue eyes the breed is known for. */
 const CAT = [
-  '..d...d..',
-  '.ddd.ddd.',
-  '.ddddddd.',
-  '.dbbdbbd.',
-  '.dcccccd.',
-  '..ccncc..',
-  '.ccccccc.',
-  'ccccccccc',
-  '.dd...dd.',
+  '..d.....d..',
+  '.ddd...ddd.',
+  '.ddddddddd.',
+  '.dbbdddbbd.',   // blue eyes
+  '.dcccccccd.',
+  '..cccnccc..',   // nose
+  '..ccccccc..',
+  '...ccccc...',   // neck
+  '..ccccccc..',
+  '.ccccccccc.',
+  '.ccccccccc.',
+  'ccccccccccc',
+  'ccccccccccc',
+  '..ddcccdd..',   // front paws
 ];
 const CAT_SLEEP = [
   '.........',
@@ -380,15 +387,40 @@ const CAT_MAP = {
   '.': T,
 };
 
+/* A ragdoll's tail is the best thing about it: thin where it joins, full and
+   plumed toward the tip. Drawn as overlapping discs so it reads as fur rather
+   than a drawn line. It drops away from the body and then lies along whatever
+   is under it, with the last third twitching. */
+function drawCatTail(fb, bx, by, t, opts = {}) {
+  const { reach = 6, drop = 7, flick = 2, speed = 2.2 } = opts;
+  const sway = Math.sin(t * speed);
+  const at = (p) => {
+    const tip = Math.max(0, p - 0.6) / 0.4;      // only the end moves
+    return [
+      bx + Math.round(p * reach),
+      by + Math.round(Math.sqrt(p) * drop - sway * tip * flick),
+    ];
+  };
+  for (let i = 0; i < 8; i++) {
+    const p = i / 7;
+    const [tx, ty] = at(p);
+    fb.discE(tx, ty, i < 1 ? 0 : 1, C.BROWN);
+  }
+  // A lighter crest along the upper edge gives it volume.
+  for (let i = 3; i < 8; i++) {
+    const [tx, ty] = at(i / 7);
+    fb.set(tx, ty - 1, C.LILAC_LT);
+  }
+}
+
 /* Loafing on top of the rack — the warm spot. Drawn after the rack so he sits
    on it. */
 function drawCatOnRack(fb, t) {
-  const x = 122, y = 58 - 9;   // centred on the 106..146 cabinet
+  const x = 121, y = 58 - 14;  // centred on the 106..146 cabinet
   const bob = Math.round(Math.sin(t * 0.9) * 0.5);
   fb.sprite(x, y + bob, CAT, CAT_MAP);
-  // Tail hanging down the side of the cabinet.
-  const sway = Math.round(Math.sin(t * 1.4) * 2);
-  fb.line(x + 8, y + 7 + bob, x + 12 + sway, y + 14 + bob, C.BROWN);
+  // Up here it drapes over the front edge of the cabinet instead.
+  drawCatTail(fb, x + 9, y + 11 + bob, t, { reach: 2, drop: 5, flick: 1, speed: 1.5 });
   // A little warmth rising off the vents.
   for (let i = 0; i < 3; i++) {
     const sy = y - 3 - i * 3;
@@ -397,7 +429,7 @@ function drawCatOnRack(fb, t) {
 }
 
 function drawCat(fb, t, awake, onRack) {
-  const x = 366, y = FLOOR_Y - 12;
+  const x = 361, y = FLOOR_Y - 12;
   // Beanbag — always there, whether or not it is occupied.
   fb.discE(x + 9, FLOOR_Y - 3, 8, C.VIOLET);
   fb.ditherRect(x + 1, FLOOR_Y - 6, 16, 5, C.VIOLET, C.VIOLET_LT, 0.4);
@@ -409,9 +441,8 @@ function drawCat(fb, t, awake, onRack) {
   }
   const bob = Math.round(Math.sin(t * 1.1) * 0.5);
   if (awake) {
-    fb.sprite(x + 5, y + bob, CAT, CAT_MAP);
-    // Tail flick.
-    fb.line(x + 14, y + 7, x + 18 + Math.round(Math.sin(t * 3) * 2), y + 3, C.BROWN);
+    fb.sprite(x + 4, FLOOR_Y - 20 + bob, CAT, CAT_MAP);
+    drawCatTail(fb, x + 13, FLOOR_Y - 11 + bob, t);
   } else {
     fb.sprite(x + 5, y + 3 + bob, CAT_SLEEP, CAT_MAP);
     // Zzz.
@@ -496,7 +527,7 @@ function drawPosters(fb) {
   fb.set(x + 11, y + 2, C.RED);
 
   // "There's no place like 127.0.0.1" strip above the mail slot.
-  x = 486; y = 50;
+  x = 513; y = 50;
   fb.rect(x, y, 52, 12, C.INDIGO);
   fb.frame(x, y, 52, 12, C.VIOLET);
   fb.text(x + 3, y + 3, '127.0.0.1', C.GREEN, { shadow: T, spacing: 5 });
@@ -544,7 +575,7 @@ const CONCEPT_HERO = [
 
 function drawStudio(fb, t) {
   // --- neon sign ---
-  const sx = 624, sy = 24, sw = 74, sh = 18;
+  const sx = 577, sy = 24, sw = 74, sh = 18;
   const buzz = flick(t, 9, 1.7) > 0.08;            // occasional neon stutter
   fb.rect(sx, sy, sw, sh, C.VOID);
   fb.frame(sx, sy, sw, sh, buzz ? C.ORANGE : C.BROWN);
@@ -558,7 +589,7 @@ function drawStudio(fb, t) {
   fb.vline(sx + sw - 8, sy - 6, 6, C.VIOLET);
 
   // --- corkboard of concept sketches ---
-  const bx = 706, by = 34, bw = 28, bh = 36;
+  const bx = 659, by = 34, bw = 28, bh = 36;
   fb.rect(bx, by, bw, bh, C.BROWN);
   fb.frame(bx, by, bw, bh, C.BROWN_DK);
   fb.sprite(bx + 4, by + 4, CONCEPT_HERO, { '#': C.AMBER, 'o': C.VOID, 'v': C.RED, '.': T });
@@ -567,7 +598,7 @@ function drawStudio(fb, t) {
   fb.set(bx + bw - 6, by + 2, C.RED);
 
   // --- design desk ---
-  const dx = 628, topY = 110, dw = 78;
+  const dx = 581, topY = 110, dw = 78;
   fb.rect(dx, topY, dw, 4, C.BROWN);
   fb.hline(dx, topY, dw, C.ORANGE);
   fb.rect(dx + 4, topY + 4, 4, FLOOR_Y - topY - 4, C.BROWN_DK);
@@ -616,13 +647,13 @@ function buildCache() {
   for (const [x, y, w, h, amt] of [
     [16, 56, 70, 62, 0.55],    // CRT
     [94, 48, 64, 106, 0.4],    // rack
-    [548, 42, 68, 76, 0.6],    // arcade marquee
+    [386, 42, 68, 76, 0.6],    // arcade marquee
   ]) applyMask(base, wallGlowMask(x, y, w, h, amt), LIGHT_MAP);
 
   drawClutter(base);
 
   // The studio desk's floor pool sits under everything there, so it bakes in.
-  const dx = 628, dw = 78;
+  const dx = 581, dw = 78;
   base.ditherShape(dx - 6, FLOOR_Y, dw + 12, 8, C.ORANGE, (xx, yy) => {
     const nx = (xx - (dw + 12) / 2) / ((dw + 12) / 2), ny = yy / 8;
     const d = nx * nx + ny * ny;
@@ -632,7 +663,7 @@ function buildCache() {
   const shelfX = 258, shelfY = 58, shelfW = 84;
   return {
     base,
-    lamps: [204, 452, 664].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
+    lamps: [204, 484, 620].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
     shelfGlow: [0, 1].map((r) => {
       const sy = shelfY + r * 30 + 28;
       return buildShadeMask(ROOM_W, ROOM_H, shelfX - 4, sy, shelfW + 8, 22, (xx, yy) => {
@@ -640,7 +671,7 @@ function buildCache() {
         return Math.max(0, 0.8 * (1 - nx * nx) * (1 - yy / 22));
       });
     }),
-    neonGlow: wallGlowMask(614, 16, 94, 38, 0.55),
+    neonGlow: wallGlowMask(567, 16, 94, 38, 0.55),
   };
 }
 
@@ -663,7 +694,7 @@ export function drawRoom(fb, t, state = {}) {
 
   // Fixtures hang in front of everything they light.
   drawLampFixture(fb, t, 204, 22, C.AMBER);
-  drawLampFixture(fb, t, 452, 26, C.AMBER);
-  drawLampFixture(fb, t, 664, 20, C.AMBER);
+  drawLampFixture(fb, t, 484, 26, C.AMBER);
+  drawLampFixture(fb, t, 620, 20, C.AMBER);
   for (const m of cache.lamps) applyMask(fb, m, LIGHT_MAP);
 }

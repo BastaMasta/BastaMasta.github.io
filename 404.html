@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Sameed Ahmed</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0a12">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+<link rel="stylesheet" href="/styles.css">
+<style>
+  .err { max-width: 620px; padding-block: clamp(48px, 14vh, 140px); }
+  .err-code {
+    font-size: 12px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--red); margin: 0 0 20px;
+  }
+  .err h1 {
+    font-family: var(--display); font-size: clamp(26px, 5vw, 42px);
+    line-height: 1.15; color: var(--white); margin: 0 0 22px;
+  }
+  .err-screen {
+    margin: 32px 0; padding: 18px 20px;
+    border: 1px solid var(--violet); border-radius: var(--radius);
+    background: var(--void); color: var(--green); font-size: 13px;
+  }
+  .err-screen span { color: var(--violet-lt); }
+</style>
+</head>
+<body class="plain">
+<main id="doc">
+  <div class="err">
+    <p class="err-code">Err 404</p>
+    <h1>No cartridge in that slot.</h1>
+    <p>The page you asked for isn't here. It either moved, or it never existed — a fair number of things on this site are still in progress, and the ones that aren't finished don't get URLs yet.</p>
+
+    <div class="err-screen">
+      <span>&gt;</span> locate <span>--slot</span> requested<br>
+      <span>&gt;</span> 15 cartridges found, none matching<br>
+      <span>&gt;</span> returning to the workshop…
+    </div>
+
+    <p class="masthead-actions">
+      <a class="btn primary" href="/">Back to the workshop</a>
+      <a class="btn" href="/?plain">Read the plain version</a>
+    </p>
+  </div>
+</main>
+</body>
+</html>

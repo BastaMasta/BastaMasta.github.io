@@ -74,57 +74,53 @@ function interpretBrainfuck(code, input = "") {
 }
 
 // Connect the UI to the interpreter
+
+/* ---- page wiring ----
+   Everything below used to live inside the click handler, which meant the
+   focus listeners were re-registered on every run, and a null #navToggle threw
+   part-way through handling the click. */
+
 const runBtn = document.getElementById('run-btn');
 const codeInput = document.getElementById('bf-code');
 const userInput = document.getElementById('bf-input');
 const outputEl = document.getElementById('bf-output');
+const statusEl = document.getElementById('bf-status');
 
-runBtn.addEventListener('click', function() {
-    const code = codeInput.value;
-    const input = userInput.value;
+function setStatus(text, kind) {
+  if (!statusEl) return;
+  statusEl.textContent = text;
+  statusEl.className = 'bf-status' + (kind ? ' is-' + kind : '');
+}
 
-    // Add cyberpunk animation effect to button
-    this.classList.add('glitch');
-    setTimeout(() => this.classList.remove('glitch'), 500);
+function run() {
+  const code = codeInput.value;
+  const input = userInput.value;
+  const started = performance.now();
 
-    try {
-        const result = interpretBrainfuck(code, input);
-        outputEl.innerHTML = ""; // Clear previous output
+  try {
+    const result = interpretBrainfuck(code, input);
+    // textContent, never innerHTML: the program's output is arbitrary bytes,
+    // and a program that printed markup would otherwise run it on this origin.
+    outputEl.textContent = result || '(no output)';
+    outputEl.classList.toggle('is-empty', !result);
+    setStatus(`ran in ${(performance.now() - started).toFixed(1)} ms · ${result.length} byte${result.length === 1 ? '' : 's'} out`, 'ok');
+  } catch (error) {
+    outputEl.textContent = String(error && error.message ? error.message : error);
+    outputEl.classList.remove('is-empty');
+    setStatus('error', 'err');
+  }
+}
 
-        // Add a typing effect to output
-        let typingOutput = "";
-        let index = 0;
+if (runBtn && codeInput && userInput && outputEl) {
+  runBtn.addEventListener('click', run);
+  codeInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { run(); e.preventDefault(); }
+  });
 
-        function typeEffect() {
-            if (index < result.length) {
-                typingOutput += result[index];
-                outputEl.innerHTML = typingOutput;
-                index++;
-                setTimeout(typeEffect, 50); // Adjust typing speed
-            }
-        }
-
-        if (result) {
-            typeEffect();
-        } else {
-            outputEl.innerHTML = '<span style="color:#888">No output</span>';
-        }
-
-    } catch (error) {
-        outputEl.innerHTML = `<span style="color:red">Error: ${error.message}</span>`;
-    }
-
-    // Cyberpunk Navbar Toggle
-    const navToggle = document.getElementById('navToggle');
-    const navItems = document.querySelector('.nav-items');
-
-    navToggle.addEventListener('click', function() {
-        navItems.classList.toggle('active');
-        navToggle.classList.toggle('active');
-    });
-
-    // Cyberpunk Input Effects
-    const bfCodeInput = document.getElementById('bf-code');
-    bfCodeInput.addEventListener('focus', () => bfCodeInput.classList.add('cyber-active'));
-    bfCodeInput.addEventListener('blur', () => bfCodeInput.classList.remove('cyber-active'));
-});
+  const samples = document.querySelectorAll('[data-sample]');
+  samples.forEach((b) => b.addEventListener('click', () => {
+    codeInput.value = b.dataset.sample;
+    userInput.value = b.dataset.input || '';
+    run();
+  }));
+}

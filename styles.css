@@ -267,7 +267,73 @@ blockquote footer { font-size: 12px; color: var(--lilac); letter-spacing: .06em;
 /* --- the binary keyboard widget --- */
 .keeb { margin: 20px 0 28px; }
 .keeb-fallback { font-size: 13px; color: var(--lilac); }
-.keeb-live { display: grid; gap: 14px; max-width: 420px; }
+.keeb-live { display: grid; gap: 14px; max-width: 460px; }
+
+/* Layout switch: two keys is the real hardware, eight is the alternative. */
+.keeb-modes { display: inline-flex; gap: 4px; }
+.keeb-mode {
+  font: inherit; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  padding: 6px 13px; cursor: pointer;
+  background: transparent; color: var(--lilac);
+  border: 1px solid var(--violet); border-radius: var(--radius);
+}
+.keeb-mode:hover { color: var(--white); border-color: var(--lilac); }
+.keeb-mode[aria-pressed="true"] {
+  background: var(--amber); border-color: var(--amber); color: var(--void); font-weight: 600;
+}
+
+.keeb-pane { display: grid; gap: 12px; }
+.keeb-pane[hidden] { display: none; }
+
+/* The little screen the characters land on. */
+.keeb-screen {
+  min-height: 2.6em;
+  display: flex; align-items: center; flex-wrap: wrap;
+  padding: 10px 14px;
+  font-size: 22px; line-height: 1.2; word-break: break-all;
+  color: var(--amber-lt);
+  background: var(--void);
+  border: 1px solid var(--violet); border-radius: var(--radius);
+}
+.keeb-typed { color: inherit; }
+.keeb-caret {
+  display: inline-block; width: 9px; height: 1.05em; margin-left: 2px;
+  background: var(--amber); animation: keeb-blink 1.05s steps(1, end) infinite;
+}
+@keyframes keeb-blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+/* The eight bits of the character being spelled. */
+.keeb-slots { display: flex; gap: 6px; }
+.keeb-slot {
+  flex: 1; text-align: center;
+  padding: 7px 0; font-size: 15px;
+  color: var(--violet-lt);
+  border: 1px solid var(--violet); border-radius: var(--radius);
+  background: var(--void);
+}
+.keeb-slot.is-set { color: var(--cyan); border-color: var(--violet-lt); }
+.keeb-slot.is-next { border-color: var(--amber); }
+
+.keeb-bigkeys { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.keeb-bigkey {
+  font: inherit; font-size: 26px; font-weight: 600;
+  padding: 16px 0; cursor: pointer;
+  color: var(--white); background: var(--indigo);
+  border: 1px solid var(--violet-lt); border-bottom-width: 4px;
+  border-radius: 4px;
+  transition: background .08s, transform .06s;
+}
+.keeb-bigkey:hover { background: var(--violet); }
+.keeb-bigkey:active { transform: translateY(2px); border-bottom-width: 2px; background: var(--cyan); color: var(--void); }
+
+.keeb-aux { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.keeb-aux-btn {
+  font: inherit; font-size: 12px; padding: 6px 12px; cursor: pointer;
+  color: var(--lilac); background: transparent;
+  border: 1px solid var(--violet); border-radius: var(--radius);
+}
+.keeb-aux-btn:hover { color: var(--white); border-color: var(--lilac); }
+.keeb-hint { font-size: 12px; color: var(--lilac); margin-left: auto; }
 .keeb-keys { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
 .keeb-key {
   aspect-ratio: 3 / 4; font: inherit; font-size: 15px; font-weight: 600;

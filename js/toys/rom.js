@@ -5,8 +5,9 @@
 
    Register map:
      V0  paddle x        V1  item x          V2  item y
-     V3  score           V6  scratch         V7  scratch
-     V8  scratch         V9  score last drawn
+     V3  score ones      V4  score tens      V5  tens last drawn
+     V6  scratch         V7  scratch         V8  scratch
+     V9  ones last drawn
      VA  text x          VB  text y          VD  paddle y
      VE  fall throttle   VF  flags
 */
@@ -15,15 +16,20 @@ export const BURRITO_DROP = `
 start:
   CLS
   LD V0, 28              ; paddle centred
-  LD V3, 0               ; score
-  LD V9, 0               ; last drawn score
+  LD V3, 0               ; score, ones
+  LD V4, 0               ; score, tens
+  LD V5, 0               ; tens last drawn
+  LD V9, 0               ; ones last drawn
   LD VE, 0               ; throttle
   LD VD, 30              ; paddle row
   CALL draw_paddle
-  LD VA, 1               ; draw the initial 0 directly -- going through
-  LD VB, 1               ; draw_score would XOR it away again, since the
-  LD F, V3               ; digit being erased and the one being drawn
+  LD VB, 1               ; draw the initial 00 directly -- going through
+  LD VA, 1               ; draw_score would XOR it away again, since the
+  LD F, V4               ; digit being erased and the one being drawn
   DRW VA, VB, 5          ; are the same glyph on the first frame
+  LD VA, 6
+  LD F, V3
+  DRW VA, VB, 5
   CALL new_item
   CALL draw_item
 
@@ -103,11 +109,18 @@ landed:
   ADD V3, 1
   LD V7, V3
   LD V6, 10
-  SUB V7, V6
+  SUB V7, V6             ; ones reached ten?
   SE VF, 1
-  JP no_wrap
-  LD V3, 0
-no_wrap:
+  JP no_carry
+  LD V3, 0               ; carry into the tens
+  ADD V4, 1
+  LD V7, V4
+  LD V6, 10
+  SUB V7, V6             ; and roll over at a hundred
+  SE VF, 1
+  JP no_carry
+  LD V4, 0
+no_carry:
   CALL draw_score
 
 respawn:
@@ -132,11 +145,17 @@ new_item:
   RET
 
 draw_score:
-  LD VA, 1
   LD VB, 1
-  LD F, V9               ; erase the digit already on screen
+  LD VA, 1               ; tens column
+  LD F, V5               ; erase what is on screen
   DRW VA, VB, 5
-  LD F, V3               ; draw the new one
+  LD F, V4               ; draw the new one
+  DRW VA, VB, 5
+  LD V5, V4
+  LD VA, 6               ; ones column
+  LD F, V9
+  DRW VA, VB, 5
+  LD F, V3
   DRW VA, VB, 5
   LD V9, V3
   RET
