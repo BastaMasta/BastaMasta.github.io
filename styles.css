@@ -133,6 +133,11 @@ body:not(.console) #doc > .panel {
 }
 body:not(.console) .panel-close { display: none; }
 
+/* Oreo is an easter egg you find by walking into him. The document view is the
+   readable portfolio, so he stays out of it — the section is only hidden, not
+   removed, because the console still opens it as a panel. */
+body:not(.console) #doc-cat { display: none; }
+
 .btn {
   display: inline-block;
   font: inherit; font-size: 14px; font-weight: 500;
@@ -661,7 +666,7 @@ body:not(.console) .cart h3 { padding-right: 74px; }
    unwinds console mode for print. */
 @media print {
   #console, #toc, #corner, #scrim, .filters, .hero, .keeb-live,
-  #contact-form, .panel-close, .skip-link { display: none !important; }
+  #contact-form, .panel-close, .skip-link, #doc-cat { display: none !important; }
 
   html, body { background: #fff !important; color: #111; }
   body {

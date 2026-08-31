@@ -26,7 +26,7 @@ export const HOTSPOTS = [
   { id: 'arcade',  x: 352, lx: 386, span: [346, 416], label: 'ARCADE',      action: 'game' },
   { id: 'mail',    x: 424, lx: 450, span: [416, 472], label: 'MAIL SLOT',   panel: 'contact' },
   { id: 'printer', x: 486, lx: 516, span: [478, 548], label: 'PRINTER',     panel: 'resume' },
-  { id: 'cat',     x: 558, lx: 583, span: [552, 612], label: 'OREO',        panel: 'cat' },
+  { id: 'cat',     x: 566, lx: 583, span: [562, 598], label: 'OREO',        panel: 'cat' },
   { id: 'studio',  x: 668, lx: 662, span: [614, 734], label: 'STUDIO',      panel: 'studio' },
 ];
 
@@ -398,8 +398,8 @@ function drawCatOnRack(fb, t) {
 function drawCat(fb, t, awake, onRack) {
   const x = 574, y = FLOOR_Y - 12;
   // Beanbag — always there, whether or not it is occupied.
-  fb.discE(x + 9, FLOOR_Y - 2, 12, C.VIOLET);
-  fb.ditherRect(x - 3, FLOOR_Y - 6, 24, 6, C.VIOLET, C.VIOLET_LT, 0.4);
+  fb.discE(x + 9, FLOOR_Y - 3, 8, C.VIOLET);
+  fb.ditherRect(x + 1, FLOOR_Y - 6, 16, 5, C.VIOLET, C.VIOLET_LT, 0.4);
   if (onRack) {
     // A shed tuft, so the empty beanbag still reads as his.
     fb.set(x + 7, FLOOR_Y - 7, C.LILAC_LT);
