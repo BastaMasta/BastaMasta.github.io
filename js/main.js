@@ -490,7 +490,7 @@ class Zap8 {
       ? '<span>Tap the screen to walk there</span>'
       : '<span><b>&larr;</b><b>&rarr;</b> walk</span>' +
         '<span><b>Enter</b> examine</span>' +
-        '<span><b>1</b>&ndash;<b>8</b> jump</span>' +
+        `<span><b>1</b>&ndash;<b>${HOTSPOTS.length}</b> jump</span>` +
         '<span><b>Esc</b> back</span>' +
         '<span><b>P</b> plain version</span>';
   }
@@ -607,7 +607,7 @@ class Zap8 {
       const dist = Math.abs(this.player.x - h.lx);
       if (dist > 150) continue;
       const bob = Math.round(Math.sin(this.t * 2.4 + h.lx) * 1.2);
-      const y = FLOOR_Y - 62 + bob;
+      const y = (h.ly ?? FLOOR_Y - 62) + bob;
       if (active) {
         const w = fb.textW(h.label) + 8;
         fb.rect(h.lx - w / 2, y - 3, w, 12, C.VOID);

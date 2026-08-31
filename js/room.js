@@ -13,6 +13,8 @@ export const FLOOR_Y = 148;
      `x`    where the player walks to when you tap the object — kept clear of
             anything that reaches the floor, so he does not stand inside it.
      `lx`   where the floating label points, i.e. the object itself.
+     `ly`   optional label height, for objects tall enough that the default
+            would land on top of them.
      `span` the world range over which the station is actually active. This is
             deliberately separate from `x`: reusing the standing spot as the
             activation range made the rack openable only from a narrow strip on
@@ -23,13 +25,12 @@ export const HOTSPOTS = [
   { id: 'homelab', x: 160, lx: 126, span: [100, 166], label: 'SERVER RACK', panel: 'homelab' },
   { id: 'bench',   x: 205, lx: 205, span: [166, 250], label: 'WORKBENCH',   panel: 'hardware' },
   { id: 'shelf',   x: 299, lx: 299, span: [252, 346], label: 'CARTRIDGES',  panel: 'projects' },
-  { id: 'arcade',  x: 352, lx: 386, span: [346, 416], label: 'ARCADE',      action: 'game' },
-  { id: 'mail',    x: 424, lx: 450, span: [416, 472], label: 'MAIL SLOT',   panel: 'contact' },
-  { id: 'printer', x: 486, lx: 516, span: [478, 548], label: 'PRINTER',     panel: 'resume' },
-  { id: 'cat',     x: 566, lx: 583, span: [562, 598], label: 'OREO',        panel: 'cat' },
-  { id: 'studio',  x: 668, lx: 662, span: [614, 734], label: 'STUDIO',      panel: 'studio' },
+  { id: 'cat',     x: 356, lx: 374, span: [350, 396], label: 'OREO',        panel: 'cat' },
+  { id: 'printer', x: 418, lx: 452, span: [400, 478], label: 'PRINTER',     panel: 'resume' },
+  { id: 'mail',    x: 486, lx: 514, span: [482, 542], label: 'MAIL SLOT',   panel: 'contact' },
+  { id: 'arcade',  x: 548, lx: 582, span: [546, 610], label: 'ARCADE',      action: 'game', ly: 40 },
+  { id: 'studio',  x: 668, lx: 662, span: [614, 740], label: 'STUDIO',      panel: 'studio', ly: 58 },
 ];
-
 /* ---------- helpers ---------- */
 
 const flick = (t, speed, seed) =>
@@ -271,7 +272,7 @@ function drawShelf(fb, t, cartCount = 15) {
 /* ---------- 5. arcade cabinet (ZapBurrito Studios) ---------- */
 
 function drawArcade(fb, t) {
-  const x = 364, y = 54, w = 44, h = FLOOR_Y - y;
+  const x = 560, y = 54, w = 44, h = FLOOR_Y - y;
   fb.rect(x, y, w, h, C.INDIGO);
   fb.frame(x, y, w, h, C.ORANGE);
   // Marquee.
@@ -302,7 +303,7 @@ function drawArcade(fb, t) {
 /* ---------- 6. mail slot (contact) ---------- */
 
 function drawMail(fb, t) {
-  const x = 434, y = 74, w = 32, h = 26;
+  const x = 498, y = 74, w = 32, h = 26;
   fb.rect(x, y, w, h, C.VIOLET);
   fb.frame(x, y, w, h, C.VIOLET_LT);
   fb.rect(x + 4, y + 6, w - 8, 4, C.VOID);       // the slot
@@ -322,7 +323,7 @@ function drawMail(fb, t) {
 /* ---------- 7. printer (resume) ---------- */
 
 function drawPrinter(fb, t) {
-  const x = 496, topY = 116, w = 40;
+  const x = 432, topY = 116, w = 40;
   // Side table.
   fb.rect(x - 2, topY, w + 4, 3, C.BROWN);
   fb.rect(x + 2, topY + 3, 3, FLOOR_Y - topY - 3, C.BROWN_DK);
@@ -396,7 +397,7 @@ function drawCatOnRack(fb, t) {
 }
 
 function drawCat(fb, t, awake, onRack) {
-  const x = 574, y = FLOOR_Y - 12;
+  const x = 366, y = FLOOR_Y - 12;
   // Beanbag — always there, whether or not it is occupied.
   fb.discE(x + 9, FLOOR_Y - 3, 8, C.VIOLET);
   fb.ditherRect(x + 1, FLOOR_Y - 6, 16, 5, C.VIOLET, C.VIOLET_LT, 0.4);
@@ -495,7 +496,7 @@ function drawPosters(fb) {
   fb.set(x + 11, y + 2, C.RED);
 
   // "There's no place like 127.0.0.1" strip above the mail slot.
-  x = 424; y = 50;
+  x = 486; y = 50;
   fb.rect(x, y, 52, 12, C.INDIGO);
   fb.frame(x, y, 52, 12, C.VIOLET);
   fb.text(x + 3, y + 3, '127.0.0.1', C.GREEN, { shadow: T, spacing: 5 });
@@ -615,7 +616,7 @@ function buildCache() {
   for (const [x, y, w, h, amt] of [
     [16, 56, 70, 62, 0.55],    // CRT
     [94, 48, 64, 106, 0.4],    // rack
-    [352, 42, 68, 76, 0.6],    // arcade marquee
+    [548, 42, 68, 76, 0.6],    // arcade marquee
   ]) applyMask(base, wallGlowMask(x, y, w, h, amt), LIGHT_MAP);
 
   drawClutter(base);
@@ -631,7 +632,7 @@ function buildCache() {
   const shelfX = 258, shelfY = 58, shelfW = 84;
   return {
     base,
-    lamps: [204, 508, 664].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
+    lamps: [204, 452, 664].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
     shelfGlow: [0, 1].map((r) => {
       const sy = shelfY + r * 30 + 28;
       return buildShadeMask(ROOM_W, ROOM_H, shelfX - 4, sy, shelfW + 8, 22, (xx, yy) => {
@@ -662,7 +663,7 @@ export function drawRoom(fb, t, state = {}) {
 
   // Fixtures hang in front of everything they light.
   drawLampFixture(fb, t, 204, 22, C.AMBER);
-  drawLampFixture(fb, t, 508, 26, C.AMBER);
+  drawLampFixture(fb, t, 452, 26, C.AMBER);
   drawLampFixture(fb, t, 664, 20, C.AMBER);
   for (const m of cache.lamps) applyMask(fb, m, LIGHT_MAP);
 }
