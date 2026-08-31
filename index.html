@@ -96,7 +96,38 @@
     <button id="mute" type="button" aria-pressed="false" title="Toggle sound">
       <span aria-hidden="true">&#9834;</span><span class="sr-only">Toggle sound</span>
     </button>
-    <button id="ripcord" type="button" aria-pressed="false">
+    <!-- Shown once when the console first boots. Both input variants are in the
+       markup; JS reveals the one matching the device, the same way the
+       on-screen arrows appear only for touch. -->
+  <div id="help" hidden>
+    <div class="help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <p class="help-eyebrow">ZAP&#8209;8</p>
+      <h2 id="help-title">You're standing in a workshop</h2>
+      <p>Everything in the room is something I built. Walk up to a thing and examine it — the shelf of cartridges is the projects, the rack is the home server, the arcade cabinet actually plays.</p>
+
+      <dl class="help-keys" data-input="fine">
+        <div><dt><kbd>&larr;</kbd><kbd>&rarr;</kbd></dt><dd>walk</dd></div>
+        <div><dt><kbd>Enter</kbd></dt><dd>examine whatever you're standing at</dd></div>
+        <div><dt><kbd>1</kbd>&ndash;<kbd>9</kbd></dt><dd>jump straight to a station</dd></div>
+        <div><dt><kbd>Esc</kbd></dt><dd>close a panel</dd></div>
+        <div><dt><kbd>P</kbd></dt><dd>switch to the plain version</dd></div>
+      </dl>
+
+      <dl class="help-keys" data-input="coarse">
+        <div><dt>Tap</dt><dd>walk to wherever you tap</dd></div>
+        <div><dt>&#9664; &#9654;</dt><dd>walk, using the buttons at the bottom</dd></div>
+        <div><dt>&#9679;</dt><dd>examine &mdash; it lights up when you're at something</dd></div>
+      </dl>
+
+      <div class="help-actions">
+        <button id="help-go" class="btn primary" type="button">Got it</button>
+        <button id="help-plain" class="btn" type="button">Just read the plain version</button>
+      </div>
+      <p class="help-note">You can bring this back any time with the <span data-input="fine"><kbd>?</kbd> key</span><span data-input="coarse">? button</span>.</p>
+    </div>
+  </div>
+
+  <button id="ripcord" type="button" aria-pressed="false">
       <span aria-hidden="true">&#9636;</span> Read&nbsp;plain&nbsp;version <kbd aria-hidden="true">P</kbd>
     </button>
   </div>

@@ -38,6 +38,7 @@ const COMFY_FB_W = 260;
    ============================================================ */
 
 const STORE_KEY = 'zap8:mode';
+const HELP_SEEN = 'zap8:helpSeen';
 
 function readMode() {
   const q = new URLSearchParams(location.search);
@@ -119,6 +120,7 @@ class Zap8 {
     this.keys = new Set();
     this.mode = 'boot';        // boot | room | game
     this.active = true;        // false while the document view is showing
+    this.helpOpen = false;
     this.openPanel = null;
     this.restoreFocus = null;
     this.near = null;
@@ -257,7 +259,8 @@ class Zap8 {
     pad.innerHTML = `
       <button type="button" class="tp tp-dir" data-dir="-1" aria-label="Walk left">&#9664;</button>
       <button type="button" class="tp tp-act" data-act="1" aria-label="Examine">&#9679;</button>
-      <button type="button" class="tp tp-dir" data-dir="1" aria-label="Walk right">&#9654;</button>`;
+      <button type="button" class="tp tp-dir" data-dir="1" aria-label="Walk right">&#9654;</button>
+      <button type="button" class="tp tp-help" aria-label="How this works">?</button>`;
     $('#console').append(pad);
     this.touchPad = pad;
     this.touchDir = 0;
@@ -288,11 +291,12 @@ class Zap8 {
       else this.interact();
     });
     this.touchAct = act;
+    $('.tp-help', pad)?.addEventListener('click', (e) => { e.preventDefault(); this.showHelp(); });
   }
 
   syncTouchPad() {
     if (!this.touchPad) return;
-    const show = isCoarse() && !this.openPanel;
+    const show = isCoarse() && !this.openPanel && !this.helpOpen;
     this.touchPad.hidden = !show;
     if (!show) this.touchDir = 0;
     if (this.touchAct) {
@@ -318,6 +322,7 @@ class Zap8 {
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
       if (e.key === 'Escape') {
+        if (this.helpOpen) { this.hideHelp(); e.preventDefault(); return; }
         if (this.openPanel) { this.closePanel(); e.preventDefault(); }
         else if (this.mode === 'game') { this.exitGame(); e.preventDefault(); }
         return;
@@ -327,6 +332,18 @@ class Zap8 {
         if (this.openPanel) this.closePanel(true);
         this.onTogglePlain?.();
         e.preventDefault();
+        return;
+      }
+
+      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+        this.helpOpen ? this.hideHelp() : this.showHelp();
+        e.preventDefault();
+        return;
+      }
+
+      // While the help is up it owns the keyboard, or you'd walk around behind it.
+      if (this.helpOpen) {
+        if (e.key === 'Enter' || e.key === ' ') { this.hideHelp(); e.preventDefault(); }
         return;
       }
 
@@ -360,6 +377,9 @@ class Zap8 {
 
     // Tap or click anywhere on the screen to walk there; on a station, enter it.
     this.canvas.addEventListener('pointerdown', (e) => {
+      // The overlay covers the canvas, so this shouldn't fire — but don't let
+      // walking depend on z-order alone.
+      if (this.helpOpen) return;
       if (this.mode === 'boot') { this.skipBoot(); return; }
       const rect = this.canvas.getBoundingClientRect();
       const sx = (e.clientX - rect.left) / rect.width * this.fb.w;
@@ -433,9 +453,44 @@ class Zap8 {
   skipBoot() {
     if (this.mode !== 'boot') return;
     this.mode = 'room';
+    this.maybeShowHelp();
     this.updateHint();
     this.syncTouchPad();
     sfx.blip(880, 0.09);
+  }
+
+  /* ---------- first-run help ----------
+     A first-time visitor has no way to know this is a room you walk around.
+     Shown once, then reachable with ? or the HUD, so it never nags. */
+  showHelp() {
+    const el = $('#help');
+    if (!el || this.helpOpen) return;
+    this.helpOpen = true;
+    el.hidden = false;
+    this.helpReturnFocus = document.activeElement;
+    $('#help-go')?.focus({ preventScroll: true });
+    this.syncTouchPad();
+    try { localStorage.setItem(HELP_SEEN, '1'); } catch { /* ignore */ }
+  }
+
+  hideHelp() {
+    const el = $('#help');
+    if (!el || !this.helpOpen) return;
+    this.helpOpen = false;
+    el.hidden = true;
+    const back = this.helpReturnFocus;
+    this.helpReturnFocus = null;
+    if (back && back.isConnected && typeof back.focus === 'function') {
+      back.focus({ preventScroll: true });
+    }
+    this.syncTouchPad();
+  }
+
+  maybeShowHelp() {
+    let seen = false;
+    try { seen = localStorage.getItem(HELP_SEEN) === '1'; } catch { /* ignore */ }
+    const forced = new URLSearchParams(location.search).has('help');
+    if (!seen || forced) this.showHelp();
   }
 
   /* ---------- interaction ---------- */
@@ -499,6 +554,7 @@ class Zap8 {
       : '<span><b>&larr;</b><b>&rarr;</b> walk</span>' +
         '<span><b>Enter</b> examine</span>' +
         `<span><b>1</b>&ndash;<b>${HOTSPOTS.length}</b> jump</span>` +
+        '<span><b>?</b> help</span>' +
         '<span><b>Esc</b> back</span>' +
         '<span><b>P</b> plain version</span>';
   }
@@ -900,15 +956,20 @@ function buildContactForm() {
     status.textContent = 'Sending…';
     status.className = 'form-status';
     try {
-      const res = await fetch(form.action, {
+      const action = form.getAttribute('action') || form.action;
+      const res = await fetch(action, {
         method: 'POST',
         body: new FormData(form),
         headers: { Accept: 'application/json' },
       });
       if (!res.ok) throw new Error(String(res.status));
-      form.reset();
+      // Report the send before clearing the form. The other order means
+      // anything reset() throws is caught below and tells someone their
+      // message failed when it actually went — costing them a duplicate
+      // send, or the contact entirely.
       status.textContent = 'Sent. I’ll get back to you.';
       status.className = 'form-status ok';
+      try { form.reset(); } catch { /* the message is already away */ }
     } catch {
       status.textContent = 'That didn’t send. Email sameedahmed@bastamasta.dev instead?';
       status.className = 'form-status err';
@@ -983,6 +1044,10 @@ function wirePanels(engine) {
    ============================================================ */
 
 function init() {
+  // The help card carries both input variants; mark which one applies.
+  document.body.classList.toggle('input-coarse', isCoarse());
+  document.body.classList.toggle('input-fine', !isCoarse());
+
   // pointer-events:none hides these from the mouse only; without this they
   // stay tabbable and lead somewhere that isn't there yet.
   $$('a.launch[data-soon]').forEach((a) => {
@@ -1035,6 +1100,17 @@ function init() {
   // #console (which gets hidden). They share a flex wrapper so the mute button
   // can never land on top of the ripcord as the ripcord's label changes width.
   document.body.append(corner);
+
+  $('#help-go')?.addEventListener('click', () => engine && engine.hideHelp());
+  $('#help-plain')?.addEventListener('click', () => {
+    if (engine) engine.hideHelp();
+    apply('plain');
+    scrollTo({ top: 0 });
+  });
+  $('#help')?.addEventListener('click', (e) => {
+    // Clicking the backdrop dismisses it; clicking the card does not.
+    if (e.target.id === 'help' && engine) engine.hideHelp();
+  });
 
   ripcord.addEventListener('click', () => {
     apply(mode === 'console' ? 'plain' : 'console');
