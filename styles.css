@@ -30,6 +30,9 @@
 
   --measure: 64ch;
   --radius: 2px;
+  /* Fixed so anything that has to sit directly under the top strip can say so
+     exactly, instead of guessing at its content height. */
+  --toc-h: 47px;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -220,17 +223,41 @@ body:not(.console) #doc-cat { display: none; }
 .cart[data-hue="orange"] { --hue: var(--orange); }
 .cart[data-hue="lilac"]  { --hue: var(--lilac); }
 
-/* A launch link that isn't live yet renders as a disabled chip. */
-a.launch[data-soon] {
-  pointer-events: none; color: var(--lilac); opacity: .55;
-  text-decoration: none; border-bottom: 1px dotted currentColor;
+/* Work that is underway but has nothing to link to yet. Deliberately not
+   styled as a link: it isn't one, and a disabled-looking link still invites
+   the click. */
+.wip {
+  display: inline-flex; align-items: baseline; gap: 7px;
+  font-size: 12.5px; color: var(--violet-lt);
 }
-a.launch[data-soon]::after { content: " (soon)"; }
+.wip::before {
+  content: ""; flex: none;
+  width: 5px; height: 5px; border-radius: 50%;
+  border: 1px solid var(--amber);
+  transform: translateY(-1px);
+}
 
 /* --- contact --- */
 .contact-list { list-style: none; padding: 0; margin: 0 0 32px; }
 .contact-list li { display: grid; grid-template-columns: 110px 1fr; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--deep); }
 .lbl { color: var(--amber); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; }
+.val { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+.copy {
+  font: inherit; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--lilac); background: none; cursor: pointer;
+  border: 1px solid var(--violet); border-radius: var(--radius);
+  padding: 2px 8px;
+}
+.copy:hover { color: var(--white); border-color: var(--violet-lt); }
+.copy:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.copy.is-ok { color: var(--green); border-color: var(--green); }
+
+/* Formspree's honeypot. Off-screen rather than display:none, because the bots
+   that matter check for that. */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+#doha-clock { font-variant-numeric: tabular-nums; }
 
 .field { display: grid; gap: 6px; margin-bottom: 16px; max-width: 520px; }
 .field label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--lilac); }
@@ -548,14 +575,15 @@ body:not(.console) #corner { top: auto; bottom: 16px; right: 16px; }
   font-size: 10px; padding: 1px 5px; border-radius: 3px;
 }
 
-#mute {
+#mute, #shell-toggle {
   font: inherit; font-size: 12px;
   background: rgba(11,10,18,.8); color: var(--lilac);
   border: 1px solid var(--violet); border-radius: 4px;
   padding: 9px 12px; cursor: pointer; backdrop-filter: blur(4px);
 }
-#mute:hover { color: var(--white); border-color: var(--lilac); }
+#mute:hover, #shell-toggle:hover { color: var(--white); border-color: var(--lilac); }
 #mute[aria-pressed="true"] { color: var(--violet-lt); }
+#shell-toggle[aria-pressed="true"] { color: var(--amber); border-color: var(--amber); }
 
 /* ---- on-screen controls (touch devices) ---- */
 #touchpad {
@@ -709,8 +737,15 @@ body.console #toc { display: none; }
 #toc ol {
   list-style: none; display: flex; gap: 2px; margin: 0; padding: 0;
   overflow-x: auto; scrollbar-width: none;
+  /* Seven sections never fit a phone, and a hidden scrollbar on a strip that
+     ends flush at the edge reads as "that's all of them". The fade is the only
+     thing telling you there is more to the right. */
+  scroll-snap-type: x proximity;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 26px), transparent);
 }
 #toc ol::-webkit-scrollbar { display: none; }
+#toc li { scroll-snap-align: center; }
 #toc a {
   display: block; padding: 6px 11px; border-radius: 3px;
   font-size: 12px; color: var(--lilac); text-decoration: none;
@@ -721,6 +756,23 @@ body.console #toc { display: none; }
 #toc a[aria-current="true"] { background: var(--indigo); color: var(--amber); }
 #toc a[aria-current="true"] span { color: var(--amber); }
 
+/* Reading position, straight off the scroll timeline — no listener, no rAF,
+   and it simply doesn't render where the feature is missing. Only on the top
+   strip; the wide-screen rail is a column and a horizontal bar makes no sense
+   there. */
+@media (max-width: 1159px) {
+  @supports (animation-timeline: scroll()) {
+    #toc::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px;
+      height: 2px; background: var(--amber);
+      transform: scaleX(0); transform-origin: 0 50%;
+      animation: toc-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+    @keyframes toc-progress { to { transform: scaleX(1); } }
+  }
+}
+
 /* Wide screens get a proper left rail instead of a top strip. */
 @media (min-width: 1160px) {
   body:not(.console) { padding-left: 236px; }
@@ -730,9 +782,181 @@ body.console #toc { display: none; }
     padding: 44px 26px; overflow-y: auto;
     border-bottom: 0; border-right: 1px solid var(--indigo);
   }
-  #toc ol { flex-direction: column; gap: 1px; overflow: visible; }
+  #toc ol {
+    flex-direction: column; gap: 1px; overflow: visible;
+    -webkit-mask-image: none; mask-image: none;
+  }
   #toc a { padding: 8px 10px; font-size: 13px; }
   #toc a span { display: inline-block; width: 20px; }
+}
+
+/* --- the shell ---
+   Drops from the top over whichever view is showing, the way a game console
+   does. It belongs to the site rather than to a section, so it can open a panel
+   in console mode and scroll the document in plain mode without either of them
+   having to make room for it in their layout. */
+#shell {
+  position: fixed; inset: 0; z-index: 70;
+  background: rgba(5, 4, 12, .5);
+  backdrop-filter: blur(2px);
+}
+#shell[hidden] { display: none; }
+
+.shell-panel {
+  display: flex; flex-direction: column;
+  width: min(880px, 100%);
+  height: min(60vh, 520px); min-height: 200px;
+  margin: 0 auto;
+  border: 1px solid var(--violet-lt); border-top: 0;
+  border-radius: 0 0 8px 8px;
+  background: var(--void);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .55);
+  animation: shell-drop .16s ease-out;
+}
+@keyframes shell-drop { from { transform: translateY(-14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .shell-panel { animation: none; } }
+
+.shell-bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 9px 8px 9px 16px;
+  border-bottom: 1px solid var(--indigo);
+  background: var(--deep);
+  border-radius: 0 0 0 0;
+}
+.shell-title {
+  font-family: var(--display); font-size: 12px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--amber);
+  white-space: nowrap;
+}
+.shell-hint {
+  flex: 1 1 auto; min-width: 0;
+  font-size: 11.5px; color: var(--violet-lt);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.shell-hint code { color: var(--lilac); }
+.shell-close {
+  flex: none; width: 34px; height: 30px;
+  font: inherit; font-size: 20px; line-height: 1;
+  background: none; border: 0; border-radius: var(--radius);
+  color: var(--lilac); cursor: pointer;
+}
+.shell-close:hover { color: var(--white); background: var(--indigo); }
+
+#shell-toggle span[aria-hidden] { font-family: var(--mono); font-weight: 600; letter-spacing: -.05em; }
+
+/* Long output scrolls sideways rather than wrapping: a wrapped `neofetch` is
+   worse than one you have to nudge. */
+.term {
+  position: relative;
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--void);
+  overflow: hidden;
+}
+.term-fallback { margin: 0; padding: 14px 16px; font-size: 13px; color: var(--lilac); }
+.term-fallback code { color: var(--amber); }
+
+.term-out {
+  flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain;
+  padding: 12px 14px;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.55;
+  color: var(--lilac-lt);
+  -webkit-overflow-scrolling: touch;
+}
+.term-row { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+.term-echo { color: var(--white); }
+.term-dim { color: var(--violet-lt); }
+.term-err { color: var(--red); }
+.term-pre {
+  margin: 2px 0 6px; padding: 0;
+  overflow-x: auto;
+  font: inherit; color: var(--lilac);
+  tab-size: 4;
+}
+.term-out a { color: var(--cyan); }
+
+/* Oreo, for `cat` with no arguments. He lives on .term rather than .term-out so
+   he floats over the scrollback instead of scrolling away with it, and .term's
+   overflow:hidden is what he walks in from and out through. */
+.oreo {
+  position: absolute; left: -76px; bottom: 4px;
+  width: 72px; height: 88px;            /* the 18x22 body-plus-tail box at 4x */
+  image-rendering: pixelated;
+  pointer-events: none;
+  animation: oreo-walk 5.4s cubic-bezier(.35, 0, .3, 1) forwards;
+}
+@keyframes oreo-walk {
+  0%   { transform: translateX(0); opacity: 0; }
+  6%   { opacity: 1; }
+  38%  { transform: translateX(calc(var(--oreo-run, 420px) * .42)); }
+  58%  { transform: translateX(calc(var(--oreo-run, 420px) * .42)); }   /* a sit */
+  94%  { transform: translateX(var(--oreo-run, 420px)); opacity: 1; }
+  100% { transform: translateX(var(--oreo-run, 420px)); opacity: 0; }
+}
+/* No walk if motion is unwelcome: he simply turns up, then leaves. */
+.oreo.is-still {
+  left: auto; right: 18px;
+  animation: oreo-still 3s ease forwards;
+}
+@keyframes oreo-still {
+  0%, 100% { opacity: 0; }
+  14%, 78% { opacity: 1; }
+}
+
+.term-line {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px;
+  border-top: 1px solid var(--indigo);
+  background: var(--deep);
+}
+.term-ps1 {
+  flex: none;
+  font-family: var(--mono); font-size: 12.5px; color: var(--green);
+  user-select: none;
+}
+.term-in {
+  flex: 1 1 auto; min-width: 0;
+  font-family: var(--mono); font-size: 12.5px;
+  padding: 0; border: 0; border-radius: 0;
+  background: none; color: var(--white);
+  caret-color: var(--amber);
+}
+.term-in:focus { outline: none; border: 0; }
+.term-line:focus-within { box-shadow: inset 0 0 0 1px var(--violet-lt); }
+
+/* The counter on the wall has a plain-mode twin: a tag on the crate itself. */
+.tag-live { border-color: var(--green); color: var(--green); }
+
+@media (max-width: 700px) {
+  .shell-panel { height: min(72vh, 460px); border-radius: 0 0 6px 6px; }
+  .shell-hint { display: none; }
+  .term-out { font-size: 12px; }
+  .term-ps1, .term-in { font-size: 12px; }
+}
+
+/* --- masthead status strip ---
+   Availability and current work, above the fold, before anyone has to hunt for
+   it. The console scrolls the same three items across the marquee board. */
+.status {
+  display: flex; flex-wrap: wrap; gap: 8px 18px;
+  margin: 26px 0 0; padding: 12px 16px;
+  border: 1px solid var(--violet); border-left: 3px solid var(--green);
+  border-radius: var(--radius);
+  background: var(--deep);
+  font-size: 13px; color: var(--lilac-lt);
+}
+.status > span { display: flex; align-items: baseline; gap: 8px; }
+.status > span + span { color: var(--lilac); }
+.status > span + span::before {
+  content: ""; flex: none;
+  width: 3px; height: 3px; border-radius: 50%;
+  background: var(--violet-lt); transform: translateY(-3px);
+}
+.status > span:first-child { color: var(--white); font-weight: 500; }
+.status > span:first-child::before {
+  content: ""; flex: none;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); box-shadow: 0 0 0 3px rgba(47, 168, 122, .18);
+  transform: translateY(-1px);
 }
 
 /* --- masthead --- */
@@ -799,7 +1023,8 @@ body:not(.console) .cart h3 { padding-right: 74px; }
    unwinds console mode for print. */
 @media print {
   #console, #toc, #corner, #scrim, .filters, .hero, .keeb-live,
-  #contact-form, .panel-close, .skip-link, #doc-cat { display: none !important; }
+  #contact-form, .panel-close, .skip-link, #doc-cat, .copy,
+  #shell { display: none !important; }
 
   html, body { background: #fff !important; color: #111; }
   body {
@@ -910,6 +1135,8 @@ body:not(.console) .cart h3 { padding-right: 74px; }
   .tag, .badge { border-color: #999; color: #333; }
   .kicker, .glance dt, .lbl { color: #444; }
   .aside { border-left-color: #999; }
+  .status { background: none; border: 1px solid #ccc; border-left: 3px solid #666; color: #111; }
+  .status > span:first-child::before, .status > span + span::before { display: none; }
   .dot { box-shadow: none; border: 1px solid #333; background: #fff; }
   blockquote { border-color: #bbb; background: none; }
   #colophon { border-top: 1px solid #ccc; }
@@ -966,7 +1193,25 @@ body:not(.console) .cart h3 { padding-right: 74px; }
   }
 
   /* Roomier tap targets in the document view. */
+  #toc { gap: 10px; height: var(--toc-h); padding: 0 12px; }
+  .toc-brand { font-size: 12px; }
+  #toc a { padding: 9px 10px; }
   #doc { padding-left: 16px; padding-right: 16px; }
+
+  /* Fifteen cards in one column is a long way to scroll back up to change the
+     filter, so the filter comes with you. One row rather than three wrapped
+     ones, or it would eat a third of the screen. */
+  body:not(.console) #doc-projects .filters {
+    position: sticky; top: var(--toc-h); z-index: 10;
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
+    margin-inline: -16px; padding: 10px 16px;
+    background: color-mix(in srgb, var(--void) 92%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+  }
+  body:not(.console) #doc-projects .filters::-webkit-scrollbar { display: none; }
+  .filter { flex: none; }
   .btn { padding: 12px 20px; }
   .filter { padding: 9px 14px; }
   .keeb-key { font-size: 17px; }

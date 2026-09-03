@@ -5,9 +5,9 @@
    truth: console mode just lifts a section into an overlay panel, so the plain
    version and the console version can never drift apart. */
 
-import { Framebuffer, SCREEN_W, C, paletteU32, blitU32, buildShadeMask, applyMask,
+import { Framebuffer, SCREEN_W, C, paletteU32, paletteRGB, blitU32, buildShadeMask, applyMask,
          LIGHT_MAP, DARK_MAP } from './gfx.js';
-import { drawRoom, ROOM_W, ROOM_H, FLOOR_Y, HOTSPOTS } from './room.js';
+import { drawRoom, ROOM_W, ROOM_H, FLOOR_Y, HOTSPOTS, CAT, CAT_MAP, drawCatTail } from './room.js';
 import { Player } from './player.js';
 import { ICON } from './font.js';
 import { Chip8, assemble, DISPLAY_W, DISPLAY_H } from './toys/chip8.js';
@@ -39,6 +39,7 @@ const COMFY_FB_W = 260;
 
 const STORE_KEY = 'zap8:mode';
 const HELP_SEEN = 'zap8:helpSeen';
+const MUTE_KEY = 'zap8:muted';
 
 function readMode() {
   const q = new URLSearchParams(location.search);
@@ -62,8 +63,18 @@ const sfx = {
   ctx: null,
   muted: false,
   broken: false,
+  /* Browsers refuse to start an AudioContext before a real user gesture, and
+     every attempt logs a warning. The boot chirps fire on a timer, so the
+     console filled up with them on every load. Nothing is constructed until
+     arm() runs inside a genuine gesture — one guard here covers every caller. */
+  armed: false,
+  arm() {
+    if (this.armed) return;
+    this.armed = true;
+    this.ensure();          // build it now, while the gesture is still on the stack
+  },
   ensure() {
-    if (this.broken) return null;
+    if (this.broken || !this.armed) return null;
     try {
       if (!this.ctx) {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -157,6 +168,16 @@ class Zap8 {
     let last = performance.now();
     let faults = 0;
     const frame = (now) => {
+      /* With a panel, the help card or the shell up, the canvas sits behind a
+         blurred scrim and nothing on it can be read. Ten frames a second is
+         plenty to keep it alive, and it hands most of a core back to the
+         machine for the states a reader spends the most time in. */
+      const covered = this.openPanel || this.helpOpen
+        || document.body.classList.contains('shell-open');
+      if (covered && now - last < 100) {
+        requestAnimationFrame(frame);
+        return;
+      }
       const dt = Math.max(0, Math.min(0.05, (now - last) / 1000));
       last = now;
       try {
@@ -314,6 +335,9 @@ class Zap8 {
       // Never swallow keys while someone is typing in the contact form.
       const tag = e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      // The shell is modal over both presentations; init() handles its keys.
+      if (document.body.classList.contains('shell-open')) return;
 
       // Anything with a modifier belongs to the browser, not to us. Without
       // this, Ctrl/Cmd+P was caught by the plain-version shortcut below and
@@ -554,6 +578,7 @@ class Zap8 {
       : '<span><b>&larr;</b><b>&rarr;</b> walk</span>' +
         '<span><b>Enter</b> examine</span>' +
         `<span><b>1</b>&ndash;<b>${HOTSPOTS.length}</b> jump</span>` +
+        '<span><b>~</b> shell</span>' +
         '<span><b>?</b> help</span>' +
         '<span><b>Esc</b> back</span>' +
         '<span><b>P</b> plain version</span>';
@@ -644,13 +669,21 @@ class Zap8 {
     const camY = this.camY;
 
     if (!this.roomFb) this.roomFb = new Framebuffer(ROOM_W, ROOM_H);
+    /* The room is 704px wide and the window onto it is rarely half that, so
+       most of the per-object drawing was landing on pixels nobody would see.
+       Every primitive honours the clip rect, so this drops the writes without
+       touching a single draw routine. The static base layer is re-copied in
+       full each frame, so nothing goes stale as the camera moves. */
+    this.roomFb.clip(camX - 2, 0, fb.w + 4, ROOM_H);
     drawRoom(this.roomFb, reduceMotion ? 0 : this.t, {
       catAwake: this.catAwake,
       catOnRack: this.catOnRack,
-      cartCount: 15,
+      cartCount: CART_COUNT,
+      downloads: DOWNLOADS.n,
     });
     this.player.draw(this.roomFb, this.t);
     this.drawMarkers(this.roomFb);
+    this.roomFb.noClip();
 
     // Blit the visible window out of the room.
     for (let y = 0; y < fb.h; y++) {
@@ -733,6 +766,48 @@ class Zap8 {
   }
 }
 
+/* boxy-cli's install count, from crates.io (which sends CORS headers, so the
+   page can ask it directly). Cached for a day: the number moves slowly, the API
+   is someone else's server, and a cached value means the wall counter reads
+   correctly the moment the room opens instead of sitting on dashes waiting for
+   a round trip. A miss leaves it on dashes — claiming zero installs would be a
+   worse lie than admitting we don't know. */
+const DL_KEY = 'zap8:downloads';
+const DL_TTL = 24 * 60 * 60 * 1000;
+const DOWNLOADS = { n: null };
+
+function loadDownloads(onValue) {
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(DL_KEY) || 'null'); } catch { /* ignore */ }
+  if (cached && Number.isFinite(cached.n)) {
+    DOWNLOADS.n = cached.n;
+    onValue(cached.n);
+    if (Date.now() - cached.at < DL_TTL) return;
+  }
+  fetch('https://crates.io/api/v1/crates/boxy-cli', { headers: { Accept: 'application/json' } })
+    .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+    .then((d) => {
+      const n = d?.crate?.downloads;
+      if (!Number.isFinite(n)) return;
+      DOWNLOADS.n = n;
+      onValue(n);
+      try { localStorage.setItem(DL_KEY, JSON.stringify({ n, at: Date.now() })); } catch { /* ignore */ }
+    })
+    .catch(() => { /* dashes, or whatever was cached */ });
+}
+
+/* Qatar sits at UTC+3 year round and has no DST, so a fixed offset is exact
+   and needs no timezone database. */
+function dohaNow() {
+  const d = new Date();
+  return new Date(d.getTime() + (d.getTimezoneOffset() + 180) * 60000);
+}
+
+function dohaHM() {
+  const d = dohaNow();
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
 /* Whichever station the player is actually closest to wins, so overlapping
    reach ranges never resolve by array order. */
 function nearestHotspot(x) {
@@ -745,6 +820,10 @@ function nearestHotspot(x) {
   return best;
 }
 
+/* The shelf, the boot report and the prose all used to carry their own copy of
+   this number, and they drifted. The document is the source of truth. */
+const CART_COUNT = $$('#doc .cart').length || 15;
+
 /* [wide, narrow, colour] — phones get the abbreviated column. */
 const BOOT_LINES = [
   ['ZAP-8 BOOT ROM  V2.0', 'ZAP-8 BOOT V2.0', C.AMBER],
@@ -753,7 +832,7 @@ const BOOT_LINES = [
   ['CPU ....... OK', 'CPU ....... OK', C.GREEN],
   ['VRAM ADAPTIVE .... OK', 'VRAM ...... OK', C.GREEN],
   ['PALETTE 16 ....... OK', 'PALETTE 16  OK', C.GREEN],
-  ['CARTRIDGE SLOT ... 15', 'CARTS ..... 15', C.GREEN],
+  [`CARTRIDGE SLOT ... ${CART_COUNT}`, `CARTS ..... ${CART_COUNT}`, C.GREEN],
   ['HOME LAB LINK .... UP', 'HOMELAB ... UP', C.GREEN],
   ['SLEEP SCHEDULE ... NOT FOUND', 'SLEEP ..... NONE', C.RED],
   ['', '', C.VOID],
@@ -768,18 +847,18 @@ const BOOT_LINES = [
 /* The BinaryKeeb, as it actually is: two keys, 0 and 1, tapped eight times to
    spell one ASCII character. The eight-switch layout is kept as an alternative
    because it is a nicer way to explore a byte, but it is not the hardware. */
+const el = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  if (tag === 'button') n.type = 'button';
+  return n;
+};
+
 function buildBinaryKeeb() {
   const host = $('[data-widget="binarykeeb"]');
   if (!host) return;
   host.innerHTML = '';
-
-  const el = (tag, cls, text) => {
-    const n = document.createElement(tag);
-    if (cls) n.className = cls;
-    if (text != null) n.textContent = text;
-    if (tag === 'button') n.type = 'button';
-    return n;
-  };
 
   const live = el('div', 'keeb-live');
 
@@ -977,6 +1056,354 @@ function buildContactForm() {
   });
 }
 
+/* ---------- the terminal ----------
+   The desk hotspot has been called TERMINAL since day one and has only ever
+   opened a panel. This is that panel doing what its label promises. Every
+   answer is read out of the document at the moment it is asked — the section
+   list off the nav, the project list off the shelf, the install count off the
+   wall counter — so nothing in here can drift from the page around it.
+   Output is built as text nodes, never as markup: `echo <img onerror=...>`
+   should print that string, not run it. */
+function buildTerminal(getEngine) {
+  const host = $('[data-widget="terminal"]');
+  if (!host) return;
+  host.innerHTML = '';
+
+  const out = el('div', 'term-out');
+  out.setAttribute('role', 'log');
+  out.setAttribute('aria-live', 'polite');
+
+  const form = document.createElement('form');
+  form.className = 'term-line';
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'term-in';
+  input.autocomplete = 'off';
+  input.autocapitalize = 'off';
+  input.spellcheck = false;
+  input.setAttribute('aria-label', 'Type a command');
+  form.append(el('span', 'term-ps1', PS1), input);
+  host.append(out, form);
+
+  const SCROLLBACK = 400;
+  const push = (node) => {
+    out.append(node);
+    while (out.childElementCount > SCROLLBACK) out.firstElementChild.remove();
+    out.scrollTop = out.scrollHeight;
+  };
+  const print = (text = '', cls = '') => {
+    const row = el('div', `term-row ${cls}`.trim(), text);
+    push(row);
+    return row;
+  };
+  const printBlock = (text) => {
+    const pre = document.createElement('pre');
+    pre.className = 'term-pre';
+    pre.textContent = text;
+    push(pre);
+  };
+  const printLink = (label, href, download) => {
+    const row = print();
+    const a = document.createElement('a');
+    a.href = href;
+    a.textContent = label;
+    if (download) a.setAttribute('download', '');
+    else if (/^https?:/.test(href)) a.rel = 'noopener';
+    row.append(a);
+  };
+
+  /* Sections come from the nav, so a section added to the page is a section
+     this can already reach. Oreo is deliberately not in the nav — `ls -a`. */
+  const sections = $$('#toc a[href^="#doc-"]').map((a) => {
+    const id = a.getAttribute('href').slice(1);
+    return { id, name: id.replace(/^doc-/, ''), label: a.textContent.replace(/^\s*\d+\s*/, '').trim() };
+  });
+  if ($('#doc-cat')) sections.push({ id: 'doc-cat', name: 'oreo', label: 'Oreo', hidden: true });
+
+  const text = (sel) => ($(sel)?.textContent || '').replace(/\s+/g, ' ').trim();
+
+  function go(name) {
+    if (!name) return print('open what? try `ls`', 'term-err');
+    const key = name.toLowerCase();
+    const sec = sections.find((x) =>
+      x.name === key || x.id === key || x.label.toLowerCase().split(' ')[0] === key);
+    if (!sec) return print(`no such section: ${name}`, 'term-err');
+    const node = document.getElementById(sec.id);
+    const engine = getEngine();
+
+    if (document.body.classList.contains('console') && engine) {
+      print(`opening ${sec.label}…`, 'term-dim');
+      engine.closePanel(true);
+      engine.showPanel(node);
+      return;
+    }
+    /* Not every section has a box to scroll to: Oreo is a console easter egg
+       and the plain stylesheet hides him. Scrolling to a display:none element
+       does nothing at all, so the shell used to announce it was opening
+       something and then quietly do nothing. Read it out instead. */
+    if (!node.offsetParent && getComputedStyle(node).position !== 'fixed') {
+      print(`${sec.label} isn't on the plain page — here it is:`, 'term-dim');
+      for (const para of node.querySelectorAll('p')) {
+        const line = para.textContent.replace(/\s+/g, ' ').trim();
+        if (line && !para.hidden) print(line);
+      }
+      return;
+    }
+    print(`opening ${sec.label}…`, 'term-dim');
+    node.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  const COMMANDS = {
+    help() {
+      print('available:', 'term-dim');
+      printBlock(
+        'help              this\n' +
+        'ls [-a]           list the sections\n' +
+        'cat resume        same thing\n' +
+        'open <section>    go to one (cd works too)\n' +
+        'whoami            the short version\n' +
+        'projects [status] live | wip | done | dead\n' +
+        'crates            boxy-cli install count\n' +
+        'resume            the résumé page\n' +
+        'contact           how to reach me\n' +
+        'neofetch          the obligatory\n' +
+        'date              what time it is here\n' +
+        'uptime            how the server is holding up\n' +
+        'echo <text>       what it says on the tin\n' +
+        'clear             wipe the scrollback');
+    },
+    ls(args) {
+      const all = args.includes('-a');
+      for (const sec of sections) {
+        if (sec.hidden && !all) continue;
+        print(`${sec.name.padEnd(10)} ${sec.label}`, sec.hidden ? 'term-dim' : '');
+      }
+    },
+    open: (args) => go(args[0]),
+    cd: (args) => go(args[0]),
+    cat(args) {
+      const f = (args[0] || '').replace(/^\.?\//, '');
+      if (/^resume/.test(f)) return COMMANDS.resume();
+      if (!f) return oreo();
+      print(`cat: ${f}: No such file or directory`, 'term-err');
+    },
+    whoami() {
+      print(text('#doc-about p') || 'Sameed Ahmed. Systems programmer, Doha.');
+    },
+    projects(args) {
+      const want = args[0];
+      const valid = ['live', 'wip', 'done', 'dead'];
+      if (want && !valid.includes(want)) return print(`status must be one of: ${valid.join(', ')}`, 'term-err');
+      const carts = $$('#doc .cart').filter((c) => !want || c.dataset.status === want);
+      if (!carts.length) return print('nothing matches', 'term-dim');
+      for (const c of carts) {
+        print(`[${(c.dataset.status || '?').padEnd(4)}] ${c.querySelector('h3')?.textContent || ''}`);
+      }
+      print(`${carts.length} of ${CART_COUNT}`, 'term-dim');
+    },
+    crates() {
+      print(Number.isFinite(DOWNLOADS.n)
+        ? `boxy-cli: ${DOWNLOADS.n.toLocaleString()} downloads on crates.io`
+        : 'boxy-cli: still asking crates.io');
+      printLink('crates.io/crates/boxy-cli', 'https://crates.io/crates/boxy-cli');
+    },
+    resume() {
+      printLink('bastamasta.dev/resume', '/resume/');
+      printLink('…or the PDF directly', '/docs/Sameed Ahmed - Resume.pdf');
+    },
+    contact() {
+      for (const li of $$('#doc-contact .contact-list li')) {
+        const k = li.querySelector('.lbl')?.textContent || '';
+        const v = li.querySelector('.val')?.textContent || '';
+        if (k) print(`${k.padEnd(10)} ${v.trim()}`);
+      }
+      print('or `open contact` for the form', 'term-dim');
+    },
+    date() {
+      const d = dohaNow();
+      print(`${d.toDateString()} ${dohaHM()} +03 (Doha)`);
+    },
+    uptime() {
+      print(` ${dohaHM()} up 412 days,  1 user,  load average: 0.42, 0.31, 0.09`);
+      print('sleep schedule: still not found', 'term-dim');
+    },
+    neofetch() {
+      printBlock(NEOFETCH.replace('%DL%', Number.isFinite(DOWNLOADS.n) ? String(DOWNLOADS.n) : '—'));
+    },
+    echo: (args) => print(args.join(' ')),
+    clear() { out.replaceChildren(); },
+    sudo(args) {
+      print(args.length ? 'sameed is not in the sudoers file.' : 'usage: sudo <command>', 'term-err');
+      print('This incident will be reported.', 'term-dim');
+    },
+    exit() {
+      const engine = getEngine();
+      if (document.body.classList.contains('console') && engine) engine.closePanel();
+      else print('there is no exit, only P', 'term-dim');
+    },
+  };
+
+  /* `cat` with no file. A real shell would sit there reading stdin; this one
+     returns the cat. He walks in from the left, sits down halfway to consider
+     you, and carries on out the other side. */
+  function oreo() {
+    print('oreo');
+    print('ragdoll · goes completely boneless when picked up · one production incident', 'term-dim');
+    sfx.blip(520, 0.12, 'sine', 0.05);
+
+    const cv = oreoSprite();
+    // The run has to be measured, not guessed: a transform percentage is a
+    // percentage of the element, and the element is a very small cat.
+    cv.style.setProperty('--oreo-run', `${host.clientWidth + 120}px`);
+    if (reduceMotion) cv.classList.add('is-still');
+    cv.addEventListener('animationend', () => cv.remove());
+    host.append(cv);
+  }
+
+  const history = [];
+  let hIndex = 0;
+
+  function run(line) {
+    print(`${PS1} ${line}`, 'term-echo');
+    const [name, ...args] = line.trim().split(/\s+/);
+    if (!name) return;
+    const cmd = COMMANDS[name.toLowerCase()];
+    if (!cmd) return print(`${name}: command not found — try \`help\``, 'term-err');
+    try { cmd(args); } catch { print('that broke. sorry.', 'term-err'); }
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const line = input.value;
+    input.value = '';
+    if (line.trim()) { history.push(line); sfx.blip(660, 0.03, 'square', 0.03); }
+    hIndex = history.length;
+    run(line);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      if (!history.length) return;
+      hIndex = Math.max(0, Math.min(history.length, hIndex + (e.key === 'ArrowUp' ? -1 : 1)));
+      input.value = history[hIndex] ?? '';
+      e.preventDefault();
+    } else if (e.key === 'Tab') {
+      // Complete the command word only; arguments are few enough to type.
+      e.preventDefault();
+      const head = input.value.trimStart();
+      if (head.includes(' ')) return;
+      const hits = Object.keys(COMMANDS).filter((c) => c.startsWith(head.toLowerCase()));
+      if (hits.length === 1) input.value = `${hits[0]} `;
+      else if (hits.length > 1) print(hits.join('  '), 'term-dim');
+    }
+  });
+
+  // Clicking anywhere in the scrollback focuses the prompt, the way a real one
+  // behaves. Never on load, though — that would yank the page around.
+  (host.closest('.shell-panel') || out).addEventListener('click', (e) => {
+    if (e.target.closest('a, button')) return;
+    if (!getSelection()?.toString()) input.focus({ preventScroll: true });
+  });
+
+  print('ZAP-8 shell — type `help`, or `ls` to look around.', 'term-dim');
+}
+
+/* Drawn with the room's own sprite and the room's own tail routine, so there is
+   exactly one Oreo and he can't end up a different cat in two places. The tail
+   is not part of CAT — the room draws it procedurally so it can move — which is
+   why it has to be redrawn per frame here too rather than baked once.
+
+   Sprite offsets match drawCat(): body at the origin, tail base nine across and
+   nine down. Palette index 0 is VOID and nothing in CAT_MAP maps to it, so an
+   untouched pixel stays transparent, which is what lets him pad over the
+   scrollback instead of dragging a rectangle of background behind him. */
+const OREO_W = 18, OREO_H = 22;   // body plus the room the tail swings through
+
+function oreoSprite() {
+  const fb = new Framebuffer(OREO_W, OREO_H);
+  const rgb = paletteRGB();
+  const cv = document.createElement('canvas');
+  cv.width = OREO_W;
+  cv.height = OREO_H;
+  cv.className = 'oreo';
+  cv.setAttribute('aria-hidden', 'true');
+  const ctx = cv.getContext('2d');
+  const img = ctx.createImageData(OREO_W, OREO_H);
+  const t0 = performance.now();
+
+  const frame = (now) => {
+    const elapsed = (now - t0) / 1000;
+    // Hard stop rather than relying on animationend alone: closing the shell
+    // mid-walk hides the element, and a hidden element never fires it.
+    if (elapsed > 7 || !cv.isConnected) { cv.remove(); return; }
+    const t = reduceMotion ? 0 : elapsed;
+
+    fb.clear(C.VOID);
+    const bob = Math.round(Math.sin(t * 1.1) * 0.5);
+    fb.sprite(0, bob, CAT, CAT_MAP);
+    drawCatTail(fb, 9, 9 + bob, t);
+
+    for (let i = 0; i < fb.px.length; i++) {
+      const c = fb.px[i], o = i * 4;
+      if (!c) { img.data[o + 3] = 0; continue; }
+      const [r, g, b] = rgb[c];
+      img.data[o] = r; img.data[o + 1] = g; img.data[o + 2] = b; img.data[o + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+    requestAnimationFrame(frame);
+  };
+  requestAnimationFrame(frame);
+  return cv;
+}
+
+const PS1 = 'sameed@zap-8:~$';
+
+const NEOFETCH =
+  '   ▄▄▄▄▄▄▄     sameed@zap-8\n' +
+  ' ▄█████████▄   ─────────────────────────────\n' +
+  ' ██ ▀███▀ ██   os      Debian, in my house\n' +
+  ' ██  ███  ██   lang    Rust · C · some 8086\n' +
+  ' ▀█████████▀   board   KiCad → fab → regret\n' +
+  '   ▀▀▀▀▀▀▀     shipped %DL% boxy-cli installs\n' +
+  '               uptime  no sleep schedule found\n' +
+  '               cat     Oreo · 1 prod incident';
+
+/* Copying an address off a phone screen by hand is miserable, and the people
+   most likely to be doing it are the ones I want to hear from. Hidden outright
+   where the clipboard API isn't available, rather than offering a dead button. */
+function buildCopyButtons() {
+  if (!navigator.clipboard) return;          // the buttons ship hidden
+  for (const btn of $$('.copy[data-copy]')) {
+    btn.hidden = false;
+    const label = btn.textContent;
+    let revert = 0;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        btn.textContent = 'Copied';
+        btn.classList.add('is-ok');
+        sfx.blip(880, 0.05);
+      } catch {
+        btn.textContent = 'Copy failed';
+      }
+      clearTimeout(revert);
+      revert = setTimeout(() => {
+        btn.textContent = label;
+        btn.classList.remove('is-ok');
+      }, 1400);
+    });
+  }
+}
+
+/* The plain-mode twin of the reading on the marquee board. */
+function buildLocalClock() {
+  const el = $('#doha-clock');
+  if (!el) return;
+  const tick = () => { el.textContent = `${dohaHM()} in Doha (UTC+3)`; };
+  tick();
+  setInterval(tick, 20000);
+}
+
 /* Highlights the section nav entry for whatever is on screen. Purely additive:
    without JS the nav is still a working list of anchor links. */
 function buildSectionNav() {
@@ -988,12 +1415,21 @@ function buildSectionNav() {
     .filter((t) => t.el);
   if (!targets.length || typeof IntersectionObserver !== 'function') return;
 
+  const strip = $('ol', nav);
   let current = null;
   const mark = (a) => {
     if (current === a) return;
     if (current) current.removeAttribute('aria-current');
     current = a;
-    if (a) a.setAttribute('aria-current', 'true');
+    if (!a) return;
+    a.setAttribute('aria-current', 'true');
+    /* On a phone the strip is a horizontal scroller and only two or three of
+       the seven fit. Without this the highlight marking your position is
+       usually scrolled off the edge, which is worse than no highlight at all. */
+    if (strip && strip.scrollWidth > strip.clientWidth + 4) {
+      a.scrollIntoView({ inline: 'center', block: 'nearest',
+                         behavior: reduceMotion ? 'auto' : 'smooth' });
+    }
   };
 
   const seen = new Map();
@@ -1048,24 +1484,72 @@ function init() {
   document.body.classList.toggle('input-coarse', isCoarse());
   document.body.classList.toggle('input-fine', !isCoarse());
 
-  // pointer-events:none hides these from the mouse only; without this they
-  // stay tabbable and lead somewhere that isn't there yet.
-  $$('a.launch[data-soon]').forEach((a) => {
-    a.setAttribute('aria-disabled', 'true');
-    a.setAttribute('tabindex', '-1');
-    a.addEventListener('click', (e) => e.preventDefault());
-  });
-
   buildBinaryKeeb();
   buildFilters();
   buildContactForm();
+  buildCopyButtons();
+  buildLocalClock();
   buildSectionNav();
+
+  // Capture phase, so the context exists before any widget's own click handler
+  // tries to make a noise with it.
+  for (const ev of ['pointerdown', 'keydown', 'touchstart']) {
+    addEventListener(ev, () => sfx.arm(), { once: true, capture: true, passive: true });
+  }
 
   const consoleEl = $('#console');
   const corner = $('#corner');
   const ripcord = $('#ripcord');
   const muteBtn = $('#mute');
   let engine = null;
+
+  // Declared above so the terminal's `open` can reach the engine once it exists.
+  buildTerminal(() => engine);
+
+  /* The shell drops from the top over whichever view is showing. `~` is the
+     conventional key for this and is free in both modes; the >_ button is the
+     way in on anything without one. */
+  const shell = $('#shell');
+  const shellBtn = $('#shell-toggle');
+  let shellReturn = null;
+
+  function setShell(on) {
+    if (!shell || shell.hidden === !on) return;
+    shell.hidden = !on;
+    document.body.classList.toggle('shell-open', on);
+    shellBtn?.setAttribute('aria-pressed', String(on));
+    if (on) {
+      shellReturn = document.activeElement;
+      $('.term-in', shell)?.focus({ preventScroll: true });
+      sfx.blip(520, 0.05);
+    } else {
+      if (shellReturn?.isConnected) shellReturn.focus({ preventScroll: true });
+      shellReturn = null;
+      sfx.blip(360, 0.05);
+    }
+  }
+
+  shellBtn?.addEventListener('click', () => setShell(shell.hidden));
+  $('.shell-close', shell)?.addEventListener('click', () => setShell(false));
+  // Clicking the backdrop, but not the panel itself.
+  shell?.addEventListener('click', (e) => { if (e.target === shell) setShell(false); });
+
+  addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey || e.altKey || !shell) return;
+    // Escape closes it even from inside the prompt, which is where you are.
+    if (e.key === 'Escape' && !shell.hidden) { setShell(false); e.preventDefault(); return; }
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if (e.key === '~' || e.key === '`') { setShell(shell.hidden); e.preventDefault(); }
+  });
+
+  // The wall counter reads DOWNLOADS every frame; the plain view gets a tag.
+  loadDownloads((n) => {
+    const tag = $('#dl-count');
+    if (!tag) return;
+    tag.textContent = `${n.toLocaleString()} downloads`;
+    tag.hidden = false;
+  });
   let mode = readMode();
 
   function apply(next) {
@@ -1117,9 +1601,12 @@ function init() {
     if (mode === 'plain') scrollTo({ top: 0 });
   });
 
+  try { sfx.muted = localStorage.getItem(MUTE_KEY) === '1'; } catch { /* ignore */ }
+  muteBtn.setAttribute('aria-pressed', String(sfx.muted));
   muteBtn.addEventListener('click', () => {
     sfx.muted = !sfx.muted;
     muteBtn.setAttribute('aria-pressed', String(sfx.muted));
+    try { localStorage.setItem(MUTE_KEY, sfx.muted ? '1' : '0'); } catch { /* ignore */ }
     if (!sfx.muted) sfx.blip(660, 0.06);
   });
 

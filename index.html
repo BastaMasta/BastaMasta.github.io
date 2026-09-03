@@ -3,6 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<!-- GitHub Pages can't send headers, so the policy rides in the document.
+     'unsafe-inline' is unavoidable while the JSON-LD block and the font
+     stylesheet's onload live in the markup; everything else is locked to the
+     three origins this page actually talks to. -->
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://analytics.bastamasta.dev;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data:;
+  connect-src 'self' https://analytics.bastamasta.dev https://formspree.io https://crates.io;
+  form-action 'self' https://formspree.io;
+  base-uri 'none'; object-src 'none'; frame-src 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sameed Ahmed — Systems Programmer</title>
 <meta name="description" content="Sameed Ahmed (BastaMasta) — systems programmer in Doha, Qatar. Rust, a hobby kernel, a CHIP-8 interpreter, custom PCBs, and a Debian box doing more work than it signed up for.">
@@ -44,13 +57,6 @@
 <link rel="modulepreload" href="/js/toys/rom.js">
 
 <script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-ETD1YNN5NE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-ETD1YNN5NE');
-</script>
 
 <script type="application/ld+json">
 {
@@ -93,6 +99,9 @@
   </div>
 
   <div id="corner">
+    <button id="shell-toggle" type="button" aria-pressed="false" title="Open the shell (~)">
+      <span aria-hidden="true">&gt;_</span><span class="sr-only">Open the shell</span>
+    </button>
     <button id="mute" type="button" aria-pressed="false" title="Toggle sound">
       <span aria-hidden="true">&#9834;</span><span class="sr-only">Toggle sound</span>
     </button>
@@ -109,6 +118,7 @@
         <div><dt><kbd>&larr;</kbd><kbd>&rarr;</kbd></dt><dd>walk</dd></div>
         <div><dt><kbd>Enter</kbd></dt><dd>examine whatever you're standing at</dd></div>
         <div><dt><kbd>1</kbd>&ndash;<kbd>9</kbd></dt><dd>jump straight to a station</dd></div>
+        <div><dt><kbd>~</kbd></dt><dd>open the shell &mdash; <code>ls</code>, <code>open contact</code></dd></div>
         <div><dt><kbd>Esc</kbd></dt><dd>close a panel</dd></div>
         <div><dt><kbd>P</kbd></dt><dd>switch to the plain version</dd></div>
       </dl>
@@ -117,6 +127,7 @@
         <div><dt>Tap</dt><dd>walk to wherever you tap</dd></div>
         <div><dt>&#9664; &#9654;</dt><dd>walk, using the buttons at the bottom</dd></div>
         <div><dt>&#9679;</dt><dd>examine &mdash; it lights up when you're at something</dd></div>
+        <div><dt>&gt;_</dt><dd>the shell, top-right &mdash; ask it anything about this site</dd></div>
       </dl>
 
       <div class="help-actions">
@@ -130,6 +141,22 @@
   <button id="ripcord" type="button" aria-pressed="false">
       <span aria-hidden="true">&#9636;</span> Read&nbsp;plain&nbsp;version <kbd aria-hidden="true">P</kbd>
     </button>
+  </div>
+</div>
+
+<!-- The shell. Deliberately not inside any section: it can reach all of them,
+     it works in both presentations, and a 240px terminal wedged into the middle
+     of a prose panel looked exactly as bad as it sounds. -->
+<div id="shell" hidden>
+  <div class="shell-panel" role="dialog" aria-modal="true" aria-label="ZAP-8 shell">
+    <div class="shell-bar">
+      <span class="shell-title">ZAP&#8209;8 shell</span>
+      <span class="shell-hint">try <code>ls</code>, <code>projects live</code>, <code>neofetch</code></span>
+      <button class="shell-close" type="button" aria-label="Close the shell">&#215;</button>
+    </div>
+    <div class="term" data-widget="terminal">
+      <p class="term-fallback">A working shell lives here with JavaScript on. Everything it can tell you is also written out on this page.</p>
+    </div>
   </div>
 </div>
 
@@ -159,16 +186,22 @@
     <h1>Systems programmer.<br>Mostly Rust, occasionally a soldering iron.</h1>
     <p class="lede">I write software that runs close to the metal, and when it needs a body, I design the board it runs on. This is the plain version of my portfolio — the same content as the interactive one, minus the pixels.</p>
 
+    <p id="status" class="status">
+      <span>Open for work — internships, freelance and collaborations</span>
+      <span>Currently building a Rust kernel and an action RPG</span>
+      <span>Replies within a day, Doha time</span>
+    </p>
+
     <figure class="hero">
-      <img src="/images/workshop.png" width="1480" height="360" loading="lazy" decoding="async"
+      <img src="/images/workshop.png" width="1488" height="360" loading="lazy" decoding="async"
            alt="Pixel-art panorama of a workshop: a desk with a CRT terminal, a server rack with blinking lights, an electronics bench, a shelf of game cartridges, an arcade cabinet, a mail slot, a printer, a sleeping cat, and a neon ZapBurrito sign.">
       <figcaption>The ZAP&#8209;8 workshop. The interactive version renders this room live, and you can walk around it.</figcaption>
     </figure>
 
     <p class="masthead-actions">
       <a class="btn primary" href="#doc-projects">See the projects</a>
-      <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
-      <a class="btn" href="https://github.com/BastaMasta" rel="noopener">GitHub</a>
+      <a class="btn" href="/resume/">Résumé</a>
+      <a class="btn" href="https://github.com/BastaMasta" rel="noopener" aria-label="My GitHub profile">GitHub</a>
       <a class="btn" href="#doc-contact">Get in touch</a>
     </p>
 
@@ -219,9 +252,9 @@
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Emulation</span></p>
         <p>A CHIP-8 virtual machine written in Rust. The version on this page is a JavaScript port of the same design, running <strong>Burrito Drop</strong> — a game I wrote in CHIP-8 assembly. Walk to the arcade cabinet and press <kbd>Enter</kbd> to play it, or take the ROM and run it on your own interpreter.</p>
         <p class="cart-links">
-          <a href="https://github.com/BastaMasta" rel="noopener">Source</a>
+          <a href="https://github.com/BastaMasta" rel="noopener" aria-label="Source: CHIP-8 interpreter">Source</a>
           <a href="/roms/burrito-drop.ch8" download>burrito-drop.ch8 (188 B)</a>
-          <a href="/roms/burrito-drop.asm" download>Assembly source</a>
+          <a href="/roms/burrito-drop.asm" download aria-label="Assembly source: CHIP-8 interpreter">Assembly source</a>
         </p>
       </li>
 
@@ -229,16 +262,16 @@
         <h3>A kernel, from scratch</h3>
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Bare metal</span><span class="tag">x86</span></p>
         <p>Bootloader, GDT, interrupts, a VGA text driver and a heap allocator that mostly works. Every layer I finish reveals two I didn't know about.</p>
-        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">On my Gitea</a></p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="On my Gitea: A kernel, from scratch">On my Gitea</a></p>
       </li>
 
       <li class="cart" data-status="live" data-hue="cyan" data-code="BX">
         <h3>boxy-cli</h3>
-        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Crate</span><span class="tag">CLI</span></p>
+        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Crate</span><span class="tag">CLI</span><span class="tag tag-live" id="dl-count" hidden></span></p>
         <p>Draws good-looking boxes and borders in a terminal. Published on crates.io, which means people I've never met have run my code — still the best part of shipping anything.</p>
         <p class="cart-links">
-          <a href="https://crates.io/crates/boxy-cli" rel="noopener">crates.io</a>
-          <a class="launch" href="https://play.bastamasta.dev/boxy" rel="noopener" data-soon aria-disabled="true" tabindex="-1">Run it in your browser</a>
+          <a href="https://crates.io/crates/boxy-cli" rel="noopener" aria-label="crates.io: boxy-cli">crates.io</a>
+          <span class="wip">Browser playground in progress &mdash; the crate compiled to WebAssembly</span>
         </p>
       </li>
 
@@ -247,8 +280,8 @@
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Interpreter</span></p>
         <p>An interpreter for the least ergonomic language ever designed. Writing one is a rite of passage; writing one that's fast is an actual exercise.</p>
         <p class="cart-links">
-          <a href="/projects/brainfuck/">Try it here</a>
-          <a class="launch" href="https://play.bastamasta.dev/bf" rel="noopener" data-soon aria-disabled="true" tabindex="-1">Run the real binary</a>
+          <a href="/projects/brainfuck/" aria-label="Try it here: Brainfuck interpreter">Try it here</a>
+          <span class="wip">Running the real binary in a browser is in progress</span>
         </p>
       </li>
 
@@ -256,69 +289,69 @@
         <h3>The home lab</h3>
         <p class="cart-meta"><span class="tag">Debian</span><span class="tag">Docker</span><span class="tag">Self-hosted</span></p>
         <p>A Debian server running my Git forge, analytics, media, automation and monitoring. If a service can be self-hosted, it probably already is.</p>
-        <p class="cart-links"><a href="https://server.bastamasta.dev" rel="noopener">Dashboard</a></p>
+        <p class="cart-links"><a href="https://server.bastamasta.dev" rel="noopener" aria-label="Dashboard: The home lab">Dashboard</a></p>
       </li>
 
       <li class="cart" data-status="live" data-hue="orange" data-code="GT">
         <h3>Self-hosted Gitea</h3>
         <p class="cart-meta"><span class="tag">Gitea</span><span class="tag">DevOps</span></p>
         <p>My own Git forge. Home to everything that hasn't earned a GitHub README yet.</p>
-        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">Visit</a></p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="Visit: Self-hosted Gitea">Visit</a></p>
       </li>
 
       <li class="cart" data-status="wip" data-hue="lilac" data-code="SD">
         <h3>ShellDeck</h3>
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">TUI</span></p>
         <p>A terminal-first control surface for the things I do most days. In active development, which is a generous way of saying it works on my machine.</p>
-        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener">On my Gitea</a></p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="On my Gitea: ShellDeck">On my Gitea</a></p>
       </li>
 
       <li class="cart" data-status="done" data-hue="cyan" data-code="BK">
         <h3>BinaryKeeb 1.0</h3>
         <p class="cart-meta"><span class="tag">Hardware</span><span class="tag">Python</span></p>
-        <p>Two keys — one for <code>0</code>, one for <code>1</code>. Eight taps spells one character. Slower than a keyboard and infinitely more satisfying.</p>
-        <p class="cart-links"><a href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener">GitHub</a></p>
+        <p>Two keys — one for <code>0</code>, one for <code>1</code>. Eight taps spells one character. Slower than a keyboard and infinitely more satisfying. There's a working one you can type on over at <a href="#doc-hardware">the bench</a>.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener" aria-label="GitHub: BinaryKeeb 1.0">GitHub</a></p>
       </li>
 
       <li class="cart" data-status="done" data-hue="green" data-code="LU">
         <h3>Lumio V2</h3>
         <p class="cart-meta"><span class="tag">KiCad</span><span class="tag">PCB</span></p>
-        <p>A custom board, second revision. Routed by hand because autorouters have no soul.</p>
-        <p class="cart-links"><a href="https://github.com/BastaMasta/LumioV2" rel="noopener">GitHub</a></p>
+        <p>A custom board, second revision, drawn in KiCad and routed by hand because autorouters have no soul. The first revision is what taught me what a ground plane is actually for.</p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/LumioV2" rel="noopener" aria-label="GitHub: Lumio V2">GitHub</a></p>
       </li>
 
       <li class="cart" data-status="live" data-hue="amber" data-code="YK">
         <h3>Yukti 2k25</h3>
         <p class="cart-meta"><span class="tag">Web</span><span class="tag">Event</span></p>
         <p>The site for Yukti 2k25, VTU Belagavi's national techno-cultural fest. Built fast, held up under a traffic spike, which is the only review that matters.</p>
-        <p class="cart-links"><a href="https://yukti.bastamasta.dev" rel="noopener">Visit</a></p>
+        <p class="cart-links"><a href="https://yukti.bastamasta.dev" rel="noopener" aria-label="Visit: Yukti 2k25">Visit</a></p>
       </li>
 
       <li class="cart" data-status="done" data-hue="lilac" data-code="IM">
         <h3>Image processor</h3>
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">CLI</span></p>
         <p>A small command-line image manipulation tool. Written mainly to find out how much of image processing is just convolution. (Most of it.)</p>
-        <p class="cart-links"><a href="https://github.com/BastaMasta/Personal-Projects/" rel="noopener">GitHub</a></p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/Personal-Projects/" rel="noopener" aria-label="GitHub: Image processor">GitHub</a></p>
       </li>
 
       <li class="cart" data-status="wip" data-hue="orange" data-code="MS">
         <h3>Meme SoundPad</h3>
         <p class="cart-meta"><span class="tag">Flutter</span><span class="tag">Android</span></p>
         <p>A soundboard app. Not important work. Very frequently used work.</p>
-        <p class="cart-links"><a href="https://github.com/BastaMasta/MemeSoundPad" rel="noopener">GitHub</a></p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/MemeSoundPad" rel="noopener" aria-label="GitHub: Meme SoundPad">GitHub</a></p>
       </li>
 
       <li class="cart" data-status="wip" data-hue="red" data-code="RPG">
         <h3>Untitled action RPG</h3>
         <p class="cart-meta"><span class="tag">GameMaker</span><span class="tag">ZapBurrito</span></p>
         <p>The first ZapBurrito project. Still untitled, because naming things is the hard problem people warned me about.</p>
-        <p class="cart-links"><a href="https://github.com/BastaMasta/ARPG_Build/" rel="noopener">GitHub</a></p>
+        <p class="cart-links"><a href="https://github.com/BastaMasta/ARPG_Build/" rel="noopener" aria-label="GitHub: Untitled action RPG">GitHub</a></p>
       </li>
 
       <li class="cart" data-status="wip" data-hue="cyan" data-code="TR">
         <h3>TARS replica</h3>
         <p class="cart-meta"><span class="tag">Embedded</span><span class="tag">Robotics</span></p>
-        <p>A working replica of the robot from <em>Interstellar</em>. Honesty setting currently at 100%.</p>
+        <p>A working replica of the walking monolith from <em>Interstellar</em>. Currently more monolith than walking. Honesty setting at 100%.</p>
       </li>
 
       <li class="cart" data-status="dead" data-hue="lilac" data-code="GF">
@@ -349,18 +382,17 @@
     <h2 id="h-hardware">The bench</h2>
     <p>Where software stops being an abstraction. Boards drawn in KiCad, assembled by hand, debugged with a multimeter and optimism.</p>
 
-    <h3>BinaryKeeb 1.0</h3>
-    <p>A two-key keyboard: one key for <code>0</code>, one for <code>1</code>. You tap eight bits and it prints the ASCII character they spell. It is a deeply impractical object and I love it.</p>
+    <h3>Try the BinaryKeeb</h3>
+    <p>The real one has two keys and lives on this bench. Below is the same idea in software, so you can feel it: tap eight bits, most significant first, and out comes the character they spell. Exactly as slow as it sounds &mdash; that's the point.</p>
 
     <div class="keeb" data-widget="binarykeeb">
       <p class="keeb-fallback">Two keys, <code>0</code> and <code>1</code>. Enter eight bits and it emits the matching ASCII character. <em>Interactive with JavaScript enabled.</em></p>
     </div>
 
-    <h3>Lumio V2</h3>
-    <p>Second revision of a custom PCB, designed in KiCad. The first revision taught me what a ground plane is for.</p>
+    <h3>How a board gets made here</h3>
+    <p>Schematic in KiCad, routed by hand, sent to a fab &mdash; then the interesting part: finding out which of my assumptions the physical world disagrees with. The ground plane that looked optional. The trace that met spec on paper and picks up the regulator sitting next to it. Nothing on a bench is quite the part on the datasheet.</p>
 
-    <h3>TARS replica</h3>
-    <p>An in-progress attempt at the walking monolith from <em>Interstellar</em>. Currently more monolith than walking.</p>
+    <p>The boards themselves &mdash; Lumio&nbsp;V2, the BinaryKeeb, the TARS replica &mdash; are in <a href="#doc-projects">Cartridges</a>, with their sources.</p>
 
     <p class="masthead-actions">
       <a class="btn" href="https://github.com/BastaMasta/BinaryKeeb" rel="noopener">BinaryKeeb on GitHub</a>
@@ -387,7 +419,8 @@
     <h2 id="h-resume">Résumé</h2>
     <p>The conventional version, for conventional situations.</p>
     <p class="masthead-actions">
-      <a class="btn primary" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Open PDF</a>
+      <a class="btn primary" href="/resume/">View résumé</a>
+      <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Open PDF</a>
       <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf" download>Download</a>
     </p>
     <p class="aside">If you're hiring for anything involving Rust, embedded work, or infrastructure that has to actually stay up — that's the part of the job I'd want.</p>
@@ -405,12 +438,15 @@
 
 
     <ul class="contact-list">
-      <li><span class="lbl">Email</span><a href="mailto:sameedahmed@bastamasta.dev">sameedahmed@bastamasta.dev</a></li>
-      <li><span class="lbl">Phone</span><a href="tel:+918217887821">+91 82178 87821</a></li>
-      <li><span class="lbl">Location</span><span>Doha, Qatar</span></li>
+      <li><span class="lbl">Email</span><span class="val"><a href="mailto:sameedahmed@bastamasta.dev">sameedahmed@bastamasta.dev</a><button class="copy" type="button" data-copy="sameedahmed@bastamasta.dev" hidden>Copy</button></span></li>
+      <li><span class="lbl">Phone</span><span class="val"><a href="tel:+918217887821">+91 82178 87821</a><button class="copy" type="button" data-copy="+918217887821" hidden>Copy</button></span></li>
+      <li><span class="lbl">Location</span><span class="val">Doha, Qatar</span></li>
+      <!-- The console scrolls the same reading across the marquee board. -->
+      <li><span class="lbl">My time</span><span class="val"><span id="doha-clock">Doha, UTC+3</span></span></li>
     </ul>
 
     <form id="contact-form" action="https://formspree.io/f/meoeplwk" method="POST">
+      <p class="hp" aria-hidden="true"><label for="f-gotcha">Leave this empty</label><input id="f-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off"></p>
       <p class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" required autocomplete="name"></p>
       <p class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required autocomplete="email"></p>
       <p class="field"><label for="f-subject">Subject</label><input id="f-subject" name="subject" type="text" required></p>
@@ -420,7 +456,7 @@
     </form>
 
     <ul class="social">
-      <li><a href="https://github.com/BastaMasta" rel="noopener">GitHub</a></li>
+      <li><a href="https://github.com/BastaMasta" rel="noopener" aria-label="GitHub profile">GitHub</a></li>
       <li><a href="https://gitea.bastamasta.dev" rel="noopener">Gitea</a></li>
       <li><a href="https://www.linkedin.com/in/sameed-ahmed-354a7b258" rel="noopener">LinkedIn</a></li>
       <li><a href="https://x.com/BastaMasta3150" rel="noopener">X</a></li>
@@ -439,7 +475,7 @@
   </section>
 
   <footer id="colophon">
-    <p>Built as a fantasy console. 320×180, sixteen colours, no game engine. <a href="https://github.com/BastaMasta/BastaMasta.github.io" rel="noopener">Source</a>.</p>
+    <p>Built as a fantasy console. 320×180, sixteen colours, no game engine. <a href="https://github.com/BastaMasta/BastaMasta.github.io" rel="noopener" aria-label="Source of this website">Source</a>.</p>
     <p>&copy; 2026 Sameed Ahmed &middot; ZapBurrito Studios</p>
   </footer>
 </main>

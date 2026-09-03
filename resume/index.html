@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  script-src 'self' https://analytics.bastamasta.dev;
+  connect-src 'self' https://analytics.bastamasta.dev;
+  img-src 'self' data:;
+  object-src 'self'; base-uri 'none'; frame-src 'self'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé — Sameed Ahmed</title>
+<meta name="description" content="Résumé of Sameed Ahmed — systems programmer in Doha, Qatar. Rust, embedded hardware, and self-hosted Linux infrastructure.">
+<meta name="theme-color" content="#0b0a12">
+<link rel="canonical" href="https://bastamasta.dev/resume/">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<link rel="apple-touch-icon" href="/images/icon-180.png">
+
+<meta property="og:type" content="profile">
+<meta property="og:url" content="https://bastamasta.dev/resume/">
+<meta property="og:title" content="Sameed Ahmed — Résumé">
+<meta property="og:description" content="Systems programmer. Rust, embedded hardware, and infrastructure that has to stay up.">
+<meta property="og:image" content="https://bastamasta.dev/images/social-card.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="/styles.css">
+<!-- Loaded plainly rather than with the media=print/onload swap the main page
+     uses: that trick is an inline event handler, and this page's CSP has no
+     'unsafe-inline' for scripts. One render-blocking font request on a page
+     this small is the better trade. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+
+<script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
+
+<style>
+  /* This page is one job — put the PDF in front of someone — so it carries its
+     own handful of rules rather than growing styles.css for a single URL. */
+  .cv-page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .cv-back {
+    display: inline-block; margin-bottom: 26px;
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--lilac); text-decoration: none;
+  }
+  .cv-back:hover { color: var(--amber); }
+
+  .cv-head { border-bottom: 1px solid var(--indigo); padding-bottom: 26px; }
+  .cv-head h1 {
+    font-family: var(--display); font-size: clamp(26px, 5vw, 40px);
+    line-height: 1.1; margin: 0 0 10px; color: var(--white);
+  }
+  .cv-head p { margin: 0; color: var(--lilac); max-width: var(--measure); }
+
+  .cv-facts { display: flex; flex-wrap: wrap; gap: 8px 26px; margin: 20px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .cv-facts li { color: var(--lilac-lt); }
+  .cv-facts b {
+    display: block; font-weight: 400; font-size: 11px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--amber);
+  }
+
+  .cv-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 0; }
+
+  /* The embed is a convenience, never the only way through. Below 900px it is
+     hidden outright: mobile browsers render a PDF <object> as anything from a
+     single page to a blank grey rectangle, and a blank rectangle is worse than
+     an honest button. */
+  .cv-embed { margin: 34px 0 0; display: none; }
+  .cv-embed object, .cv-embed iframe {
+    display: block; width: 100%; height: 82vh; min-height: 620px;
+    border: 1px solid var(--violet); border-radius: var(--radius);
+    background: var(--deep);
+  }
+  @media (min-width: 900px) { .cv-embed { display: block; } }
+
+  .cv-fallback {
+    margin: 34px 0 0; padding: 22px 24px;
+    border: 1px solid var(--violet); border-radius: var(--radius);
+    background: var(--deep);
+  }
+  .cv-fallback p { margin: 0 0 16px; color: var(--lilac); font-size: 14px; }
+  .cv-fallback p:last-child { margin: 0; }
+  @media (min-width: 900px) { .cv-fallback { display: none; } }
+
+  .cv-foot {
+    margin: 46px 0 0; padding-top: 22px;
+    border-top: 1px solid var(--indigo);
+    font-size: 13px; color: var(--lilac);
+  }
+  .cv-foot a { color: var(--cyan); }
+
+  @media print {
+    .cv-back, .cv-actions, .cv-embed, .cv-fallback, .cv-foot { display: none !important; }
+  }
+</style>
+</head>
+<body class="plain">
+<main id="doc" class="cv-page">
+
+  <a class="cv-back" href="/">&larr; Back to the workshop</a>
+
+  <header class="cv-head">
+    <h1>Sameed Ahmed — Résumé</h1>
+    <p>Systems programmer. Rust and C close to the metal, embedded hardware when it needs a body, and a Debian box doing more work than it signed up for.</p>
+
+    <ul class="cv-facts">
+      <li><b>Based in</b>Doha, Qatar</li>
+      <li><b>Email</b><a href="mailto:sameedahmed@bastamasta.dev">sameedahmed@bastamasta.dev</a></li>
+      <li><b>GitHub</b><a href="https://github.com/BastaMasta" rel="noopener">BastaMasta</a></li>
+      <li><b>Open to</b>Internships, freelance, collaborations</li>
+    </ul>
+
+    <p class="cv-actions">
+      <a class="btn primary" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Open the PDF</a>
+      <a class="btn" href="/docs/Sameed Ahmed - Resume.pdf" download>Download</a>
+      <a class="btn" href="/#doc-contact">Get in touch</a>
+    </p>
+  </header>
+
+  <div class="cv-embed">
+    <object data="/docs/Sameed Ahmed - Resume.pdf#view=FitH" type="application/pdf" aria-label="Résumé, PDF">
+      <iframe src="/docs/Sameed Ahmed - Resume.pdf#view=FitH" title="Résumé, PDF"></iframe>
+    </object>
+  </div>
+
+  <div class="cv-fallback">
+    <p>The résumé is a PDF. Your browser may prefer to open it in its own viewer rather than inside this page.</p>
+    <p><a class="btn primary" href="/docs/Sameed Ahmed - Resume.pdf" target="_blank" rel="noopener">Open the PDF</a></p>
+  </div>
+
+  <footer class="cv-foot">
+    <p>The projects behind all of this are at <a href="/">bastamasta.dev</a> — walkable, or as a plain document.</p>
+  </footer>
+
+</main>
+</body>
+</html>

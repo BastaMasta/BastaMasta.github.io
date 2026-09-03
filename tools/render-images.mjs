@@ -17,6 +17,18 @@ import { drawRoom, ROOM_W, ROOM_H, FLOOR_Y } from '../js/room.js';
 import { Player } from '../js/player.js';
 import { encodePNG, upscale } from './png.mjs';
 
+/* The wall counter reads crates.io live in the browser. The stills can't, so
+   the number is baked in at build time — ask crates.io if we can reach it, and
+   fall back to dashes rather than inventing a figure. */
+const DOWNLOADS = await fetch('https://crates.io/api/v1/crates/boxy-cli', {
+  // crates.io turns away requests that don't identify themselves.
+  headers: { 'User-Agent': 'bastamasta.dev image build (sameedahmed@bastamasta.dev)' },
+})
+  .then((r) => (r.ok ? r.json() : null))
+  .then((d) => d?.crate?.downloads ?? null)
+  .catch(() => null);
+console.log(`  crates.io boxy-cli downloads: ${DOWNLOADS ?? 'unavailable'}`);
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 function write(fb, scale, rel) {
@@ -31,7 +43,7 @@ function write(fb, scale, rel) {
 /* ---- the masthead panorama: the whole room, cat asleep ---- */
 {
   const fb = new Framebuffer(ROOM_W, ROOM_H);
-  drawRoom(fb, 3.2, { catAwake: false, catOnRack: false, cartCount: 15 });
+  drawRoom(fb, 3.2, { catAwake: false, catOnRack: false, cartCount: 15, downloads: DOWNLOADS });
   const p = new Player(299);            // standing at the cartridge shelf
   p.y = FLOOR_Y + 4;
   p.draw(fb, 3.2);
@@ -49,7 +61,7 @@ function write(fb, scale, rel) {
   const W = 400, H = 210, BAR = 30;
   const card = new Framebuffer(W, H);
   const world = new Framebuffer(ROOM_W, ROOM_H);
-  drawRoom(world, 3.2, { catAwake: true, catOnRack: false, cartCount: 15 });
+  drawRoom(world, 3.2, { catAwake: true, catOnRack: false, cartCount: 15, downloads: DOWNLOADS });
   const p = new Player(299);
   p.y = FLOOR_Y + 4;
   p.draw(world, 3.2);

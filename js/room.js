@@ -5,7 +5,7 @@
 
 import { C, T, LIGHT_MAP, Framebuffer, buildShadeMask, applyMask } from './gfx.js';
 
-export const ROOM_W = 704;
+export const ROOM_W = 744;
 export const ROOM_H = 180;
 export const FLOOR_Y = 148;
 
@@ -28,12 +28,12 @@ export const HOTSPOTS = [
   { id: 'whoami',  x: 62,  lx: 46,  span: [8, 100],   label: 'TERMINAL',    panel: 'about' },
   { id: 'homelab', x: 160, lx: 126, span: [100, 166], label: 'SERVER RACK', panel: 'homelab' },
   { id: 'bench',   x: 205, lx: 205, span: [166, 250], label: 'WORKBENCH',   panel: 'hardware' },
-  { id: 'shelf',   x: 299, lx: 299, span: [252, 346], label: 'CARTRIDGES',  panel: 'projects' },
-  { id: 'cat',     x: 356, lx: 370, span: [350, 388], label: 'OREO',        panel: 'cat' },
-  { id: 'arcade',  x: 394, lx: 420, span: [390, 450], label: 'ARCADE',      action: 'game', ly: 40 },
-  { id: 'printer', x: 482, lx: 483, span: [452, 512], label: 'PRINTER',     panel: 'resume' },
-  { id: 'mail',    x: 522, lx: 541, span: [516, 566], label: 'MAIL SLOT',   panel: 'contact' },
-  { id: 'studio',  x: 620, lx: 613, span: [570, 704], label: 'STUDIO',      panel: 'studio', ly: 58 },
+  { id: 'shelf',   x: 307, lx: 307, span: [256, 362], label: 'CARTRIDGES',  panel: 'projects', ly: 64 },
+  { id: 'cat',     x: 379, lx: 395, span: [372, 412], label: 'OREO',        panel: 'cat' },
+  { id: 'arcade',  x: 434, lx: 460, span: [430, 490], label: 'ARCADE',      action: 'game', ly: 40 },
+  { id: 'printer', x: 522, lx: 523, span: [492, 552], label: 'PRINTER',     panel: 'resume' },
+  { id: 'mail',    x: 562, lx: 581, span: [556, 606], label: 'MAIL SLOT',   panel: 'contact' },
+  { id: 'studio',  x: 660, lx: 653, span: [610, 744], label: 'STUDIO',      panel: 'studio', ly: 58 },
 ];
 
 /* ---------- helpers ---------- */
@@ -72,11 +72,14 @@ function drawWalls(fb) {
     fb.line(x, FLOOR_Y + 1, x - 10, fb.h, C.VIOLET);
   }
 
-  drawWindow(fb, 236, 16);
+  drawWindow(fb, WINDOW_X, WINDOW_Y);
   drawCables(fb);
 }
 
-const WINDOW_X = 236, WINDOW_Y = 16;
+/* Dropped from y16: up there the frame ran into the cable run above it and the
+   top of it fell outside the camera's crop on most screens, so it read as a
+   window jammed into the ceiling. The shelf below came down with it. */
+const WINDOW_X = 236, WINDOW_Y = 28;
 const STARS = [[7,6],[15,12],[24,5],[33,18],[44,9],[50,24],[12,28],[38,31],[20,20],[46,35]];
 
 /* Redrawn every frame — ten pixels, so it stays cheap. */
@@ -237,11 +240,21 @@ function drawBench(fb, t) {
 
 /* ---------- 4. cartridge shelf (projects) ---------- */
 
-/* Cartridge spine colours cycle through the palette's accents. */
-const CART_COLS = [C.AMBER, C.CYAN, C.GREEN, C.RED, C.ORANGE, C.LILAC_LT];
+/* One entry per cartridge rather than a repeating cycle, so the mix can be
+   arranged by hand: roughly half accents, spread out, with no two of the same
+   hue adjacent. Fifteen saturated spines made the shelf out-shout the arcade
+   cabinet next to it; all-muted went too far the other way. Beyond fifteen it
+   wraps, which is fine — the shelf is decoration, the real list is the panel. */
+const CART_COLS = [
+  C.AMBER,  C.VIOLET_LT, C.CYAN,      C.LILAC, C.ORANGE,
+  C.GREEN,  C.VIOLET,    C.RED,       C.LILAC_LT, C.ORANGE,
+  C.CYAN,   C.VIOLET_LT, C.AMBER,     C.LILAC, C.GREEN,
+];
+
+const SHELF_X = 266, SHELF_Y = 70, SHELF_W = 84;
 
 function drawShelf(fb, t, cartCount = 15) {
-  const x = 258, y = 58, w = 84;
+  const x = SHELF_X, y = SHELF_Y, w = SHELF_W;
   // Two shelf boards.
   for (let r = 0; r < 2; r++) {
     const sy = y + r * 30;
@@ -278,7 +291,7 @@ function drawShelf(fb, t, cartCount = 15) {
 /* ---------- 5. arcade cabinet (ZapBurrito Studios) ---------- */
 
 function drawArcade(fb, t) {
-  const x = 398, y = 54, w = 44, h = FLOOR_Y - y;
+  const x = 438, y = 54, w = 44, h = FLOOR_Y - y;
   fb.rect(x, y, w, h, C.INDIGO);
   fb.frame(x, y, w, h, C.ORANGE);
   // Marquee.
@@ -309,7 +322,7 @@ function drawArcade(fb, t) {
 /* ---------- 6. mail slot (contact) ---------- */
 
 function drawMail(fb, t) {
-  const x = 525, y = 74, w = 32, h = 26;
+  const x = 565, y = 74, w = 32, h = 26;
   fb.rect(x, y, w, h, C.VIOLET);
   fb.frame(x, y, w, h, C.VIOLET_LT);
   fb.rect(x + 4, y + 6, w - 8, 4, C.VOID);       // the slot
@@ -329,7 +342,7 @@ function drawMail(fb, t) {
 /* ---------- 7. printer (resume) ---------- */
 
 function drawPrinter(fb, t) {
-  const x = 463, topY = 116, w = 40;
+  const x = 503, topY = 116, w = 40;
   // Side table.
   fb.rect(x - 2, topY, w + 4, 3, C.BROWN);
   fb.rect(x + 2, topY + 3, 3, FLOOR_Y - topY - 3, C.BROWN_DK);
@@ -355,7 +368,7 @@ function drawPrinter(fb, t) {
 
 /* Oreo, a ragdoll: cream coat, dark seal points on the ears, mask and paws,
    and the blue eyes the breed is known for. */
-const CAT = [
+export const CAT = [
   '..d.....d..',
   '.ddd...ddd.',
   '.ddddddddd.',
@@ -382,7 +395,7 @@ const CAT_SLEEP = [
   'ccccccccc',
   '.dd...dd.',
 ];
-const CAT_MAP = {
+export const CAT_MAP = {
   'd': C.BROWN,      // seal points
   'c': C.LILAC_LT,   // cream coat
   'b': C.CYAN,       // blue eyes
@@ -395,7 +408,7 @@ const CAT_MAP = {
    plumed toward the tip. Drawn as overlapping discs so it reads as fur rather
    than a drawn line. It drops away from the body and then lies along whatever
    is under it, with the last third twitching. */
-function drawCatTail(fb, bx, by, t, opts = {}) {
+export function drawCatTail(fb, bx, by, t, opts = {}) {
   const { reach = 6, drop = 7, flick = 2, speed = 2.2 } = opts;
   const sway = Math.sin(t * speed);
   const at = (p) => {
@@ -433,7 +446,7 @@ function drawCatOnRack(fb, t) {
 }
 
 function drawCat(fb, t, awake, onRack) {
-  const x = 361, y = FLOOR_Y - 12;
+  const x = 384, y = FLOOR_Y - 12;
   // Beanbag — always there, whether or not it is occupied.
   fb.discE(x + 9, FLOOR_Y - 3, 8, C.VIOLET);
   fb.ditherRect(x + 1, FLOOR_Y - 6, 16, 5, C.VIOLET, C.VIOLET_LT, 0.4);
@@ -471,6 +484,10 @@ function drawLampFixture(fb, t, x, cordLen = 22, col = C.AMBER) {
   fb.set(bx, by + 4, C.AMBER_LT);
 }
 
+/* Hanging lamps: [x, cord length]. One table, used to build the cone masks and
+   again to draw the fixtures, so the two can't drift apart. */
+const LAMPS = [[204, 22], [524, 26], [660, 20]];
+
 /* The cone's shape is fixed, so its dither pattern is too — it is baked into a
    mask once and replayed as a flat index walk. */
 function lampConeMask(x, cordLen) {
@@ -478,7 +495,7 @@ function lampConeMask(x, cordLen) {
   const depth = FLOOR_Y + 14 - top;
   const slope = 0.58, base = 6;
   const maxHalf = Math.ceil(base + depth * slope);
-  return buildShadeMask(ROOM_W, ROOM_H, x - maxHalf, top, maxHalf * 2, depth, (xx, yy) => {
+  const mask = buildShadeMask(ROOM_W, ROOM_H, x - maxHalf, top, maxHalf * 2, depth, (xx, yy) => {
     const half = base + yy * slope;
     const dx = Math.abs(xx - maxHalf);
     if (dx > half) return 0;
@@ -486,6 +503,9 @@ function lampConeMask(x, cordLen) {
     const fall = Math.pow(1 - yy / depth, 0.85);
     return 1.15 * edge * fall;
   });
+  // A cone is 170-odd pixels wide and the camera window is rarely more than
+  // 260, so knowing where it starts and ends is worth carrying around.
+  return { mask, x0: x - maxHalf, x1: x + maxHalf };
 }
 
 /* Wall glow behind a light-emitting object, so nothing floats. */
@@ -514,11 +534,11 @@ function drawPosters(fb) {
   fb.rect(x, y, 30, 26, C.INDIGO);
   fb.frame(x, y, 30, 26, C.BROWN);
   fb.sprite(x + 9, y + 6, POSTER_CRAB, { '#': C.ORANGE, 'o': C.VOID, '.': T });
-  fb.text(x + 5, y + 18, 'RUST', C.AMBER, { shadow: T, spacing: 5 });
+  fb.text(x + 5, y + 18, 'RUST', C.ORANGE, { shadow: T, spacing: 5 });
 
   // Taped-up note by the rack.
   x = 158; y = 40;
-  fb.rect(x, y, 26, 20, C.LILAC_LT);
+  fb.rect(x, y, 26, 20, C.LILAC);
   fb.set(x, y, C.VOID); fb.set(x + 25, y, C.VOID);
   for (let i = 0; i < 4; i++) fb.hline(x + 3, y + 4 + i * 4, 14 + (i % 2) * 5, C.VIOLET);
 
@@ -526,15 +546,59 @@ function drawPosters(fb) {
   x = 196; y = 34;
   fb.rect(x, y, 22, 16, C.GREEN);
   fb.frame(x, y, 22, 16, C.VOID);
-  fb.hline(x + 3, y + 5, 14, C.AMBER);
-  fb.hline(x + 6, y + 10, 12, C.AMBER);
+  fb.hline(x + 3, y + 5, 14, C.ORANGE);
+  fb.hline(x + 6, y + 10, 12, C.ORANGE);
   fb.set(x + 11, y + 2, C.RED);
 
   // "There's no place like 127.0.0.1" strip above the mail slot.
-  x = 513; y = 50;
+  x = 553; y = 50;
   fb.rect(x, y, 52, 12, C.INDIGO);
   fb.frame(x, y, 52, 12, C.VIOLET);
   fb.text(x + 3, y + 3, '127.0.0.1', C.GREEN, { shadow: T, spacing: 5 });
+}
+
+/* ---------- the download counter ----------
+   boxy-cli is on crates.io and strangers keep installing it. That is the most
+   load-bearing fact on this site — people I have never met run my code — so it
+   gets a number on the wall that climbs on its own, instead of a sentence in a
+   panel nobody opens. Zero-padded like a mechanical counter, which also stops
+   the digits jittering as it rolls over a power of ten. */
+const CTR_X = 358, CTR_Y = 26, CTR_W = 72, CTR_H = 34;
+const CTR_DIGITS = 5, CELL_PITCH = 9, CELL_W_ = 8, CELL_H_ = 12;
+
+function drawCounter(fb, t, n) {
+  const midX = CTR_X + CTR_W / 2;
+
+  // Mounting brackets, so it hangs off the wall rather than floating on it.
+  fb.rect(CTR_X + 14, CTR_Y - 3, 3, 3, C.VIOLET);
+  fb.rect(CTR_X + CTR_W - 17, CTR_Y - 3, 3, 3, C.VIOLET);
+
+  fb.rect(CTR_X, CTR_Y, CTR_W, CTR_H, C.INDIGO);
+  fb.frame(CTR_X, CTR_Y, CTR_W, CTR_H, C.VIOLET_LT);
+  fb.textCenter(midX, CTR_Y + 3, 'BOXY-CLI', C.LILAC_LT);
+
+  // A number we haven't got yet reads as dashes, never as a zero — claiming
+  // nobody has installed it would be a worse lie than admitting we don't know.
+  const shown = Number.isFinite(n)
+    ? String(Math.min(n, 10 ** CTR_DIGITS - 1)).padStart(CTR_DIGITS, '0')
+    : '-'.repeat(CTR_DIGITS);
+
+  const row = CTR_DIGITS * CELL_PITCH - 1;
+  const dx = Math.round(midX - row / 2);
+  const dy = CTR_Y + 12;
+  for (let i = 0; i < CTR_DIGITS; i++) {
+    const cx = dx + i * CELL_PITCH;
+    fb.rect(cx, dy, CELL_W_, CELL_H_, C.VOID);
+    fb.frame(cx, dy, CELL_W_, CELL_H_, C.VIOLET);
+    // Leading zeros sit dim, so the eye lands on the digits that mean something.
+    const lead = i < CTR_DIGITS - 1 && shown.slice(0, i + 1) === '0'.repeat(i + 1);
+    fb.text(cx + 2, dy + 3, shown[i], lead ? C.VIOLET_LT : C.AMBER_LT);
+  }
+
+  fb.textCenter(midX, CTR_Y + CTR_H - 9, 'DOWNLOADS', C.VIOLET_LT);
+
+  // Live lamp, breathing rather than blinking.
+  fb.set(CTR_X + 2, CTR_Y + 2, flick(t, 1.4, 0) > 0.35 ? C.GREEN : C.VIOLET);
 }
 
 /* Floor clutter — a rug, a parts crate, a pizza box. */
@@ -554,9 +618,9 @@ function drawClutter(fb) {
   fb.rect(255, FLOOR_Y - 17, 5, 3, C.RED);
 
   // Pizza box, obviously.
-  fb.rect(346, FLOOR_Y - 5, 16, 5, C.LILAC);
-  fb.hline(346, FLOOR_Y - 5, 16, C.LILAC_LT);
-  fb.rect(348, FLOOR_Y - 3, 3, 2, C.ORANGE);
+  fb.rect(362, FLOOR_Y - 5, 16, 5, C.LILAC);
+  fb.hline(362, FLOOR_Y - 5, 16, C.LILAC_LT);
+  fb.rect(364, FLOOR_Y - 3, 3, 2, C.ORANGE);
 
   // Coiled cable spool by the rack.
   fb.discE(100, FLOOR_Y - 4, 5, C.VIOLET);
@@ -579,7 +643,7 @@ const CONCEPT_HERO = [
 
 function drawStudio(fb, t) {
   // --- neon sign ---
-  const sx = 577, sy = 24, sw = 74, sh = 18;
+  const sx = 617, sy = 24, sw = 74, sh = 18;
   const buzz = flick(t, 9, 1.7) > 0.08;            // occasional neon stutter
   fb.rect(sx, sy, sw, sh, C.VOID);
   fb.frame(sx, sy, sw, sh, buzz ? C.ORANGE : C.BROWN);
@@ -593,7 +657,7 @@ function drawStudio(fb, t) {
   fb.vline(sx + sw - 8, sy - 6, 6, C.VIOLET);
 
   // --- corkboard of concept sketches ---
-  const bx = 659, by = 34, bw = 28, bh = 36;
+  const bx = 699, by = 34, bw = 28, bh = 36;
   fb.rect(bx, by, bw, bh, C.BROWN);
   fb.frame(bx, by, bw, bh, C.BROWN_DK);
   fb.sprite(bx + 4, by + 4, CONCEPT_HERO, { '#': C.AMBER, 'o': C.VOID, 'v': C.RED, '.': T });
@@ -602,7 +666,7 @@ function drawStudio(fb, t) {
   fb.set(bx + bw - 6, by + 2, C.RED);
 
   // --- design desk ---
-  const dx = 581, topY = 110, dw = 78;
+  const dx = 621, topY = 110, dw = 78;
   fb.rect(dx, topY, dw, 4, C.BROWN);
   fb.hline(dx, topY, dw, C.ORANGE);
   fb.rect(dx + 4, topY + 4, 4, FLOOR_Y - topY - 4, C.BROWN_DK);
@@ -651,23 +715,24 @@ function buildCache() {
   for (const [x, y, w, h, amt] of [
     [16, 56, 70, 62, 0.55],    // CRT
     [94, 48, 64, 106, 0.4],    // rack
-    [386, 42, 68, 76, 0.6],    // arcade marquee
+    [426, 42, 68, 76, 0.6],    // arcade marquee
+    [352, 20, 84, 46, 0.45],   // the download counter
   ]) applyMask(base, wallGlowMask(x, y, w, h, amt), LIGHT_MAP);
 
   drawClutter(base);
 
   // The studio desk's floor pool sits under everything there, so it bakes in.
-  const dx = 581, dw = 78;
+  const dx = 621, dw = 78;
   base.ditherShape(dx - 6, FLOOR_Y, dw + 12, 8, C.ORANGE, (xx, yy) => {
     const nx = (xx - (dw + 12) / 2) / ((dw + 12) / 2), ny = yy / 8;
     const d = nx * nx + ny * ny;
     return d > 1 ? 0 : 0.3 * (1 - d);
   });
 
-  const shelfX = 258, shelfY = 58, shelfW = 84;
+  const shelfX = SHELF_X, shelfY = SHELF_Y, shelfW = SHELF_W;
   return {
     base,
-    lamps: [204, 484, 620].map((x, i) => lampConeMask(x, [22, 26, 20][i])),
+    lamps: LAMPS.map(([x, cord]) => lampConeMask(x, cord)),
     shelfGlow: [0, 1].map((r) => {
       const sy = shelfY + r * 30 + 28;
       return buildShadeMask(ROOM_W, ROOM_H, shelfX - 4, sy, shelfW + 8, 22, (xx, yy) => {
@@ -675,30 +740,57 @@ function buildCache() {
         return Math.max(0, 0.8 * (1 - nx * nx) * (1 - yy / 22));
       });
     }),
-    neonGlow: wallGlowMask(567, 16, 94, 38, 0.55),
+    neonGlow: wallGlowMask(607, 16, 94, 38, 0.55),
   };
 }
+
+/* Every object is confined to a known strip of wall or floor. Padded by a few
+   pixels each side, because a bound that is too tight makes an object vanish at
+   the edge of the screen and a bound that is too loose costs nothing.
+   tools/test-room.mjs proves the visible output is identical with these on. */
+const SPAN = {
+  stars:   [228, 302],
+  desk:    [  6,  98],
+  rack:    [ 94, 158],
+  bench:   [160, 250],
+  shelf:   [252, 366],
+  counter: [348, 440],
+  arcade:  [422, 498],
+  printer: [491, 553],
+  mail:    [555, 607],
+  cat:     [374, 414],
+  studio:  [597, 737],
+};
 
 export function drawRoom(fb, t, state = {}) {
   if (!cache) cache = buildCache();
 
   fb.px.set(cache.base.px);          // the static layer, in one copy
-  drawStars(fb, t);
 
-  drawDesk(fb, t);
-  drawRack(fb, t);
-  drawBench(fb, t);
-  drawShelf(fb, t, state.cartCount ?? 15);
-  drawArcade(fb, t);
-  drawMail(fb, t);
-  drawPrinter(fb, t);
-  drawCat(fb, t, state.catAwake ?? false, state.catOnRack ?? false);
-  if (state.catOnRack) drawCatOnRack(fb, t);
-  drawStudio(fb, t);
+  /* The caller clips the framebuffer to the camera's window, which stops the
+     writes but not the work that produces them — and applyMask walks a flat
+     index list that ignores clipping altogether. Skipping whole objects is what
+     actually saves the time. */
+  const sees = ([x0, x1]) => x1 >= fb.cx0 && x0 < fb.cx1;
+
+  if (sees(SPAN.stars)) drawStars(fb, t);
+  if (sees(SPAN.desk)) drawDesk(fb, t);
+  if (sees(SPAN.rack)) drawRack(fb, t);
+  if (sees(SPAN.bench)) drawBench(fb, t);
+  if (sees(SPAN.shelf)) drawShelf(fb, t, state.cartCount ?? 15);
+  if (sees(SPAN.arcade)) drawArcade(fb, t);
+  if (sees(SPAN.mail)) drawMail(fb, t);
+  if (sees(SPAN.printer)) drawPrinter(fb, t);
+  if (sees(SPAN.counter)) drawCounter(fb, t, state.downloads);
+  if (sees(SPAN.cat)) drawCat(fb, t, state.catAwake ?? false, state.catOnRack ?? false);
+  if (state.catOnRack && sees(SPAN.rack)) drawCatOnRack(fb, t);
+  if (sees(SPAN.studio)) drawStudio(fb, t);
 
   // Fixtures hang in front of everything they light.
-  drawLampFixture(fb, t, 204, 22, C.AMBER);
-  drawLampFixture(fb, t, 484, 26, C.AMBER);
-  drawLampFixture(fb, t, 620, 20, C.AMBER);
-  for (const m of cache.lamps) applyMask(fb, m, LIGHT_MAP);
+  for (let i = 0; i < LAMPS.length; i++) {
+    const lamp = cache.lamps[i];
+    if (!sees([lamp.x0, lamp.x1])) continue;
+    drawLampFixture(fb, t, LAMPS[i][0], LAMPS[i][1], C.AMBER);
+    applyMask(fb, lamp.mask, LIGHT_MAP);
+  }
 }
