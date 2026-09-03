@@ -7,9 +7,10 @@
   default-src 'self';
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' https://fonts.gstatic.com;
-  script-src 'self' https://analytics.bastamasta.dev;
-  connect-src 'self' https://analytics.bastamasta.dev;
-  img-src 'self' data:;
+  script-src 'self' https://analytics.bastamasta.dev https://www.googletagmanager.com;
+  connect-src 'self' https://analytics.bastamasta.dev
+              https://*.google-analytics.com https://*.googletagmanager.com https://*.analytics.google.com;
+  img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com;
   object-src 'self'; base-uri 'none'; frame-src 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Résumé — Sameed Ahmed</title>
@@ -35,6 +36,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
 
 <script defer src="https://analytics.bastamasta.dev/script.js" data-website-id="3eaff192-921b-4970-a870-de4c5370be8a"></script>
+<script defer src="/js/ga.js"></script>
 
 <style>
   /* This page is one job — put the PDF in front of someone — so it carries its
