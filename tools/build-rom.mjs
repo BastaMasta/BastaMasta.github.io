@@ -29,4 +29,14 @@ fs.writeFileSync(path.join(ROOT, 'roms/burrito-drop.asm'),
   '; Uses no quirk-dependent opcodes (no SHR/SHL; VF is always set immediately\n' +
   '; before it is read), so it behaves the same on COSMAC-VIP and SUPER-CHIP\n' +
   '; style interpreters.\n' + BURRITO_DROP);
+/* The download link advertises the size, and it had already drifted by 36 bytes
+   before anyone noticed. Deriving it here means it cannot drift again. */
+const page = path.join(ROOT, 'index.html');
+const before = fs.readFileSync(page, 'utf8');
+const after = before.replace(/burrito-drop\.ch8 \(\d+ B\)/, `burrito-drop.ch8 (${rom.length} B)`);
+if (after !== before) {
+  fs.writeFileSync(page, after);
+  console.log('  index.html            download link size updated');
+}
+
 console.log(`  roms/burrito-drop.ch8  ${rom.length} bytes, 600 frames without halting`);

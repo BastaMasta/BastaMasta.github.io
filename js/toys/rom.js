@@ -93,13 +93,18 @@ still_falling:
 
   ; ---- it landed: did the paddle catch it? ----
 landed:
+  ; The burrito is four columns wide, so comparing its left edge against the
+  ; paddle ignored its own width: sitting three columns onto the left end of
+  ; the paddle looked caught and scored nothing. Bias by the sprite width and
+  ; the window becomes symmetric -- one column of overlap counts at either end.
   LD V7, V1
-  SUB V7, V0             ; V7 = item.x - paddle.x
+  ADD V7, 3              ; the burrito's rightmost column, not its left edge
+  SUB V7, V0             ; V7 = (item.x + 3) - paddle.x
   SE VF, 1
-  JP respawn             ; borrowed: item was left of the paddle
+  JP respawn             ; borrowed: the whole burrito is left of the paddle
   LD V8, V7
-  LD V6, 8
-  SUB V8, V6             ; V7 >= 8 means it fell off the right end
+  LD V6, 11              ; 8 paddle columns plus the burrito's own 3
+  SUB V8, V6             ; >= 11 means it cleared the right end
   SE VF, 0
   JP respawn
 
