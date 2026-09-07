@@ -22,7 +22,7 @@ import { encodePNG, upscale } from './png.mjs';
    fall back to dashes rather than inventing a figure. */
 const DOWNLOADS = await fetch('https://crates.io/api/v1/crates/boxy-cli', {
   // crates.io turns away requests that don't identify themselves.
-  headers: { 'User-Agent': 'bastamasta.dev image build (sameedahmed@bastamasta.dev)' },
+  headers: { 'User-Agent': 'bastamasta.dev image build (sameedahmed3150@gmail.com)' },
 })
   .then((r) => (r.ok ? r.json() : null))
   .then((d) => d?.crate?.downloads ?? null)
@@ -30,6 +30,12 @@ const DOWNLOADS = await fetch('https://crates.io/api/v1/crates/boxy-cli', {
 console.log(`  crates.io boxy-cli downloads: ${DOWNLOADS ?? 'unavailable'}`);
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+
+/* The shelf draws one spine per project card, exactly as main.js counts them in
+   the browser, so the stills can't drift from the live room when a card lands. */
+const CART_COUNT =
+  (fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').match(/class="cart"/g) || []).length || 15;
+console.log(`  project cards in index.html: ${CART_COUNT}`);
 
 function write(fb, scale, rel) {
   const rgba = new Uint8Array(fb.w * fb.h * 4);
@@ -43,7 +49,7 @@ function write(fb, scale, rel) {
 /* ---- the masthead panorama: the whole room, cat asleep ---- */
 {
   const fb = new Framebuffer(ROOM_W, ROOM_H);
-  drawRoom(fb, 3.2, { catAwake: false, catOnRack: false, cartCount: 15, downloads: DOWNLOADS });
+  drawRoom(fb, 3.2, { catAwake: false, catOnRack: false, cartCount: CART_COUNT, downloads: DOWNLOADS });
   const p = new Player(299);            // standing at the cartridge shelf
   p.y = FLOOR_Y + 4;
   p.draw(fb, 3.2);
@@ -61,7 +67,7 @@ function write(fb, scale, rel) {
   const W = 400, H = 210, BAR = 30;
   const card = new Framebuffer(W, H);
   const world = new Framebuffer(ROOM_W, ROOM_H);
-  drawRoom(world, 3.2, { catAwake: true, catOnRack: false, cartCount: 15, downloads: DOWNLOADS });
+  drawRoom(world, 3.2, { catAwake: true, catOnRack: false, cartCount: CART_COUNT, downloads: DOWNLOADS });
   const p = new Player(299);
   p.y = FLOOR_Y + 4;
   p.draw(world, 3.2);

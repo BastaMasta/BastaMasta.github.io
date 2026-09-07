@@ -263,9 +263,11 @@ function drawShelf(fb, t, cartCount = 15) {
     fb.rect(x, sy + 27, 2, 4, C.BROWN_DK);
     fb.rect(x + w - 2, sy + 27, 2, 4, C.BROWN_DK);
   }
-  // Cartridges standing on the boards.
+  // Cartridges standing on the boards. Two boards, eight slots each — past
+  // sixteen the shelf is full, and drawing a third row would put spines below
+  // the floor with no board under them.
   const perRow = 8;
-  for (let i = 0; i < cartCount; i++) {
+  for (let i = 0, n = Math.min(cartCount, perRow * 2); i < n; i++) {
     const r = Math.floor(i / perRow), c = i % perRow;
     const cx = x + 4 + c * 10, cy = y + r * 30 + 6;
     const col = CART_COLS[i % CART_COLS.length];

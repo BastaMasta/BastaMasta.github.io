@@ -237,7 +237,7 @@
   <!-- ---------- PROJECTS ---------- -->
   <section id="doc-projects" class="panel wide" data-panel="projects" data-num="02" data-title="cartridges" aria-labelledby="h-projects">
     <h2 id="h-projects">Cartridges</h2>
-    <p class="panel-lede">Fifteen things I've built. A few of them run right here in the browser.</p>
+    <p class="panel-lede">Seventeen things I've built. A few of them run right here in the browser.</p>
 
     <div class="filters" role="group" aria-label="Filter projects by status">
       <button type="button" class="filter is-on" data-filter="all">All</button>
@@ -277,6 +277,16 @@
         </p>
       </li>
 
+      <li class="cart" data-status="wip" data-hue="lilac" data-code="PY">
+        <h3>boxy-py</h3>
+        <p class="cart-meta"><span class="tag">Python</span><span class="tag">PyO3</span><span class="tag">Bindings</span></p>
+        <p>boxy-cli, callable from Python. Not a rewrite &mdash; PyO3 bindings over the same Rust crate, packaged with maturin, so both languages draw their boxes with one implementation behind them.</p>
+        <p class="cart-links">
+          <a href="https://github.com/BastaMasta/boxy-py" rel="noopener" aria-label="GitHub: boxy-py">GitHub</a>
+          <span class="wip">A PyPI release is still to come</span>
+        </p>
+      </li>
+
       <li class="cart" data-status="live" data-hue="green" data-code="BF">
         <h3>Brainfuck interpreter</h3>
         <p class="cart-meta"><span class="tag">Rust</span><span class="tag">Interpreter</span></p>
@@ -301,10 +311,17 @@
         <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="Visit: Self-hosted Gitea">Visit</a></p>
       </li>
 
+      <li class="cart" data-status="done" data-hue="red" data-code="BW">
+        <h3>Bash web server</h3>
+        <p class="cart-meta"><span class="tag">Bash 5.2</span><span class="tag">No dependencies</span></p>
+        <p>A web server written entirely in Bash builtins &mdash; no curl, no netcat, nothing outside the shell itself. It serves a directory and a few specific pages, which is all I needed to reach my own machine from anywhere. Mostly it was an argument with myself about what a shell can do.</p>
+        <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="On my Gitea: Bash web server">On my Gitea</a></p>
+      </li>
+
       <li class="cart" data-status="wip" data-hue="lilac" data-code="SD">
         <h3>ShellDeck</h3>
-        <p class="cart-meta"><span class="tag">Rust</span><span class="tag">TUI</span></p>
-        <p>A terminal-first control surface for the things I do most days. In active development, which is a generous way of saying it works on my machine.</p>
+        <p class="cart-meta"><span class="tag">Hardware</span><span class="tag">Cyberdeck</span></p>
+        <p>A cyberdeck built from scratch, around one idea: a fixed motherboard holding the display, I/O and keyboard, and daughter boards that swap out. Upgrading the machine means changing a board, not rebuilding everything around it.</p>
         <p class="cart-links"><a href="https://gitea.bastamasta.dev" rel="noopener" aria-label="On my Gitea: ShellDeck">On my Gitea</a></p>
       </li>
 
@@ -440,8 +457,8 @@
 
 
     <ul class="contact-list">
-      <li><span class="lbl">Email</span><span class="val"><a href="mailto:sameedahmed@bastamasta.dev">sameedahmed@bastamasta.dev</a><button class="copy" type="button" data-copy="sameedahmed@bastamasta.dev" hidden>Copy</button></span></li>
-      <li><span class="lbl">Phone</span><span class="val"><a href="tel:+918217887821">+91 82178 87821</a><button class="copy" type="button" data-copy="+918217887821" hidden>Copy</button></span></li>
+      <li><span class="lbl">Email</span><span class="val"><a href="mailto:sameedahmed3150@gmail.com">sameedahmed3150@gmail.com</a><button class="copy" type="button" data-copy="sameedahmed3150@gmail.com" hidden>Copy</button></span></li>
+      <li><span class="lbl">Phone</span><span class="val"><a href="tel:+919353891420">+91 93538 91420</a><button class="copy" type="button" data-copy="+919353891420" hidden>Copy</button></span></li>
       <li><span class="lbl">Location</span><span class="val">Doha, Qatar</span></li>
       <!-- The console scrolls the same reading across the marquee board. -->
       <li><span class="lbl">My time</span><span class="val"><span id="doha-clock">Doha, UTC+3</span></span></li>

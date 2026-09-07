@@ -1050,7 +1050,7 @@ function buildContactForm() {
       status.className = 'form-status ok';
       try { form.reset(); } catch { /* the message is already away */ }
     } catch {
-      status.textContent = 'That didn’t send. Email sameedahmed@bastamasta.dev instead?';
+      status.textContent = 'That didn’t send. Email sameedahmed3150@gmail.com instead?';
       status.className = 'form-status err';
     }
   });
