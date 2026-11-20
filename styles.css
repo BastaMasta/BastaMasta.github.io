@@ -433,6 +433,7 @@ body.console #console {
   mix-blend-mode: normal;
   animation: crt-flicker 5.5s steps(1, end) infinite;
 }
+body.panel-open #glass, body.shell-open #glass { animation: none; }
 #glass::after {
   /* Glare across the top-left of the tube. */
   content: ""; position: absolute; inset: 0; border-radius: 3px;
@@ -488,8 +489,7 @@ body.console #console {
   position: fixed; inset: 0; z-index: 60;
   display: grid; place-items: center;
   padding: 16px;
-  background: rgba(5, 4, 12, .72);
-  backdrop-filter: blur(3px);
+  background: rgba(5, 4, 12, .8);
 }
 .help-card {
   width: min(520px, 100%);
@@ -579,7 +579,7 @@ body:not(.console) #corner { top: auto; bottom: 16px; right: 16px; }
   font: inherit; font-size: 12px;
   background: rgba(11,10,18,.8); color: var(--lilac);
   border: 1px solid var(--violet); border-radius: 4px;
-  padding: 9px 12px; cursor: pointer; backdrop-filter: blur(4px);
+  padding: 9px 12px; cursor: pointer;
 }
 #mute:hover, #shell-toggle:hover { color: var(--white); border-color: var(--lilac); }
 #mute[aria-pressed="true"] { color: var(--violet-lt); }
@@ -604,7 +604,6 @@ body:not(.console) #corner { top: auto; bottom: 16px; right: 16px; }
   border: 1px solid var(--violet-lt); border-bottom-width: 3px;
   border-radius: 50%;
   cursor: pointer;
-  backdrop-filter: blur(6px);
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
@@ -700,8 +699,7 @@ body.console .panel-body::-webkit-scrollbar-thumb { background: var(--violet); b
 /* A dimmer behind an open panel. */
 #scrim {
   position: fixed; inset: 0; z-index: 20;
-  background: rgba(5, 4, 12, .55);
-  backdrop-filter: blur(2px);
+  background: rgba(5, 4, 12, .66);
   opacity: 0; pointer-events: none;
   transition: opacity .16s;
 }
@@ -721,7 +719,6 @@ body.console #toc { display: none; }
   padding: 9px clamp(16px, 5vw, 40px);
   background: color-mix(in srgb, var(--void) 92%, transparent);
   border-bottom: 1px solid var(--indigo);
-  backdrop-filter: blur(10px);
 }
 @supports not (background: color-mix(in srgb, red 50%, blue)) {
   #toc { background: rgba(11, 10, 18, .93); }
@@ -797,8 +794,7 @@ body.console #toc { display: none; }
    having to make room for it in their layout. */
 #shell {
   position: fixed; inset: 0; z-index: 70;
-  background: rgba(5, 4, 12, .5);
-  backdrop-filter: blur(2px);
+  background: rgba(5, 4, 12, .62);
 }
 #shell[hidden] { display: none; }
 
@@ -1206,7 +1202,6 @@ body:not(.console) .cart h3 { padding-right: 74px; }
     flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
     margin-inline: -16px; padding: 10px 16px;
     background: color-mix(in srgb, var(--void) 92%, transparent);
-    backdrop-filter: blur(10px);
     -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
     mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
   }

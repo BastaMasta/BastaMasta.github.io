@@ -169,12 +169,16 @@ class Zap8 {
     let faults = 0;
     const frame = (now) => {
       /* With a panel, the help card or the shell up, the canvas sits behind a
-         blurred scrim and nothing on it can be read. Ten frames a second is
-         plenty to keep it alive, and it hands most of a core back to the
-         machine for the states a reader spends the most time in. */
+         blurred full-screen scrim and nothing on it can be read. Every repaint
+         under a backdrop-filter makes the browser re-blur the whole viewport,
+         so the screen holds its last frame instead of painting at all. `last`
+         keeps moving so the first frame back doesn't see a huge dt. */
       const covered = this.openPanel || this.helpOpen
         || document.body.classList.contains('shell-open');
-      if (covered && now - last < 100) {
+      /* 120/144Hz screens would otherwise draw this 320px room twice as often
+         for no visible gain; ~60fps is what the art and the CHIP-8 run at. */
+      if (covered || now - last < 1000 / 75) {
+        if (covered) last = now;
         requestAnimationFrame(frame);
         return;
       }

@@ -13,10 +13,17 @@
    this side can silence it, so it is expected in the console. */
 const GA_ID = 'G-ETD1YNN5NE';
 
-const tag = document.createElement('script');
-tag.async = true;
-tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
-document.head.append(tag);
+/* gtag.js is ~545 KB of script. Fetched straight away it competes with the
+   console for the main thread during boot, so it waits for the page to finish
+   loading; the dataLayer below queues the pageview until it arrives. */
+function loadGtag() {
+  const tag = document.createElement('script');
+  tag.async = true;
+  tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+  document.head.append(tag);
+}
+if (document.readyState === 'complete') loadGtag();
+else addEventListener('load', loadGtag, { once: true });
 
 window.dataLayer = window.dataLayer || [];
 function gtag() { window.dataLayer.push(arguments); }
