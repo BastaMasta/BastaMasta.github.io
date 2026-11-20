@@ -359,7 +359,9 @@ class Zap8 {
         return;
       }
 
-      if (e.key === '?' || (e.key === '/' && e.shiftKey)) {
+      // The help card explains the console; in the plain view there is no room
+      // to explain, so ? leaves the page alone there.
+      if ((e.key === '?' || (e.key === '/' && e.shiftKey)) && (this.active || this.helpOpen)) {
         this.helpOpen ? this.hideHelp() : this.showHelp();
         e.preventDefault();
         return;
@@ -796,16 +798,13 @@ function loadDownloads(onValue) {
     .catch(() => { /* dashes, or whatever was cached */ });
 }
 
-/* Qatar sits at UTC+3 year round and has no DST, so a fixed offset is exact
-   and needs no timezone database. */
-function dohaNow() {
-  const d = new Date();
-  return new Date(d.getTime() + (d.getTimezoneOffset() + 180) * 60000);
-}
+/* The UK switches between GMT and BST, so a fixed offset won't do; Intl
+   carries the timezone rules. */
+const UK_TIME = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+const UK_DATE = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZoneName: 'short' });
 
-function dohaHM() {
-  const d = dohaNow();
-  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+function ukHM() {
+  return UK_TIME.format(new Date());
 }
 
 /* Whichever station the player is actually closest to wins, so overlapping
@@ -1064,7 +1063,7 @@ function buildContactForm() {
    wall counter — so nothing in here can drift from the page around it.
    Output is built as text nodes, never as markup: `echo <img onerror=...>`
    should print that string, not run it. */
-function buildTerminal(getEngine) {
+function buildTerminal(getEngine, closeShell) {
   const host = $('[data-widget="terminal"]');
   if (!host) return;
   host.innerHTML = '';
@@ -1131,8 +1130,12 @@ function buildTerminal(getEngine) {
     const node = document.getElementById(sec.id);
     const engine = getEngine();
 
+    /* The shell is a full-screen overlay, so whatever it opens lands behind it.
+       It closes first, so the panel takes focus rather than the shell handing
+       focus back to wherever it was opened from. */
     if (document.body.classList.contains('console') && engine) {
       print(`opening ${sec.label}…`, 'term-dim');
+      closeShell();
       engine.closePanel(true);
       engine.showPanel(node);
       return;
@@ -1150,6 +1153,7 @@ function buildTerminal(getEngine) {
       return;
     }
     print(`opening ${sec.label}…`, 'term-dim');
+    closeShell();
     node.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
@@ -1159,7 +1163,7 @@ function buildTerminal(getEngine) {
       printBlock(
         'help              this\n' +
         'ls [-a]           list the sections\n' +
-        'cat resume        same thing\n' +
+        'cat resume        same as resume\n' +
         'open <section>    go to one (cd works too)\n' +
         'whoami            the short version\n' +
         'projects [status] live | wip | done | dead\n' +
@@ -1170,7 +1174,8 @@ function buildTerminal(getEngine) {
         'date              what time it is here\n' +
         'uptime            how the server is holding up\n' +
         'echo <text>       what it says on the tin\n' +
-        'clear             wipe the scrollback');
+        'clear             wipe the scrollback\n' +
+        'exit              close the shell');
     },
     ls(args) {
       const all = args.includes('-a');
@@ -1188,7 +1193,7 @@ function buildTerminal(getEngine) {
       print(`cat: ${f}: No such file or directory`, 'term-err');
     },
     whoami() {
-      print(text('#doc-about p') || 'Sameed Ahmed. Systems programmer, Doha.');
+      print(text('#doc-about p') || 'Sameed Ahmed. Systems programmer, Guildford.');
     },
     projects(args) {
       const want = args[0];
@@ -1220,11 +1225,10 @@ function buildTerminal(getEngine) {
       print('or `open contact` for the form', 'term-dim');
     },
     date() {
-      const d = dohaNow();
-      print(`${d.toDateString()} ${dohaHM()} +03 (Doha)`);
+      print(`${UK_DATE.format(new Date())} ${ukHM()} (Guildford)`);
     },
     uptime() {
-      print(` ${dohaHM()} up 412 days,  1 user,  load average: 0.42, 0.31, 0.09`);
+      print(` ${ukHM()} up 412 days,  1 user,  load average: 0.42, 0.31, 0.09`);
       print('sleep schedule: still not found', 'term-dim');
     },
     neofetch() {
@@ -1236,11 +1240,7 @@ function buildTerminal(getEngine) {
       print(args.length ? 'sameed is not in the sudoers file.' : 'usage: sudo <command>', 'term-err');
       print('This incident will be reported.', 'term-dim');
     },
-    exit() {
-      const engine = getEngine();
-      if (document.body.classList.contains('console') && engine) engine.closePanel();
-      else print('there is no exit, only P', 'term-dim');
-    },
+    exit: () => closeShell(),
   };
 
   /* `cat` with no file. A real shell would sit there reading stdin; this one
@@ -1365,6 +1365,7 @@ const NEOFETCH =
   ' ██  ███  ██   lang    Rust · C · some 8086\n' +
   ' ▀█████████▀   board   KiCad → fab → regret\n' +
   '   ▀▀▀▀▀▀▀     shipped %DL% boxy-cli installs\n' +
+  '               edu     MSc Quantum Computing, Surrey\n' +
   '               uptime  no sleep schedule found\n' +
   '               cat     Oreo · 1 prod incident';
 
@@ -1397,9 +1398,9 @@ function buildCopyButtons() {
 
 /* The plain-mode twin of the reading on the marquee board. */
 function buildLocalClock() {
-  const el = $('#doha-clock');
+  const el = $('#local-clock');
   if (!el) return;
-  const tick = () => { el.textContent = `${dohaHM()} in Doha (UTC+3)`; };
+  const tick = () => { el.textContent = `${ukHM()} in Guildford (UK time)`; };
   tick();
   setInterval(tick, 20000);
 }
@@ -1473,6 +1474,18 @@ function wirePanels(engine) {
     btn.addEventListener('click', () => engine.closePanel());
     section.prepend(btn);
   });
+
+  /* Cross-links between sections ("over at the bench") are plain anchors. In
+     console mode their targets are hidden panels, so following one only
+     changed the URL; open the panel instead. */
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a[href^="#doc-"]');
+    if (!a || !engine.active) return;
+    const target = document.getElementById(a.getAttribute('href').slice(1));
+    if (!target?.classList.contains('panel')) return;
+    e.preventDefault();
+    engine.showPanel(target);
+  });
 }
 
 /* ============================================================
@@ -1504,7 +1517,7 @@ function init() {
   let engine = null;
 
   // Declared above so the terminal's `open` can reach the engine once it exists.
-  buildTerminal(() => engine);
+  buildTerminal(() => engine, () => setShell(false));
 
   /* The shell drops from the top over whichever view is showing. `~` is the
      conventional key for this and is free in both modes; the >_ button is the

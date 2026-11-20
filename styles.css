@@ -257,7 +257,7 @@ body:not(.console) #doc-cat { display: none; }
    that matter check for that. */
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
-#doha-clock { font-variant-numeric: tabular-nums; }
+#local-clock { font-variant-numeric: tabular-nums; }
 
 .field { display: grid; gap: 6px; margin-bottom: 16px; max-width: 520px; }
 .field label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--lilac); }

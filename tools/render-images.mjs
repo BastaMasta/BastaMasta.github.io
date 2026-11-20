@@ -85,7 +85,7 @@ function write(fb, scale, rel) {
   card.rect(0, 0, W, BAR, C.VOID);
   card.hline(0, BAR - 1, W, C.AMBER);
   card.text(10, 6, 'SAMEED AHMED', C.AMBER_LT);
-  card.text(10, 16, 'SYSTEMS PROGRAMMER', C.VIOLET_LT);
+  card.text(10, 16, 'SYSTEMS PROGRAMMER / MSC QUANTUM COMPUTING', C.VIOLET_LT);
   card.text(W - 46, 11, 'ZAP-8', C.AMBER);
   write(card, 3, 'images/social-card.png');
 }

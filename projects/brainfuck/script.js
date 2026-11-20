@@ -26,8 +26,14 @@ function interpretBrainfuck(code, input = "") {
         return "Error: Unmatched opening bracket at position " + stack.pop();
     }
 
-    // Execute the code
+    // Execute the code. `+[]` never halts, and this runs on the page's only
+    // thread, so an unbounded loop froze the tab for good. Cap the work.
+    const MAX_STEPS = 50_000_000;
+    let steps = 0;
     while (i < code.length) {
+        if (++steps > MAX_STEPS) {
+            throw new Error(`Stopped after ${MAX_STEPS.toLocaleString()} steps — probably an infinite loop. Output so far: ${output}`);
+        }
         const command = code[i];
 
         switch (command) {
