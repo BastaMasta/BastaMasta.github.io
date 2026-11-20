@@ -37,7 +37,8 @@ const COMFY_FB_W = 260;
    Mode: console vs plain
    ============================================================ */
 
-const STORE_KEY = 'zap8:mode';
+// Renamed when it started meaning "chosen": the old key held auto-saved defaults.
+const STORE_KEY = 'zap8:modeChoice';
 const HELP_SEEN = 'zap8:helpSeen';
 const MUTE_KEY = 'zap8:muted';
 
@@ -48,7 +49,12 @@ function readMode() {
     const saved = localStorage.getItem(STORE_KEY);
     if (saved === 'plain' || saved === 'console') return saved;
   } catch { /* private mode; fall through */ }
-  return 'console';
+  /* Low data mode (Chrome's Save-Data, or the reduced-data media query) gets
+     the plain page: it is already in the HTML, so nothing more has to be drawn
+     or downloaded. A choice made with the ripcord still wins over this. */
+  const lowData = navigator.connection?.saveData
+    || matchMedia('(prefers-reduced-data: reduce)').matches;
+  return lowData ? 'plain' : 'console';
 }
 
 function writeMode(mode) {
@@ -193,7 +199,7 @@ class Zap8 {
         // Keep the loop alive: a single bad frame used to blank the console
         // permanently, because nothing rescheduled the animation frame.
         if (faults++ === 0) console.error('[zap8] frame error:', err);
-        if (faults > 240) { console.error('[zap8] giving up; falling back'); this.onTogglePlain?.(); return; }
+        if (faults > 240) { console.error('[zap8] giving up; falling back'); this.onTogglePlain?.(false); return; }
       }
       requestAnimationFrame(frame);
     };
@@ -1569,9 +1575,12 @@ function init() {
   });
   let mode = readMode();
 
-  function apply(next) {
+  /* Only a switch someone made is remembered. Saving on every load made the
+     default look like a choice, so a stored 'console' would have overridden
+     low data mode forever after the first visit. */
+  function apply(next, remember = false) {
     mode = next;
-    writeMode(mode);
+    if (remember) writeMode(mode);
     const on = mode === 'console';
     document.body.classList.toggle('console', on);
     document.body.classList.toggle('plain', !on);
@@ -1586,7 +1595,7 @@ function init() {
     if (on) {
       if (!engine) {
         engine = new Zap8();
-        engine.onTogglePlain = () => apply(mode === 'console' ? 'plain' : 'console');
+        engine.onTogglePlain = (remember = true) => apply(mode === 'console' ? 'plain' : 'console', remember);
         engine.start();
         wirePanels(engine);
       }
@@ -1605,7 +1614,7 @@ function init() {
   $('#help-go')?.addEventListener('click', () => engine && engine.hideHelp());
   $('#help-plain')?.addEventListener('click', () => {
     if (engine) engine.hideHelp();
-    apply('plain');
+    apply('plain', true);
     scrollTo({ top: 0 });
   });
   $('#help')?.addEventListener('click', (e) => {
@@ -1614,7 +1623,7 @@ function init() {
   });
 
   ripcord.addEventListener('click', () => {
-    apply(mode === 'console' ? 'plain' : 'console');
+    apply(mode === 'console' ? 'plain' : 'console', true);
     if (mode === 'plain') scrollTo({ top: 0 });
   });
 

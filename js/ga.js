@@ -22,7 +22,9 @@ function loadGtag() {
   tag.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
   document.head.append(tag);
 }
-if (document.readyState === 'complete') loadGtag();
+// Low data mode: the pageview still queues, but the 545 KB library is skipped.
+if (navigator.connection?.saveData) { /* skip */ }
+else if (document.readyState === 'complete') loadGtag();
 else addEventListener('load', loadGtag, { once: true });
 
 window.dataLayer = window.dataLayer || [];
